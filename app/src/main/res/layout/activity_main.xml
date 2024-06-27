@@ -5,15 +5,51 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#673AB7"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hola Mundo!"
+        android:id="@+id/textView"
+        android:layout_width="93dp"
+        android:layout_height="136dp"
+        android:text="Oir app"
+        android:textColor="#F7FFFFFF"
+        android:textSize="48sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.891"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="143dp"
+        android:layout_height="60dp"
+        android:background="#FAFFFFFF"
+        android:backgroundTint="#9C27B0"
+        android:text="Inicio"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.956" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="363dp"
+        android:layout_height="172dp"
+        android:background="#F7FFFFFF"
+        android:text="Oir App es una aplicación móvil diseñada para apoyar a personas con discapacidad auditiva en su ingreso y desarrollo en la educación profesional. Proporciona herramientas accesibles que facilitan la comunicación y el aprendizaje en entornos educativos.  Descarga Oir App hoy y potencia tu educación profesional de manera inclusiva."
+        android:textAlignment="center"
+        android:textColor="#0B0808"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="421dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
