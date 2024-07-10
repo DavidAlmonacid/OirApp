@@ -36,27 +36,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.539"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3">
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Oir App es una aplicación móvil diseñada para apoyar a personas con discapacidad auditiva en su ingreso y desarrollo en la educación profesional. Proporciona herramientas accesibles que facilitan la comunicación y el aprendizaje en entornos educativos." />
+            android:text="Oir App es una aplicación móvil diseñada para apoyar a personas con discapacidad auditiva en su ingreso y desarrollo en la educación profesional. Proporciona herramientas accesibles que facilitan la comunicación y el aprendizaje en entornos educativos."
+            android:textSize="16sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Descarga Oir App hoy y potencia tu educación profesional de manera inclusiva." />
+            android:text="Descarga Oir App hoy y potencia tu educación profesional de manera inclusiva."
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="Logo principal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,19 +72,22 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="143dp"
-        android:layout_height="60dp"
-        android:background="#FAFFFFFF"
-        android:backgroundTint="#9C27B0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#54208e"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
         android:text="Inicio"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="italic"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.956" />
+        app:strokeColor="#ffffff"
+        app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
