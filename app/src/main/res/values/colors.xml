@@ -8,4 +8,7 @@
 
     <!-- Background -->
     <color name="colorBackground">#FF54208E</color>
+
+    <!-- Button -->
+    <color name="colorButtonPrimary">#FFEC8049</color>
 </resources>
