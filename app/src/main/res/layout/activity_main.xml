@@ -17,7 +17,7 @@
         android:fontFamily="@font/work_sans_600_normal"
         android:text="Oir app"
         android:textAlignment="viewEnd"
-        android:textColor="#fff4f4"
+        android:textColor="@color/white"
         android:textSize="56sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,14 +73,14 @@
         android:paddingHorizontal="32dp"
         android:paddingVertical="16dp"
         android:text="Inicio"
-        android:textColor="#ffffff"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="#ffffff"
+        app:strokeColor="@color/white"
         app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
