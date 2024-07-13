@@ -96,8 +96,13 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="2dp"
+            android:background="@drawable/rounded_background_input_light"
             android:ems="10"
-            android:inputType="textPassword" />
+            android:fontFamily="@font/work_sans_400_normal"
+            android:inputType="textPassword"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor" />
 
     </LinearLayout>
 
