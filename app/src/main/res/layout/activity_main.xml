@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
-        android:fontFamily="@font/work_sans_600_normal"
+        android:fontFamily="@font/work_sans_700_normal"
         android:text="Oir app"
         android:textAlignment="viewEnd"
         android:textColor="@color/white"
