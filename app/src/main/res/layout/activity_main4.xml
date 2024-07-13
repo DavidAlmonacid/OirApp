@@ -133,7 +133,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="92dp"
-        android:background="@color/colorBackground"
+        android:background="@color/colorBackgroundPurple"
         android:fontFamily="@font/work_sans_700_normal"
         android:gravity="center_vertical"
         android:paddingHorizontal="24dp"

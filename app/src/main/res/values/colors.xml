@@ -5,9 +5,11 @@
 
     <!-- Text -->
     <color name="colorTextGrey">#FF5F5F61</color>
+    <color name="colorTextLight">#FFEBEAEF</color>
 
     <!-- Background -->
-    <color name="colorBackground">#FF54208E</color>
+    <color name="colorBackgroundPurple">#FF54208E</color>
+    <color name="colorBackgroundLight">#FFEBEAEF</color>
 
     <!-- Button -->
     <color name="colorButtonPrimary">#FFEC8049</color>

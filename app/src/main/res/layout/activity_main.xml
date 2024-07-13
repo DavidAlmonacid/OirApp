@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/colorBackgroundPurple"
     tools:context=".MainActivity">
 
     <TextView
@@ -17,7 +17,7 @@
         android:fontFamily="@font/work_sans_700_normal"
         android:text="Oir app"
         android:textAlignment="viewEnd"
-        android:textColor="@color/white"
+        android:textColor="@color/colorTextLight"
         android:textSize="56sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,19 +69,19 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="28dp"
-        android:backgroundTint="@color/colorBackground"
+        android:backgroundTint="@color/colorBackgroundPurple"
         android:fontFamily="@font/work_sans_400_normal"
         android:paddingHorizontal="32dp"
         android:paddingVertical="16dp"
         android:text="Inicio"
-        android:textColor="@color/white"
+        android:textColor="@color/colorTextLight"
         android:textSize="18sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:strokeColor="@color/white"
+        app:strokeColor="@color/colorBackgroundLight"
         app:strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
