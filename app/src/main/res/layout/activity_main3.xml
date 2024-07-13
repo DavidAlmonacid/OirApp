@@ -160,18 +160,13 @@
             android:text="Rol"
             android:textColor="@color/black" />
 
-        <EditText
-            android:id="@+id/editTextText2"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="2dp"
-            android:background="@drawable/rounded_background_input_light"
-            android:ems="10"
-            android:fontFamily="@font/work_sans_400_normal"
-            android:inputType="text"
-            android:paddingHorizontal="14dp"
-            android:textColor="@color/black"
-            android:textCursorDrawable="@drawable/cursor" />
+            android:gravity="center"
+            android:background="@drawable/rounded_background_input_light" />
 
     </LinearLayout>
 
