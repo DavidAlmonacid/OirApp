@@ -15,7 +15,7 @@
         android:fontFamily="@font/work_sans_700_normal"
         android:gravity="center_vertical"
         android:paddingHorizontal="24dp"
-        android:text="Iniciar Sesión"
+        android:text="Crear Cuenta"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,13 +27,12 @@
         android:id="@+id/imageView"
         android:layout_width="152dp"
         android:layout_height="152dp"
-        android:layout_marginTop="20dp"
         android:contentDescription="Logo principal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        tools:layout_editor_absoluteY="112dp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -152,17 +151,18 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="335dp"
-        android:layout_height="59dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="#F44336"
+        android:layout_width="318dp"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/colorButtonPrimary"
+        android:fontFamily="@font/work_sans_600_normal"
         android:text="Enviar"
         android:textColor="#0C0707"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.946" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
