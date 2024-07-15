@@ -4,6 +4,6 @@
     <!-- Opciones de roles -->
     <string-array name="roles_array">
         <item>Estudiante</item>
-        <item>Profesor</item>
+        <item>Docente</item>
     </string-array>
 </resources>
