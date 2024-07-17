@@ -23,7 +23,7 @@
         android:layout_width="170dp"
         android:layout_height="33dp"
         android:gravity="center_vertical"
-        android:text="Cerrar sección"
+        android:text="Cerrar sesión"
         android:textAlignment="textStart"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"

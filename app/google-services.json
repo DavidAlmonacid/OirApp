@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "300371451825",
+    "project_id": "oir-app-2e461",
+    "storage_bucket": "oir-app-2e461.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300371451825:android:a495e756f35affc454a790",
+        "android_client_info": {
+          "package_name": "com.example.oirapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkpPAIBrpcM_euIc8b9fkHMu0UYbreEQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
