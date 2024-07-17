@@ -5,25 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackgroundLight"
     tools:context=".MainActivity8">
 
-    <Button
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="60dp"
-        android:backgroundTint="@color/colorButtonPrimary"
-        android:fontFamily="@font/work_sans_500_normal"
-        android:text="Actualizar"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="92dp"
+        android:background="@color/colorBackgroundPurple"
+        android:fontFamily="@font/work_sans_700_normal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="Información"
+        android:textColor="@color/colorTextLight"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.796"
-        app:strokeWidth="1dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -36,6 +35,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/logo" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/work_sans_500_normal"
+            android:text="Correo"
+            android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/rounded_background_input_light"
+            android:ems="10"
+            android:fontFamily="@font/work_sans_400_normal"
+            android:inputType="textEmailAddress"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -53,45 +87,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/work_sans_600_normal"
-            android:text="Contraseña" />
+            android:fontFamily="@font/work_sans_500_normal"
+            android:text="Contraseña"
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="2dp"
+            android:background="@drawable/rounded_background_input_light"
             android:ems="10"
-            android:inputType="textPassword" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:fontFamily="@font/work_sans_600_normal"
-            android:text="Rol" />
-
-        <EditText
-            android:id="@+id/editTextText2"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="2dp"
-            android:ems="10"
-            android:inputType="text" />
+            android:fontFamily="@font/work_sans_400_normal"
+            android:inputType="textPassword"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor" />
 
     </LinearLayout>
 
@@ -111,77 +122,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/work_sans_600_normal"
-            android:text="Nombre y apellido" />
+            android:fontFamily="@font/work_sans_500_normal"
+            android:text="Nombre y apellido"
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/editTextText"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="2dp"
+            android:background="@drawable/rounded_background_input_light"
             android:ems="10"
-            android:inputType="text" />
+            android:fontFamily="@font/work_sans_400_normal"
+            android:inputType="text"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/work_sans_600_normal"
-            android:text="Correo" />
+            android:fontFamily="@font/work_sans_500_normal"
+            android:text="Rol"
+            android:textColor="@color/black" />
 
-        <EditText
-            android:id="@+id/editTextTextEmailAddress"
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="2dp"
-            android:ems="10"
-            android:inputType="textEmailAddress" />
+            android:gravity="center"
+            android:background="@drawable/rounded_background_input_light" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="92dp"
-        android:background="#673AB7"
-        android:fontFamily="@font/work_sans_700_normal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="24dp"
-        android:text="Iniciar Sesión"
-        android:textColor="@color/white"
-        android:textSize="24sp"
+        android:layout_height="52dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/colorButtonPrimary"
+        android:fontFamily="@font/work_sans_500_normal"
+        android:text="Actualizar"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:strokeWidth="1dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="92dp"
-        android:background="#673AB7"
-        android:fontFamily="@font/work_sans_700_normal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="24dp"
-        android:text="Información"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
