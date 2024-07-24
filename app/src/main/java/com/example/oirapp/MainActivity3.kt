@@ -30,7 +30,6 @@ class MainActivity3 : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        val spinner: Spinner = findViewById(R.id.spinner)
         val email: EditText = findViewById(R.id.editTextTextEmailAddress)
         val password: EditText = findViewById(R.id.editTextTextPassword)
         val button: Button = findViewById(R.id.button)
@@ -39,12 +38,12 @@ class MainActivity3 : AppCompatActivity() {
             createAccount(email.text.toString(), password.text.toString())
         }
 
-        ArrayAdapter.createFromResource(
+       /* ArrayAdapter.createFromResource(
             this, R.array.roles_array, R.layout.spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             spinner.adapter = adapter
-        }
+        }*/
     }
 
     private fun createAccount(email: String, password: String) {
