@@ -40,6 +40,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.analytics)
+    implementation(libs.glide);
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
