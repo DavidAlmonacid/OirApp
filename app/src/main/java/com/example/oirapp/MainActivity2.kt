@@ -47,9 +47,21 @@ class MainActivity2 : AppCompatActivity() {
     private fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                // val user = auth.currentUser
-                val intent = Intent(this, MainActivity5::class.java)
-                startActivity(intent)
+                val user = auth.currentUser
+                user?.let {
+                    val userEmail = it.email // Obtener el correo electrónico del usuario
+
+                    // Crear un Intent para iniciar la nueva actividad
+                    val intent = Intent(this, MainActivity5::class.java).apply {
+                        putExtra(
+                            "USER_EMAIL",
+                            userEmail
+                        ) // Añadir el correo electrónico como un "extra"
+                    }
+                    startActivity(intent)
+                    //     val intent = Intent(this, MainActivity5::class.java)
+                    //   startActivity(intent)
+                }
             } else {
                 Toast.makeText(
                     baseContext,
