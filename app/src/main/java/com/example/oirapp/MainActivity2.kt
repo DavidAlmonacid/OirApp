@@ -49,18 +49,11 @@ class MainActivity2 : AppCompatActivity() {
             if (task.isSuccessful) {
                 val user = auth.currentUser
                 user?.let {
-                    val userEmail = it.email // Obtener el correo electrónico del usuario
-
-                    // Crear un Intent para iniciar la nueva actividad
+                    val userEmail = it.email
                     val intent = Intent(this, MainActivity5::class.java).apply {
-                        putExtra(
-                            "USER_EMAIL",
-                            userEmail
-                        ) // Añadir el correo electrónico como un "extra"
+                        putExtra("USER_EMAIL", userEmail)
                     }
                     startActivity(intent)
-                    //     val intent = Intent(this, MainActivity5::class.java)
-                    //   startActivity(intent)
                 }
             } else {
                 Toast.makeText(
