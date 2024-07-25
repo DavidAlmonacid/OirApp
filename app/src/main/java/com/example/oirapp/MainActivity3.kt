@@ -2,10 +2,8 @@ package com.example.oirapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -37,13 +35,6 @@ class MainActivity3 : AppCompatActivity() {
         button.setOnClickListener {
             createAccount(email.text.toString(), password.text.toString())
         }
-
-       /* ArrayAdapter.createFromResource(
-            this, R.array.roles_array, R.layout.spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            spinner.adapter = adapter
-        }*/
     }
 
     private fun createAccount(email: String, password: String) {
