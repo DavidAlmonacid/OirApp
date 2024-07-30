@@ -24,8 +24,6 @@ class MainActivity5 : AppCompatActivity() {
             insets
         }
 
-        // TODO: Implement the functionality to sign in the user automatically if they are already signed in
-
         val imageView: ImageView = findViewById(R.id.user_profile_image)
         Glide.with(this).load(R.drawable.user_placeholder)
             .transform(CenterCrop(), RoundedCornersTransformation(32)).into(imageView)
@@ -42,10 +40,13 @@ class MainActivity5 : AppCompatActivity() {
             spinner.adapter = adapter
         }
 
-        /*val signOutButton: LinearLayout = findViewById(R.id.Cerar_sesion)
+        /*val signOutButton: Button = findViewById(R.id.button2)
         signOutButton.setOnClickListener {
             Firebase.auth.signOut()
             finish()
+
+            val intent = Intent(this, MainActivity2::class.java)
+            startActivity(intent)
         }*/
 
         // Registrar el callback para el botón de retroceso
