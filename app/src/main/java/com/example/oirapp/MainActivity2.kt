@@ -50,10 +50,13 @@ class MainActivity2 : AppCompatActivity() {
                 val user = auth.currentUser
                 user?.let {
                     val userEmail = it.email
-                    val intent = Intent(this, MainActivity5::class.java).apply {
-                        putExtra("USER_EMAIL", userEmail)
-                    }
+
+                    val intent = Intent(this, MainActivity5::class.java)
+                    intent.apply { putExtra("USER_EMAIL", userEmail) }
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
+
+                    finish()
                 }
             } else {
                 Toast.makeText(
