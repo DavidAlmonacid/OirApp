@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -46,5 +47,12 @@ class MainActivity5 : AppCompatActivity() {
             Firebase.auth.signOut()
             finish()
         }*/
+
+        // Registrar el callback para el botón de retroceso
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finishAffinity() // Cierra todas las actividades y la aplicación
+            }
+        })
     }
 }
