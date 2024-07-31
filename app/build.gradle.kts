@@ -34,13 +34,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.analytics)
-    implementation(libs.glide);
+    implementation(libs.glide)
+    implementation(libs.imagepicker)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
