@@ -78,7 +78,6 @@
         app:srcCompat="@drawable/flechablanca" />
 
     <TextView
-        android:id="@+id/textView12"
         android:layout_width="162dp"
         android:layout_height="27dp"
         android:gravity="center_vertical"
@@ -92,7 +91,6 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <TextView
-        android:id="@+id/textView12"
         android:layout_width="162dp"
         android:layout_height="27dp"
         android:gravity="center_vertical"
@@ -106,7 +104,6 @@
         app:layout_constraintVertical_bias="0.068" />
 
     <TextView
-        android:id="@+id/textView12"
         android:layout_width="207dp"
         android:layout_height="31dp"
         android:gravity="center_vertical"
@@ -136,7 +133,6 @@
         app:layout_constraintVertical_bias="0.15" />
 
     <TextView
-        android:id="@+id/textView14"
         android:layout_width="275dp"
         android:layout_height="40dp"
         android:background="#00BCD4"
@@ -150,7 +146,6 @@
         app:layout_constraintVertical_bias="0.22" />
 
     <TextView
-        android:id="@+id/textView14"
         android:layout_width="275dp"
         android:layout_height="40dp"
         android:background="#F1F6F6"
@@ -164,7 +159,6 @@
         app:layout_constraintVertical_bias="0.373" />
 
     <TextView
-        android:id="@+id/textView14"
         android:layout_width="275dp"
         android:layout_height="40dp"
         android:background="#00BCD4"
