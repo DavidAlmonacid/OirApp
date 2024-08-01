@@ -4,6 +4,8 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
@@ -18,6 +20,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.oirapp.databinding.ActivityMain5Binding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 class MainActivity5 : AppCompatActivity() {
     private lateinit var binding: ActivityMain5Binding
@@ -35,6 +39,9 @@ class MainActivity5 : AppCompatActivity() {
         binding.userProfileImage.setOnClickListener {
             seleccionarImg()
         }
+        val editText: EditText = findViewById(R.id.editTextText)
+
+
         val imageView: ImageView = findViewById(R.id.user_profile_image)
         Glide.with(this).load(R.drawable.user_placeholder)
             .transform(CenterCrop(), RoundedCornersTransformation(32)).into(imageView)
@@ -50,7 +57,14 @@ class MainActivity5 : AppCompatActivity() {
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             spinner.adapter = adapter
         }
+        val continuarButton : Button = findViewById(R.id.button)
+        continuarButton.setOnClickListener {
+            val database = Firebase.database
+            val myRef = database.getReference("Usuarios")
+            val usuario = Usuario(editText.text.toString(), spinner.selectedItem.toString())
 
+            myRef.setValue(usuario)
+        }
         /*val signOutButton: Button = findViewById(R.id.button2)
         signOutButton.setOnClickListener {
             Firebase.auth.signOut()
