@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if (currentUser != null) {
             val intent = Intent(this, MainActivity5::class.java)
+            intent.apply { putExtra("USER_EMAIL", currentUser.email) }
             startActivity(intent)
             finish()
         }
