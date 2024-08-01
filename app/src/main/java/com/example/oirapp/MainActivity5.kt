@@ -72,7 +72,9 @@ class MainActivity5 : AppCompatActivity() {
         .crop()
             .compress( 1024)
         .maxResultSize(1080, 1080)
-        .createIntent { intent -> }
+        .createIntent { intent ->
+            resultadoImg.launch(intent)
+        }
     }
 
     private val resultadoImg =
