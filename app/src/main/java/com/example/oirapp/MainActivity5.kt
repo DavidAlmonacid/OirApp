@@ -21,7 +21,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.oirapp.databinding.ActivityMain5Binding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -29,11 +28,10 @@ import com.squareup.picasso.Picasso
 
 
 class MainActivity5 : AppCompatActivity() {
-    private lateinit var storageReference: StorageReference
     private lateinit var binding: ActivityMain5Binding
     private var imagenUri: Uri? = null
-    var firebaseStorage : FirebaseStorage? = null
-            var firebaseDatabase : FirebaseDatabase? = null
+    private lateinit var storageReference: StorageReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain5Binding.inflate(layoutInflater)
@@ -48,7 +46,6 @@ class MainActivity5 : AppCompatActivity() {
             seleccionarImg()
         }
         val editText: EditText = findViewById(R.id.editTextText)
-
 
         val imageView: ImageView = findViewById(R.id.user_profile_image)
         Glide.with(this).load(R.drawable.user_placeholder)
@@ -65,7 +62,7 @@ class MainActivity5 : AppCompatActivity() {
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             spinner.adapter = adapter
         }
-        val continuarButton : Button = findViewById(R.id.button)
+        val continuarButton: Button = findViewById(R.id.button)
         continuarButton.setOnClickListener {
             val database = Firebase.database
             val myRef = database.getReference("Usuarios")
@@ -76,7 +73,7 @@ class MainActivity5 : AppCompatActivity() {
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("gs://oir-app-2e461.appspot.com/profile_images/1723171391573.jpg")
+        val storageRef = storage.reference.child("profile_images/1723171391573.jpg")
 
         // Obtén la URL de descarga
         storageRef.downloadUrl.addOnSuccessListener { uri: Uri? ->
@@ -102,14 +99,15 @@ class MainActivity5 : AppCompatActivity() {
             }
         })
     }
+
     private fun seleccionarImg() {
         ImagePicker.with(this)
-        .crop()
-            .compress( 1024)
-        .maxResultSize(1080, 1080)
-        .createIntent { intent ->
-            resultadoImg.launch(intent)
-        }
+            .crop()
+            .compress(1024)
+            .maxResultSize(1080, 1080)
+            .createIntent { intent ->
+                resultadoImg.launch(intent)
+            }
     }
 
     private val resultadoImg =
@@ -120,20 +118,28 @@ class MainActivity5 : AppCompatActivity() {
                 binding.userProfileImage.setImageURI(imagenUri)
                 // Upload image to Firebase Storage
                 imagenUri?.let {
-                    val fileReference = storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
+                    val fileReference =
+                        storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
                     fileReference.putFile(it)
                         .addOnSuccessListener { taskSnapshot ->
                             fileReference.downloadUrl.addOnSuccessListener { uri ->
                                 // Handle the success, e.g., save the URL to the database
-                                Toast.makeText(this, "Imagen subida exitosamente", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "Imagen subida exitosamente",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                "Error al subir la imagen: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(this, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
             }
         }
