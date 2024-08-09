@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,12 +20,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.oirapp.databinding.ActivityMain5Binding
 import com.github.dhaval2404.imagepicker.ImagePicker
-import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.Firebase
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
+
 
 class MainActivity5 : AppCompatActivity() {
     private lateinit var storageReference: StorageReference
@@ -73,6 +75,17 @@ class MainActivity5 : AppCompatActivity() {
         }
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("gs://oir-app-2e461.appspot.com/profile_images/1723171391573.jpg")
+
+        // Obtén la URL de descarga
+        storageRef.downloadUrl.addOnSuccessListener { uri: Uri? ->
+            // Usa Picasso para cargar la imagen en el ImageView
+            Picasso.get().load(uri).into(imageView)
+        }.addOnFailureListener { exception: Exception? ->
+            // Maneja cualquier error
+            Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
+        }
         /*val signOutButton: Button = findViewById(R.id.button2)
         signOutButton.setOnClickListener {
             Firebase.auth.signOut()
