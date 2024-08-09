@@ -21,11 +21,17 @@ import com.example.oirapp.databinding.ActivityMain5Binding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.Firebase
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class MainActivity5 : AppCompatActivity() {
+    private lateinit var storageReference: StorageReference
     private lateinit var binding: ActivityMain5Binding
     private var imagenUri: Uri? = null
+    var firebaseStorage : FirebaseStorage? = null
+            var firebaseDatabase : FirebaseDatabase? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain5Binding.inflate(layoutInflater)
@@ -65,6 +71,8 @@ class MainActivity5 : AppCompatActivity() {
 
             myRef.setValue(usuario)
         }
+        // Initialize Firebase Storage
+        storageReference = FirebaseStorage.getInstance().reference
         /*val signOutButton: Button = findViewById(R.id.button2)
         signOutButton.setOnClickListener {
             Firebase.auth.signOut()
@@ -97,6 +105,20 @@ class MainActivity5 : AppCompatActivity() {
                 val data = resultado.data
                 imagenUri = data!!.data
                 binding.userProfileImage.setImageURI(imagenUri)
+                // Upload image to Firebase Storage
+                imagenUri?.let {
+                    val fileReference = storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
+                    fileReference.putFile(it)
+                        .addOnSuccessListener { taskSnapshot ->
+                            fileReference.downloadUrl.addOnSuccessListener { uri ->
+                                // Handle the success, e.g., save the URL to the database
+                                Toast.makeText(this, "Imagen subida exitosamente", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
             }
             else {
                 Toast.makeText(this, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
