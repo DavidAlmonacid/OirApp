@@ -37,10 +37,6 @@ class MainActivity5 : AppCompatActivity() {
             insets
         }
 
-        binding.changeProfileImageButton.setOnClickListener {
-            seleccionarImg()
-        }
-
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
         val storage = FirebaseStorage.getInstance()
@@ -51,6 +47,10 @@ class MainActivity5 : AppCompatActivity() {
             Picasso.get().load(uri).into(binding.userProfileImage)
         }.addOnFailureListener { exception: Exception? ->
             Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.changeProfileImageButton.setOnClickListener {
+            seleccionarImg()
         }
 
         // Set the user's email
@@ -116,24 +116,13 @@ class MainActivity5 : AppCompatActivity() {
                     val fileReference =
                         storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
 
-                    fileReference.putFile(it)
-//                        .addOnSuccessListener { taskSnapshot ->
-//                            fileReference.downloadUrl.addOnSuccessListener { uri ->
-//                                // Handle the success, e.g., save the URL to the database
-//                                Toast.makeText(
-//                                    this,
-//                                    "Imagen subida exitosamente",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(
-                                this,
-                                "Error al subir la imagen: ${e.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    fileReference.putFile(it).addOnFailureListener { e ->
+                        Toast.makeText(
+                            this,
+                            "Error al subir la imagen: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             } else {
                 Toast.makeText(
