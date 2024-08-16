@@ -31,7 +31,7 @@ class BienvenidaActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.button.setOnClickListener {
-            val intent = Intent(this, MainActivity2::class.java)
+            val intent = Intent(this, IniciarSesionActivity::class.java)
             startActivity(intent)
             finish()
         }

@@ -40,7 +40,7 @@ class MainActivity3 : AppCompatActivity() {
     private fun createAccount(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                val intent = Intent(this, MainActivity2::class.java)
+                val intent = Intent(this, IniciarSesionActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(
