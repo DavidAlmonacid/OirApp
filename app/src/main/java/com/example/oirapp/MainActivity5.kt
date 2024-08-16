@@ -4,11 +4,6 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -16,8 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.oirapp.databinding.ActivityMain5Binding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
@@ -26,7 +19,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 
-
 class MainActivity5 : AppCompatActivity() {
     private lateinit var binding: ActivityMain5Binding
     private var imagenUri: Uri? = null
@@ -34,42 +26,21 @@ class MainActivity5 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMain5Binding.inflate(layoutInflater)
         enableEdgeToEdge()
+
+        binding = ActivityMain5Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding.userProfileImage.setOnClickListener {
+
+        binding.changeProfileImageButton.setOnClickListener {
             seleccionarImg()
         }
-        val editText: EditText = findViewById(R.id.editTextText)
 
-        val imageView: ImageView = findViewById(R.id.user_profile_image)
-        Glide.with(this).load(R.drawable.user_placeholder)
-            .transform(CenterCrop(), RoundedCornersTransformation(32)).into(imageView)
-
-        val userEmail = intent.getStringExtra("USER_EMAIL")
-        val emailTextView: TextView = findViewById(R.id.textView2)
-        emailTextView.text = userEmail
-
-        val spinner: Spinner = findViewById(R.id.spinner)
-        ArrayAdapter.createFromResource(
-            this, R.array.roles_array, R.layout.spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            spinner.adapter = adapter
-        }
-        val continuarButton: Button = findViewById(R.id.button)
-        continuarButton.setOnClickListener {
-            val database = Firebase.database
-            val myRef = database.getReference("Usuarios")
-            val usuario = Usuario(editText.text.toString(), spinner.selectedItem.toString())
-
-            myRef.setValue(usuario)
-        }
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
         val storage = FirebaseStorage.getInstance()
@@ -77,12 +48,35 @@ class MainActivity5 : AppCompatActivity() {
 
         // Obtén la URL de descarga
         storageRef.downloadUrl.addOnSuccessListener { uri: Uri? ->
-            // Usa Picasso para cargar la imagen en el ImageView
-            Picasso.get().load(uri).into(imageView)
+            Picasso.get().load(uri).into(binding.userProfileImage)
         }.addOnFailureListener { exception: Exception? ->
-            // Maneja cualquier error
             Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
         }
+
+        // Set the user's email
+        val userEmail = intent.getStringExtra("USER_EMAIL")
+        binding.emailTextView.text = userEmail
+
+        // Set the spinner options
+        ArrayAdapter.createFromResource(
+            this, R.array.roles_array, R.layout.spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.roleSpinner.adapter = adapter
+        }
+
+        // Save the user's data to the Realtime Database
+        binding.continueButton.setOnClickListener {
+            val database = Firebase.database
+            val myRef = database.getReference("Usuarios")
+            val usuario = Usuario(
+                binding.nombreUsuarioEditText.text.toString(),
+                binding.roleSpinner.selectedItem.toString()
+            )
+
+            myRef.setValue(usuario)
+        }
+
         /*val signOutButton: Button = findViewById(R.id.button2)
         signOutButton.setOnClickListener {
             Firebase.auth.signOut()
@@ -103,8 +97,8 @@ class MainActivity5 : AppCompatActivity() {
     private fun seleccionarImg() {
         ImagePicker.with(this)
             .crop()
-            .compress(1024)
-            .maxResultSize(1080, 1080)
+            .compress(720)
+            .maxResultSize(720, 720)
             .createIntent { intent ->
                 resultadoImg.launch(intent)
             }
@@ -116,21 +110,23 @@ class MainActivity5 : AppCompatActivity() {
                 val data = resultado.data
                 imagenUri = data!!.data
                 binding.userProfileImage.setImageURI(imagenUri)
+
                 // Upload image to Firebase Storage
                 imagenUri?.let {
                     val fileReference =
                         storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
+
                     fileReference.putFile(it)
-                        .addOnSuccessListener { taskSnapshot ->
-                            fileReference.downloadUrl.addOnSuccessListener { uri ->
-                                // Handle the success, e.g., save the URL to the database
-                                Toast.makeText(
-                                    this,
-                                    "Imagen subida exitosamente",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+//                        .addOnSuccessListener { taskSnapshot ->
+//                            fileReference.downloadUrl.addOnSuccessListener { uri ->
+//                                // Handle the success, e.g., save the URL to the database
+//                                Toast.makeText(
+//                                    this,
+//                                    "Imagen subida exitosamente",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
+//                        }
                         .addOnFailureListener { e ->
                             Toast.makeText(
                                 this,
@@ -140,7 +136,11 @@ class MainActivity5 : AppCompatActivity() {
                         }
                 }
             } else {
-                Toast.makeText(this, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "No se seleccionó ninguna imagen",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 }
