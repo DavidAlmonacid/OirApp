@@ -27,7 +27,7 @@
             android:name=".GruposDocenteActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity5"
+            android:name=".InformacionAdicionalActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity4"

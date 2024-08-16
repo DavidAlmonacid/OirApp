@@ -51,7 +51,7 @@ class MainActivity2 : AppCompatActivity() {
                 user?.let {
                     val userEmail = it.email
 
-                    val intent = Intent(this, MainActivity5::class.java)
+                    val intent = Intent(this, InformacionAdicionalActivity::class.java)
                     intent.apply { putExtra("USER_EMAIL", userEmail) }
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

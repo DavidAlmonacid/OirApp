@@ -11,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.oirapp.databinding.ActivityMain5Binding
+import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -19,8 +19,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 
-class MainActivity5 : AppCompatActivity() {
-    private lateinit var binding: ActivityMain5Binding
+class InformacionAdicionalActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
     private lateinit var storageReference: StorageReference
 
@@ -28,10 +28,10 @@ class MainActivity5 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        binding = ActivityMain5Binding.inflate(layoutInflater)
+        binding = ActivityInformacionAdicionalBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.informacionAdicionalLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
