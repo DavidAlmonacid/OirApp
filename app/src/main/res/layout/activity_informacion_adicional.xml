@@ -159,11 +159,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:strokeWidth="1dp" />
 
-   <!-- <Button
-        android:id="@+id/button2"
+    <!--<Button
+        android:id="@+id/signOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="Cerrar sesión"
         tools:layout_editor_absoluteX="160dp"
         tools:layout_editor_absoluteY="517dp" />-->
 
