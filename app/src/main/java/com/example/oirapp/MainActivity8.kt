@@ -19,7 +19,7 @@ class MainActivity8 : AppCompatActivity() {
             insets
         }
 
-        val spinner: Spinner = findViewById(R.id.spinner)
+        val spinner: Spinner = findViewById(R.id.roleSpinner)
 
         ArrayAdapter.createFromResource(
             this,
