@@ -69,14 +69,25 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
         // Save the user's data to the Realtime Database
         binding.continueButton.setOnClickListener {
-            val database = Firebase.database
-            val myRef = database.getReference("Usuarios")
-            val usuario = Usuario(
-                binding.nombreUsuarioEditText.text.toString(),
-                binding.roleSpinner.selectedItem.toString()
-            )
+            // Upload image to Firebase Storage
+            imagenUri?.let {
+                val fileReference = storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
 
-            myRef.setValue(usuario)
+                fileReference.putFile(it)
+                    .addOnSuccessListener { taskSnapshot ->
+                        fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
+                            // Save the download URL and user email to the database
+                            saveUserDataToDatabase(downloadUri.toString(), userEmail)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            this,
+                            "Error al subir la imagen: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
         }
 
         /*binding.signOutButton.setOnClickListener {
@@ -133,4 +144,23 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    private fun saveUserDataToDatabase(imageUrl: String, email: String?) {
+        val database = Firebase.database
+        val myRef = database.getReference("Usuarios")
+        val usuario = Usuario(
+            nombre = binding.nombreUsuarioEditText.text.toString(),
+            rol = binding.roleSpinner.selectedItem.toString(),
+            imageUrl = imageUrl,
+            email = email
+        )
+
+        myRef.setValue(usuario).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
+
