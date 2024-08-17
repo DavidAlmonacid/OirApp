@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -25,7 +26,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
     private lateinit var storageReference: StorageReference
-    private lateinit var nombre: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,18 +40,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             insets
         }
 
-        nombre = binding.nombreUsuarioEditText.text.toString()
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
-        val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
-
-        // Obtén la URL de descarga
-        storageRef.downloadUrl.addOnSuccessListener { uri: Uri? ->
-            Picasso.get().load(uri).into(binding.userProfileImage)
-        }.addOnFailureListener { exception: Exception? ->
-            Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
-        }
 
         binding.changeProfileImageButton.setOnClickListener {
             seleccionarImg()
@@ -70,6 +61,15 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
         // Save the user's data to the Realtime Database
         binding.continueButton.setOnClickListener {
+            val nombre = binding.nombreUsuarioEditText.text.toString()
+            val rol = binding.roleSpinner.selectedItem.toString()
+
+            if (nombre.isEmpty()) {
+                Toast.makeText(this, "Por favor, ingrese su nombre", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            Log.v("InformacionAdicionalActivity", "profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
             // Upload image to Firebase Storage
             imagenUri?.let {
                 val fileReference = storageReference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
@@ -78,7 +78,9 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                     .addOnSuccessListener { taskSnapshot ->
                         fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
                             // Save the download URL and user email to the database
-                            saveUserDataToDatabase(downloadUri.toString(), userEmail)
+                            saveUserDataToDatabase(
+                                nombre, rol, downloadUri.toString(), userEmail!!
+                            )
                         }
                     }
                     .addOnFailureListener { e ->
@@ -120,6 +122,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
     private val resultadoImg =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             if (resultado.resultCode == Activity.RESULT_OK) {
+                val nombre = binding.nombreUsuarioEditText.text.toString()
                 val data = resultado.data
                 imagenUri = data!!.data
                 binding.userProfileImage.setImageURI(imagenUri)
@@ -145,7 +148,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 ).show()
             }
         }
-    private fun saveUserDataToDatabase(imageUrl: String, email: String?) {
+
+    private fun saveUserDataToDatabase(nombre: String, rol: String, imageUrl: String, email: String) {
         val database = Firebase.database
         val myRef = database.getReference("Usuarios")
         val usuario = Usuario(
@@ -164,4 +168,3 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         }
     }
 }
-
