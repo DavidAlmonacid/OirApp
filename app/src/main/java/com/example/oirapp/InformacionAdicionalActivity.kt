@@ -25,7 +25,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
     private lateinit var storageReference: StorageReference
-
+    private lateinit var nombre: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,10 +39,11 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             insets
         }
 
+        nombre = binding.nombreUsuarioEditText.text.toString()
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("profile_images/1723171391573.jpg")
+        val storageRef = storage.reference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
 
         // Obtén la URL de descarga
         storageRef.downloadUrl.addOnSuccessListener { uri: Uri? ->
@@ -71,7 +72,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         binding.continueButton.setOnClickListener {
             // Upload image to Firebase Storage
             imagenUri?.let {
-                val fileReference = storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
+                val fileReference = storageReference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
 
                 fileReference.putFile(it)
                     .addOnSuccessListener { taskSnapshot ->
@@ -126,7 +127,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 // Upload image to Firebase Storage
                 imagenUri?.let {
                     val fileReference =
-                        storageReference.child("profile_images/${System.currentTimeMillis()}.jpg")
+                        storageReference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
 
                     fileReference.putFile(it).addOnFailureListener { e ->
                         Toast.makeText(
