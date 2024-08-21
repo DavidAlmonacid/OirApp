@@ -1,10 +1,8 @@
 package com.example.oirapp
 
 import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -16,11 +14,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.squareup.picasso.Picasso
 
 class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
@@ -69,27 +65,29 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Log.v("InformacionAdicionalActivity", "profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
             // Upload image to Firebase Storage
             imagenUri?.let {
-                val fileReference = storageReference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
+                val fileReference = storageReference.child(
+                    "profile_images/${
+                        nombre.lowercase().replace(" ", "-")
+                    }.jpg"
+                )
 
-                fileReference.putFile(it)
-                    .addOnSuccessListener { taskSnapshot ->
-                        fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
-                            // Save the download URL and user email to the database
-                            saveUserDataToDatabase(
-                                nombre, rol, downloadUri.toString(), userEmail!!
-                            )
-                        }
+                fileReference.putFile(it).addOnSuccessListener { taskSnapshot ->
+                    fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
+                        // Save the download URL and user email to the database
+                        saveUserDataToDatabase(
+                            nombre = nombre,
+                            rol = rol,
+                            imageUrl = downloadUri.toString(),
+                            email = userEmail!!
+                        )
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(
-                            this,
-                            "Error al subir la imagen: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                }.addOnFailureListener { e ->
+                    Toast.makeText(
+                        this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
@@ -110,53 +108,37 @@ class InformacionAdicionalActivity : AppCompatActivity() {
     }
 
     private fun seleccionarImg() {
-        ImagePicker.with(this)
-            .crop()
-            .compress(720)
-            .maxResultSize(720, 720)
-            .createIntent { intent ->
-                resultadoImg.launch(intent)
-            }
+        ImagePicker.with(this).crop().compress(720).maxResultSize(720, 720).createIntent { intent ->
+            resultadoImg.launch(intent)
+        }
     }
 
     private val resultadoImg =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             if (resultado.resultCode == Activity.RESULT_OK) {
-                val nombre = binding.nombreUsuarioEditText.text.toString()
                 val data = resultado.data
                 imagenUri = data!!.data
                 binding.userProfileImage.setImageURI(imagenUri)
-
-                // Upload image to Firebase Storage
-                imagenUri?.let {
-                    val fileReference =
-                        storageReference.child("profile_images/${nombre.lowercase().replace(" ", "-")}.jpg")
-
-                    fileReference.putFile(it).addOnFailureListener { e ->
-                        Toast.makeText(
-                            this,
-                            "Error al subir la imagen: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
             } else {
                 Toast.makeText(
-                    this,
-                    "No se seleccionó ninguna imagen",
-                    Toast.LENGTH_SHORT
+                    this, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT
                 ).show()
             }
         }
 
-    private fun saveUserDataToDatabase(nombre: String, rol: String, imageUrl: String, email: String) {
+    private fun saveUserDataToDatabase(
+        nombre: String,
+        rol: String,
+        imageUrl: String,
+        email: String,
+    ) {
         val database = Firebase.database
         val myRef = database.getReference("Usuarios")
         val usuario = Usuario(
-            nombre = binding.nombreUsuarioEditText.text.toString(),
-            rol = binding.roleSpinner.selectedItem.toString(),
+            nombre = nombre,
+            rol = rol,
             imageUrl = imageUrl,
-            email = email
+            email = email,
         )
 
         myRef.setValue(usuario).addOnCompleteListener { task ->
