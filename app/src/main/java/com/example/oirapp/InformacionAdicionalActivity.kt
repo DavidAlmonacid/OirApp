@@ -73,7 +73,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                     }.jpg"
                 )
 
-                fileReference.putFile(it).addOnSuccessListener { taskSnapshot ->
+                fileReference.putFile(it).addOnSuccessListener {
                     fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
                         // Save the download URL and user email to the database
                         saveUserDataToDatabase(
