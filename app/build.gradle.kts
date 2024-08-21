@@ -58,5 +58,4 @@ dependencies {
 
     // Image libraries
     implementation(libs.imagepicker)
-    implementation(libs.picasso)
 }
