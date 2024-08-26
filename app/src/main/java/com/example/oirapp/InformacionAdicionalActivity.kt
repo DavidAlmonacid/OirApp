@@ -1,6 +1,7 @@
 package com.example.oirapp
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -150,6 +151,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         myRef.setValue(usuario).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity7::class.java)
+                startActivity(intent)
             } else {
                 Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show()
             }
