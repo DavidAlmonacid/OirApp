@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -21,6 +22,7 @@ import com.google.firebase.storage.StorageReference
 class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
+    private lateinit var auth: FirebaseAuth
     private lateinit var storageReference: StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +37,9 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Inicializar Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
@@ -132,8 +137,10 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         imageUrl: String,
         email: String,
     ) {
+        //val user = auth.currentUser
+        val uid = auth.currentUser!!.uid
         val database = Firebase.database
-        val myRef = database.getReference("Usuarios")
+        val myRef = database.getReference("Usuarios").child(uid)
         val usuario = Usuario(
             nombre = nombre,
             rol = rol,
