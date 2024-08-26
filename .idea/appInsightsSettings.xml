@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.oirapp" />
-                  <option name="mobileSdkAppId" value="1:300371451825:android:a495e756f35affc454a790" />
-                  <option name="projectId" value="oir-app-2e461" />
-                  <option name="projectNumber" value="300371451825" />
+                  <option name="mobileSdkAppId" value="1:404957507696:android:db1af0b6522e740be484b5" />
+                  <option name="projectId" value="oir-app-56b5e" />
+                  <option name="projectNumber" value="404957507696" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
