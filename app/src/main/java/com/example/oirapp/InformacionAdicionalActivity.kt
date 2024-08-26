@@ -137,10 +137,9 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         imageUrl: String,
         email: String,
     ) {
-        //val user = auth.currentUser
         val uid = auth.currentUser!!.uid
         val database = Firebase.database
-        val myRef = database.getReference("Usuarios").child(uid)
+        val myRef = database.getReference("Usuarios/$uid")
         val usuario = Usuario(
             nombre = nombre,
             rol = rol,
