@@ -10,6 +10,7 @@
     <!-- Background -->
     <color name="colorBackgroundPurple">#FF54208E</color>
     <color name="colorBackgroundLight">#FFEBEAEF</color>
+    <color name="colorBackgroundLightGrey">#FFD5D5D5</color>
 
     <!-- Button -->
     <color name="colorButtonPrimary">#FFEC8049</color>
