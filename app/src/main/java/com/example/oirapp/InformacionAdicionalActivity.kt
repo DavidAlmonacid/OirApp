@@ -15,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -96,13 +95,13 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             }
         }
 
-        binding.signOutButton.setOnClickListener {
+        /*binding.signOutButton.setOnClickListener {
             Firebase.auth.signOut()
             finish()
 
             val intent = Intent(this, IniciarSesionActivity::class.java)
             startActivity(intent)
-        }
+        }*/
 
         // Registrar el callback para el botón de retroceso
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
