@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -23,7 +23,6 @@ import com.google.firebase.storage.StorageReference
 class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
-    private lateinit var auth: FirebaseAuth
     private lateinit var storageReference: StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +38,6 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             insets
         }
 
-        // Inicializar Firebase Auth
-        auth = FirebaseAuth.getInstance()
-
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
 
@@ -49,8 +45,11 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             seleccionarImg()
         }
 
+        // Get the user's data from the intent
+        val userUid = intent.getStringExtra("USER_UID")!!
+        val userEmail = intent.getStringExtra("USER_EMAIL")!!
+
         // Set the user's email
-        val userEmail = intent.getStringExtra("USER_EMAIL")
         binding.emailTextView.text = userEmail
 
         // Set the spinner options
@@ -75,18 +74,18 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             imagenUri?.let {
                 val fileReference = storageReference.child(
                     "profile_images/${
-                        nombre.lowercase().replace(" ", "-")
+                        nombre.trim().lowercase().replace(" ", "-")
                     }.jpg"
                 )
 
                 fileReference.putFile(it).addOnSuccessListener {
                     fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
-                        // Save the download URL and user email to the database
                         saveUserDataToDatabase(
+                            uid = userUid,
                             nombre = nombre,
                             rol = rol,
                             imageUrl = downloadUri.toString(),
-                            email = userEmail!!
+                            email = userEmail,
                         )
                     }
                 }.addOnFailureListener { e ->
@@ -97,13 +96,13 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             }
         }
 
-        /*binding.signOutButton.setOnClickListener {
+        binding.signOutButton.setOnClickListener {
             Firebase.auth.signOut()
             finish()
 
-            val intent = Intent(this, MainActivity2::class.java)
+            val intent = Intent(this, IniciarSesionActivity::class.java)
             startActivity(intent)
-        }*/
+        }
 
         // Registrar el callback para el botón de retroceso
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -133,15 +132,16 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         }
 
     private fun saveUserDataToDatabase(
+        uid: String,
         nombre: String,
         rol: String,
         imageUrl: String,
         email: String,
     ) {
-        val uid = auth.currentUser!!.uid
         val database = Firebase.database
         val myRef = database.getReference("Usuarios/$uid")
         val usuario = Usuario(
+            uid = uid,
             nombre = nombre,
             rol = rol,
             imageUrl = imageUrl,
