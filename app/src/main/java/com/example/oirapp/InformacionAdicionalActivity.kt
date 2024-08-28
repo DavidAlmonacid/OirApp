@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
+import com.example.oirapp.estudiante.GruposEstudianteActivity
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -150,7 +151,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         myRef.setValue(usuario).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity7::class.java)
+                val intent = Intent(this, GruposEstudianteActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show()
