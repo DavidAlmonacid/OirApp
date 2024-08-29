@@ -16,6 +16,8 @@ import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.example.oirapp.estudiante.GruposEstudianteActivity
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -24,6 +26,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
     private lateinit var storageReference: StorageReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,9 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             insets
         }
 
+        // Initialize Firebase Authentication
+        auth = Firebase.auth
+
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
 
@@ -45,8 +51,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             seleccionarImg()
         }
 
-        // Get the user's data from the intent
-        val userUid = intent.getStringExtra("USER_UID")!!
+        // Get the user's email from the previous activity
         val userEmail = intent.getStringExtra("USER_EMAIL")!!
 
         // Set the user's email
@@ -62,6 +67,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
         // Save the user's data to the Realtime Database
         binding.continueButton.setOnClickListener {
+            val userUid = auth.currentUser!!.uid
             val nombre = binding.nombreUsuarioEditText.text.toString()
             val rol = binding.roleSpinner.selectedItem.toString()
 
