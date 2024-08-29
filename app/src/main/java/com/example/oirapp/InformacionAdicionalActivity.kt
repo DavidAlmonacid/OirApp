@@ -70,6 +70,16 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (imagenUri == null) {
+                // Subir los datos del usuario a la base de datos y el campo imageUrl será null
+                saveUserDataToDatabase(
+                    uid = userUid,
+                    nombre = nombre,
+                    rol = rol,
+                    email = userEmail,
+                )
+            }
+
             // Upload image to Firebase Storage
             imagenUri?.let {
                 val fileReference = storageReference.child(
@@ -135,8 +145,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         uid: String,
         nombre: String,
         rol: String,
-        imageUrl: String,
         email: String,
+        imageUrl: String? = null,
     ) {
         val database = Firebase.database
         val myRef = database.getReference("Usuarios/$uid")
@@ -144,8 +154,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             uid = uid,
             nombre = nombre,
             rol = rol,
-            imageUrl = imageUrl,
             email = email,
+            imageUrl = imageUrl,
         )
 
         myRef.setValue(usuario).addOnCompleteListener { task ->
