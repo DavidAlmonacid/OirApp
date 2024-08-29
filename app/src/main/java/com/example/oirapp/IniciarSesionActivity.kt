@@ -58,15 +58,12 @@ class IniciarSesionActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = auth.currentUser
+
                 user?.let {
-                    val userUid = it.uid
                     val userEmail = it.email
 
                     val intent = Intent(this, InformacionAdicionalActivity::class.java)
-                    intent.apply {
-                        putExtra("USER_UID", userUid)
-                        putExtra("USER_EMAIL", userEmail)
-                    }
+                    intent.apply { putExtra("USER_EMAIL", userEmail) }
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
 
