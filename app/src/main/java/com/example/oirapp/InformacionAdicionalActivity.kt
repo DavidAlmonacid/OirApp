@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.oirapp.data.Usuario
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.example.oirapp.estudiante.GruposEstudianteActivity
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -77,9 +78,8 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             }
 
             if (imagenUri == null) {
-                // Subir los datos del usuario a la base de datos y el campo imageUrl será null
                 saveUserDataToDatabase(
-                    uid = userUid,
+                    id = userUid,
                     nombre = nombre,
                     rol = rol,
                     email = userEmail,
@@ -97,11 +97,11 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 fileReference.putFile(it).addOnSuccessListener {
                     fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
                         saveUserDataToDatabase(
-                            uid = userUid,
+                            id = userUid,
                             nombre = nombre,
                             rol = rol,
-                            imageUrl = downloadUri.toString(),
                             email = userEmail,
+                            imageUrl = downloadUri.toString(),
                         )
                     }
                 }.addOnFailureListener { e ->
@@ -148,16 +148,16 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         }
 
     private fun saveUserDataToDatabase(
-        uid: String,
+        id: String,
         nombre: String,
         rol: String,
         email: String,
         imageUrl: String? = null,
     ) {
         val database = Firebase.database
-        val myRef = database.getReference("Usuarios/$uid")
+        val myRef = database.getReference("Usuarios/$id")
         val usuario = Usuario(
-            uid = uid,
+            id = id,
             nombre = nombre,
             rol = rol,
             email = email,
