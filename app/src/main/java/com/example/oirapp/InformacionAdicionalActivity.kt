@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.oirapp.data.Usuario
+import com.example.oirapp.data.entities.Usuario
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
 import com.example.oirapp.estudiante.GruposEstudianteActivity
 import com.github.dhaval2404.imagepicker.ImagePicker
