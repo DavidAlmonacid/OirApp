@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.oirapp.data.Usuario
+import com.example.oirapp.data.entities.Usuario
 
 @Dao
 interface UsuarioDao {
@@ -15,7 +15,7 @@ interface UsuarioDao {
     suspend fun insert(usuario: Usuario)
 
     // Update the user's information
-    @Query("UPDATE usuarios SET rol = :rol, imageUrl = :imageUrl WHERE id_usuario = :id")
+    @Query("UPDATE usuarios SET rol = :rol, imagen_url = :imageUrl WHERE id_usuario = :id")
     suspend fun updateUserInfo(id: String, nombre: String, rol: String, email: String, imageUrl: String)
 
     @Query("DELETE FROM usuarios WHERE id_usuario = :id")
