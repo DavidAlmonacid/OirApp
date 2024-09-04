@@ -49,7 +49,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         storageReference = FirebaseStorage.getInstance().reference
 
         binding.changeProfileImageButton.setOnClickListener {
-            seleccionarImg()
+            //   seleccionarImg()
         }
 
         // Get the user's email from the previous activity
@@ -77,14 +77,14 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (imagenUri == null) {
+            /*if (imagenUri == null) {
                 saveUserDataToDatabase(
                     id = userUid,
                     nombre = nombre,
                     rol = rol,
                     email = userEmail,
                 )
-            }
+            }*/
 
             // Upload image to Firebase Storage
             imagenUri?.let {
@@ -96,23 +96,23 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
                 fileReference.putFile(it).addOnSuccessListener {
                     fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
-                        saveUserDataToDatabase(
+                        /* saveUserDataToDatabase(
                             id = userUid,
                             nombre = nombre,
                             rol = rol,
                             email = userEmail,
                             imageUrl = downloadUri.toString(),
                         )
+                    }*/
+                    }.addOnFailureListener { e ->
+                        Toast.makeText(
+                            this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }.addOnFailureListener { e ->
-                    Toast.makeText(
-                        this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
-        }
 
-        /*binding.signOutButton.setOnClickListener {
+            /*binding.signOutButton.setOnClickListener {
             Firebase.auth.signOut()
             finish()
 
@@ -120,17 +120,17 @@ class InformacionAdicionalActivity : AppCompatActivity() {
             startActivity(intent)
         }*/
 
-        // Registrar el callback para el botón de retroceso
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finishAffinity() // Cierra todas las actividades y la aplicación
-            }
-        })
-    }
+            // Registrar el callback para el botón de retroceso
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    finishAffinity() // Cierra todas las actividades y la aplicación
+                }
+            })
+        }
 
-    private fun seleccionarImg() {
+        /*private fun seleccionarImg() {
         ImagePicker.with(this).crop().compress(720).maxResultSize(720, 720).createIntent { intent ->
-            resultadoImg.launch(intent)
+           // resultadoImg.launch(intent)
         }
     }
 
@@ -145,9 +145,9 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                     this, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT
                 ).show()
             }
-        }
+        }*/
 
-    private fun saveUserDataToDatabase(
+        /*private fun saveUserDataToDatabase(
         id: String,
         nombre: String,
         rol: String,
@@ -173,5 +173,6 @@ class InformacionAdicionalActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error al guardar los datos", Toast.LENGTH_SHORT).show()
             }
         }
+    }*/
     }
 }

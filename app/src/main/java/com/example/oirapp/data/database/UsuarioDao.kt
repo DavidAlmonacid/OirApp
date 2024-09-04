@@ -15,8 +15,8 @@ interface UsuarioDao {
     suspend fun insert(usuario: Usuario)
 
     // Update the user's information
-    @Query("UPDATE usuarios SET rol = :rol, imagen_url = :imageUrl WHERE id_usuario = :id")
-    suspend fun updateUserInfo(id: String, nombre: String, rol: String, email: String, imageUrl: String)
+    @Query("UPDATE usuarios SET rol = :rol, imagen_url = :imageUrl, correo = :email, contrasena = :contrasena WHERE id_usuario = :id")
+    suspend fun updateUserInfo(id: String, contrasena: String, rol: String, email: String, imageUrl: String)
 
     @Query("DELETE FROM usuarios WHERE id_usuario = :id")
     suspend fun deleteUser(id: String)

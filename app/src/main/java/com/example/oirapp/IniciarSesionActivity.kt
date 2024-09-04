@@ -7,10 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.example.oirapp.data.database.AppDatabase
+import com.example.oirapp.data.entities.Usuario
 import com.example.oirapp.databinding.ActivityIniciarSesionBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 class IniciarSesionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIniciarSesionBinding
@@ -28,7 +33,14 @@ class IniciarSesionActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").build()
+        lifecycleScope.launch {
+            val user = room.usuarioDao().insert(
+                Usuario(
+                    usuarioId = "1",
+                    contrasena = "123456", rol = "Estudiante", correo = "francisco@gmail.com", imagenUrl = "https://www.google.com"))
+            println(user)
+        }
         auth = Firebase.auth
 
         binding.ingresarBoton.setOnClickListener {
@@ -45,7 +57,7 @@ class IniciarSesionActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            signIn(email = email, password = password)
+          //  signIn(email = email, password = password)
         }
 
         binding.registrarTextView.setOnClickListener {
@@ -54,7 +66,7 @@ class IniciarSesionActivity : AppCompatActivity() {
         }
     }
 
-    private fun signIn(email: String, password: String) {
+/*    private fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = auth.currentUser
@@ -77,5 +89,5 @@ class IniciarSesionActivity : AppCompatActivity() {
                 ).show()
             }
         }
-    }
+    }*/
 }
