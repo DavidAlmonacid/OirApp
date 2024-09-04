@@ -8,6 +8,11 @@ import com.example.oirapp.data.entities.Usuario
 
 @Dao
 interface UsuarioDao {
+    @Query("SELECT * FROM usuarios WHERE correo = :email AND contrasena = :password")
+    suspend fun authenticateUser(email: String, password: String): Usuario?
+    @Query("SELECT * FROM usuarios")
+    suspend fun getAllUsers(): List<Usuario>
+
     @Query("SELECT * FROM usuarios WHERE id_usuario = :id")
     suspend fun getUser(id: String): Usuario
 

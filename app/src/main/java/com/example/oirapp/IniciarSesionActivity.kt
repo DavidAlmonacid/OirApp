@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class IniciarSesionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIniciarSesionBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var room: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class IniciarSesionActivity : AppCompatActivity() {
             insets
         }
 
-        val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").build()
+        room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").build()
 
         lifecycleScope.launch {
             val user = room.usuarioDao().insert(
@@ -64,7 +65,22 @@ class IniciarSesionActivity : AppCompatActivity() {
 
                 return@setOnClickListener
             }
-
+            lifecycleScope.launch {
+                val user = room.usuarioDao().authenticateUser(email, password)
+                if (user != null) {
+                    val intent = Intent(this@IniciarSesionActivity, InformacionAdicionalActivity::class.java)
+                    intent.apply { putExtra("USER_EMAIL", user.correo) }
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(
+                        baseContext,
+                        "Error al iniciar sesión. Credenciales incorrectas.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
             //  signIn(email = email, password = password)
         }
 

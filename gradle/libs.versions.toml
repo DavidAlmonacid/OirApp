@@ -14,6 +14,7 @@ firebaseBom = "33.1.2"
 googleServices = "4.4.2"
 room = "2.6.1"
 ksp = "2.0.20-1.0.24"
+lifecycleViewmodelKtx = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ firebase-storage = { module = "com.google.firebase:firebase-storage" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
