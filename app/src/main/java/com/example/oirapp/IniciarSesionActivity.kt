@@ -2,6 +2,7 @@ package com.example.oirapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -33,14 +34,21 @@ class IniciarSesionActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").build()
+
+        val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").build()
+
         lifecycleScope.launch {
             val user = room.usuarioDao().insert(
                 Usuario(
                     usuarioId = "1",
-                    contrasena = "123456", rol = "Estudiante", correo = "francisco@gmail.com", imagenUrl = "https://www.google.com"))
-            println(user)
+                    contrasena = "123456",
+                    rol = "Estudiante",
+                    correo = "francisco@gmail.com",
+                    imagenUrl = "https://www.google.com"
+                )
+            )
         }
+
         auth = Firebase.auth
 
         binding.ingresarBoton.setOnClickListener {
@@ -57,7 +65,7 @@ val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").
                 return@setOnClickListener
             }
 
-          //  signIn(email = email, password = password)
+            //  signIn(email = email, password = password)
         }
 
         binding.registrarTextView.setOnClickListener {
@@ -66,28 +74,28 @@ val room = Room.databaseBuilder(this, AppDatabase::class.java, "database-name").
         }
     }
 
-/*    private fun signIn(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                val user = auth.currentUser
+    /*    private fun signIn(email: String, password: String) {
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
 
-                user?.let {
-                    val userEmail = it.email
+                    user?.let {
+                        val userEmail = it.email
 
-                    val intent = Intent(this, InformacionAdicionalActivity::class.java)
-                    intent.apply { putExtra("USER_EMAIL", userEmail) }
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                        val intent = Intent(this, InformacionAdicionalActivity::class.java)
+                        intent.apply { putExtra("USER_EMAIL", userEmail) }
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
 
-                    finish()
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(
+                        baseContext,
+                        "Error al iniciar sesión.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
-            } else {
-                Toast.makeText(
-                    baseContext,
-                    "Error al iniciar sesión.",
-                    Toast.LENGTH_SHORT,
-                ).show()
             }
-        }
-    }*/
+        }*/
 }

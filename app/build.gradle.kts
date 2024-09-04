@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
+    //alias(libs.plugins.ksp)
+    kotlin("kapt") version "2.0.20"
 }
 
 android {
@@ -63,7 +64,7 @@ dependencies {
     // Room libraries
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
-    ksp(libs.androidx.room.compiler) // Use Kotlin Symbol Processing (KSP)
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx) // Kotlin Extensions and Coroutines support for Room
     testImplementation(libs.androidx.room.testing) // Test helpers
 }
