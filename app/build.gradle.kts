@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //alias(libs.plugins.ksp)
     kotlin("kapt") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 android {
@@ -72,5 +72,7 @@ dependencies {
     //Supabase libraries
     implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
     implementation("io.ktor:ktor-client-android:2.3.12")
 }
