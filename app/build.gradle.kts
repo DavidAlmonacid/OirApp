@@ -69,4 +69,8 @@ dependencies {
     implementation(libs.androidx.room.ktx) // Kotlin Extensions and Coroutines support for Room
     testImplementation(libs.androidx.room.testing) // Test helpers
 
+    //Supabase libraries
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:2.3.12")
 }
