@@ -74,7 +74,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,12 +108,46 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/work_sans_500_normal"
+            android:text="Nombre"
+            android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/nameEditTextCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/rounded_background_input_light"
+            android:ems="10"
+            android:fontFamily="@font/work_sans_400_normal"
+            android:inputType="text"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <TextView
             android:layout_width="wrap_content"
