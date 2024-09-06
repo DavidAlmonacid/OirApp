@@ -10,6 +10,9 @@ android {
     namespace = "com.example.oirapp"
     compileSdk = 34
 
+    val supabaseUrl: String = com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_URL")
+    val supabaseKey: String = com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_KEY")
+
     defaultConfig {
         applicationId = "com.example.oirapp"
         minSdk = 24
@@ -18,6 +21,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
     }
 
     buildTypes {
@@ -25,7 +31,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -38,6 +44,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
