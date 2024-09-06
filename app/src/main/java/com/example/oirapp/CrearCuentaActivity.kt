@@ -3,8 +3,6 @@ package com.example.oirapp
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,30 +10,26 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.databinding.ActivityMain3Binding
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
+import com.example.oirapp.databinding.ActivityCrearCuentaBinding
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
-class MainActivity3 : AppCompatActivity() {
-    private lateinit var binding: ActivityMain3Binding
+class CrearCuentaActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityCrearCuentaBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMain3Binding.inflate(layoutInflater)
+
+        binding = ActivityCrearCuentaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.createAccountLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val email: EditText = findViewById(R.id.editTextTextEmailAddress)
-        val password: EditText = findViewById(R.id.editTextTextPassword)
-        val button: Button = findViewById(R.id.button)
 
         // Set the spinner options
         ArrayAdapter.createFromResource(
@@ -45,9 +39,9 @@ class MainActivity3 : AppCompatActivity() {
             binding.roleSpinner.adapter = adapter
         }
 
-        button.setOnClickListener {
-            val emailText = email.text.toString()
-            val passwordText = password.text.toString()
+        binding.createAccountButton.setOnClickListener {
+            val emailText = binding.emailEditTextCreateAccount.text.toString()
+            val passwordText = binding.passwordEditTextCreateAccount.text.toString()
             val rol = binding.roleSpinner.selectedItem.toString().lowercase()
 
             if (emailText.isEmpty() || passwordText.isEmpty()) {
@@ -86,11 +80,8 @@ class MainActivity3 : AppCompatActivity() {
         )
 
         try {
-            val result = supabaseClient.from("usuarios").insert(user) {
-                select()
-            }.decodeSingle<UsuarioInsert>()
-
-            Log.v("MainActivity3", "Usuario creado exitosamente: $result")
+            supabaseClient.from("usuarios").insert(user)
+            Toast.makeText(baseContext, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Log.e("MainActivity3", "Error al insertar usuario: ${e.message}")
         }

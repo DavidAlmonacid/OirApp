@@ -37,7 +37,7 @@
             android:name=".MainActivity4"
             android:exported="false" />
         <activity
-            android:name=".MainActivity3"
+            android:name=".CrearCuentaActivity"
             android:exported="false" />
         <activity
             android:name=".IniciarSesionActivity"
