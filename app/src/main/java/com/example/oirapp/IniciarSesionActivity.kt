@@ -2,7 +2,6 @@ package com.example.oirapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -85,7 +84,7 @@ class IniciarSesionActivity : AppCompatActivity() {
         }
 
         binding.registrarTextView.setOnClickListener {
-            val intent = Intent(this, MainActivity3::class.java)
+            val intent = Intent(this, CrearCuentaActivity::class.java)
             startActivity(intent)
         }
     }
