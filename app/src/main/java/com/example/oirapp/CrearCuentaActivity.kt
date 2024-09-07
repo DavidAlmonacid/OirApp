@@ -2,6 +2,7 @@ package com.example.oirapp
 
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns.EMAIL_ADDRESS
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -11,9 +12,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.databinding.ActivityCrearCuentaBinding
-import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class CrearCuentaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCrearCuentaBinding
@@ -42,12 +45,33 @@ class CrearCuentaActivity : AppCompatActivity() {
         binding.createAccountButton.setOnClickListener {
             val emailText = binding.emailEditTextCreateAccount.text.toString()
             val passwordText = binding.passwordEditTextCreateAccount.text.toString()
-            val rol = binding.roleSpinner.selectedItem.toString().lowercase()
+            val nameText = binding.nameEditTextCreateAccount.text.toString()
+            val rol = binding.roleSpinner.selectedItem.toString()
 
-            if (emailText.isEmpty() || passwordText.isEmpty()) {
+            if (emailText.isEmpty() || passwordText.isEmpty() || nameText.isEmpty()) {
                 Toast.makeText(
                     baseContext,
-                    "Por favor, ingrese su correo electrónico y contraseña.",
+                    "Por favor, ingrese los campos requeridos.",
+                    Toast.LENGTH_SHORT,
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            if (passwordText.length < 6) {
+                Toast.makeText(
+                    baseContext,
+                    "La contraseña debe tener al menos 6 caracteres.",
+                    Toast.LENGTH_SHORT,
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            if (!EMAIL_ADDRESS.matcher(emailText).matches()) {
+                Toast.makeText(
+                    baseContext,
+                    "Por favor, ingrese un correo electrónico válido.",
                     Toast.LENGTH_SHORT,
                 ).show()
 
@@ -56,7 +80,18 @@ class CrearCuentaActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    createAccount(emailText, passwordText, rol)
+                    signUpNewUser(
+                        userEmail = emailText,
+                        userPassword = passwordText,
+                        userName = nameText,
+                        userRol = rol,
+                    )
+
+                    Toast.makeText(
+                        baseContext,
+                        "Se ha enviado un correo de verificación a $emailText",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 } catch (e: Exception) {
                     Log.e("MainActivity3", "Error al crear la cuenta: ${e.message}")
                 }
@@ -64,26 +99,19 @@ class CrearCuentaActivity : AppCompatActivity() {
         }
     }
 
-    @Serializable
-    data class UsuarioInsert(
-        val correo: String,
-        val contrasena: String,
-        val rol: String,
-    )
-
-    // Create a new account with the supabase client
-    private suspend fun createAccount(correo: String, contrasena: String, rol: String) {
-        val user = UsuarioInsert(
-            correo = correo,
-            contrasena = contrasena,
-            rol = rol,
-        )
-
-        try {
-            supabaseClient.from("usuarios").insert(user)
-            Toast.makeText(baseContext, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Log.e("MainActivity3", "Error al insertar usuario: ${e.message}")
+    private suspend fun signUpNewUser(
+        userEmail: String,
+        userPassword: String,
+        userName: String,
+        userRol: String,
+    ) {
+        supabaseClient.auth.signUpWith(Email) {
+            email = userEmail
+            password = userPassword
+            data = buildJsonObject {
+                put("nombre", userName)
+                put("rol", userRol)
+            }
         }
     }
 }
