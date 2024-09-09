@@ -68,6 +68,7 @@ dependencies {
 
     // Image libraries
     implementation(libs.imagepicker)
+    implementation (libs.glide)
 
     // Room libraries
     implementation(libs.androidx.room.runtime)
