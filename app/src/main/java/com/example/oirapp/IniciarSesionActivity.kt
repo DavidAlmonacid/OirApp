@@ -54,6 +54,8 @@ class IniciarSesionActivity : AppCompatActivity() {
 
                     val user = supabaseClient.auth.currentSessionOrNull()?.user
                     val userRole = user?.userMetadata?.get("rol")?.jsonPrimitive?.content
+                    val userName = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content
+                    val userImageUrl = user?.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
 
                     when (userRole) {
                         "Docente" -> {
@@ -62,6 +64,11 @@ class IniciarSesionActivity : AppCompatActivity() {
                             )
                             intent.flags =
                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.apply {
+                                putExtra("USER_NOMBRE", userName)
+                                putExtra("USER_ROL", userRole)
+                                putExtra("USER_IMAGEN_URL", userImageUrl)
+                            }
                             startActivity(intent)
                             finish()
                         }
@@ -72,6 +79,11 @@ class IniciarSesionActivity : AppCompatActivity() {
                             )
                             intent.flags =
                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.apply {
+                                putExtra("USER_NOMBRE", userName)
+                                putExtra("USER_ROL", userRole)
+                                putExtra("USER_IMAGEN_URL", userImageUrl)
+                            }
                             startActivity(intent)
                             finish()
                         }
