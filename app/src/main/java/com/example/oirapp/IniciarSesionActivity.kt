@@ -2,6 +2,7 @@ package com.example.oirapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -89,6 +90,8 @@ class IniciarSesionActivity : AppCompatActivity() {
                         "Se produjo un error al iniciar sesión.",
                         Toast.LENGTH_SHORT,
                     ).show()
+
+                    Log.e("IniciarSesionActivity", "Error al iniciar sesión: ${e.message}")
                 }
             }
         }
