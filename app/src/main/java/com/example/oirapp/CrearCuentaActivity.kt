@@ -111,6 +111,7 @@ class CrearCuentaActivity : AppCompatActivity() {
             data = buildJsonObject {
                 put("nombre", userName)
                 put("rol", userRol)
+                put("imagen_url", "")
             }
         }
     }
