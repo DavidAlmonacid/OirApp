@@ -18,6 +18,8 @@ import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonPrimitive
 
+private const val TAG = "IniciarSesionActivity"
+
 class IniciarSesionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIniciarSesionBinding
 
@@ -103,7 +105,7 @@ class IniciarSesionActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT,
                     ).show()
 
-                    Log.e("IniciarSesionActivity", "Error al iniciar sesión: ${e.message}")
+                    Log.e(TAG, "Error al iniciar sesión: ${e.message}")
                 }
             }
         }

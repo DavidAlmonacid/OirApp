@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+private const val TAG = "CrearCuentaActivity"
+
 class CrearCuentaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCrearCuentaBinding
 
@@ -93,7 +95,7 @@ class CrearCuentaActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT,
                     ).show()
                 } catch (e: Exception) {
-                    Log.e("MainActivity3", "Error al crear la cuenta: ${e.message}")
+                    Log.e(TAG, "Error al crear la cuenta: ${e.message}")
                 }
             }
         }
