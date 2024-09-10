@@ -6,4 +6,10 @@
         <item>Estudiante</item>
         <item>Docente</item>
     </string-array>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="back_button">Back</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="crear_cuenta">Crear cuenta</string>
+    <string name="grupos">Grupos</string>
 </resources>
