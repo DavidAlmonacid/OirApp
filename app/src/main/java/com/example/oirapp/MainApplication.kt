@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.oirapp.ui.BienvenidaScreen
 import com.example.oirapp.viewmodel.MainViewModel
 
 enum class MainApplication(@StringRes val title: Int? = null) {
@@ -87,7 +88,7 @@ fun MainApp(
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(route = MainApplication.Bienvenida.name) {
-                // Contenido de la pantalla de bienvenida
+                BienvenidaScreen()
             }
             composable(route = MainApplication.IniciarSesion.name) {
                 // Contenido de la pantalla de inicio de sesión
