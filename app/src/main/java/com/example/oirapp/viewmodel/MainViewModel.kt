@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.oirapp.MainApplication
 
 class MainViewModel : ViewModel() {
-    private val _currentScreen = MutableLiveData<MainApplication>(MainApplication.Bienvenida)
+    private val _currentScreen = MutableLiveData(MainApplication.Bienvenida)
     val currentScreen: LiveData<MainApplication> = _currentScreen
 
     fun updateCurrentScreen(screen: MainApplication) {
