@@ -88,17 +88,25 @@ fun MainApp(
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(route = MainApplication.Bienvenida.name) {
-                BienvenidaScreen()
+                BienvenidaScreen(
+                    onStartButtonClicked = {
+                        viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                    },
+                )
             }
+
             composable(route = MainApplication.IniciarSesion.name) {
                 // Contenido de la pantalla de inicio de sesión
             }
+
             composable(route = MainApplication.CrearCuenta.name) {
                 // Contenido de la pantalla de creación de cuenta
             }
+
             composable(route = MainApplication.GruposEstudiante.name) {
                 // Contenido de la pantalla de grupos para estudiantes
             }
+
             composable(route = MainApplication.GruposDocente.name) {
                 // Contenido de la pantalla de grupos para docentes
             }
