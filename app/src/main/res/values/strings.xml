@@ -13,6 +13,7 @@
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="grupos">Grupos</string>
     <string name="logo_description">Logo principal</string>
-    <string name="bienvenida1">Oir App es una aplicación móvil diseñada para apoyar a personas con discapacidad auditiva en su ingreso y desarrollo en la educación profesional.</string>
-    <string name="bienvenida2">Proporciona herramientas accesibles que facilitan la comunicación y el aprendizaje en entornos educativos.</string>
+    <string name="bienvenida1">Oir App ayuda a personas con discapacidad auditiva en el ingreso y desarrollo de la educación superior.</string>
+    <string name="bienvenida2">¡Anímate a seguir aprendiendo y cumple tus sueños!</string>
+    <string name="inicio">Inicio</string>
 </resources>
