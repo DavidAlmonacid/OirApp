@@ -31,7 +31,7 @@ import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomFamilyText
 
 @Composable
-fun BienvenidaScreen(modifier: Modifier = Modifier) {
+fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.fillMaxSize(),
@@ -79,7 +79,7 @@ fun BienvenidaScreen(modifier: Modifier = Modifier) {
             )
 
             OutlinedButton(
-                onClick = { /*TODO*/ },
+                onClick = onStartButtonClicked,
                 colors = ButtonColors(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
