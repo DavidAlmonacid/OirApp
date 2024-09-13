@@ -23,7 +23,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.ui.BienvenidaScreen
-import com.example.oirapp.viewmodel.MainViewModel
+import com.example.oirapp.ui.IniciarSesionScreen
+import com.example.oirapp.ui.MainViewModel
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -46,7 +47,7 @@ fun MainAppBar(
             Text(stringResource(currentScreen.title!!))
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.primary,
         ),
         navigationIcon = {
             if (canNavigateBack) {
@@ -90,13 +91,22 @@ fun MainApp(
             composable(route = MainApplication.Bienvenida.name) {
                 BienvenidaScreen(
                     onStartButtonClicked = {
+                        navController.navigate(MainApplication.IniciarSesion.name)
                         viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                     },
                 )
             }
 
             composable(route = MainApplication.IniciarSesion.name) {
-                // Contenido de la pantalla de inicio de sesión
+                IniciarSesionScreen(
+                    onLoginButtonClicked = { email, password ->
+                        //viewModel.login(email, password)
+                    },
+                    onRegisterTextClicked = {
+                        navController.navigate(MainApplication.CrearCuenta.name)
+                        viewModel.updateCurrentScreen(MainApplication.CrearCuenta)
+                    },
+                )
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
