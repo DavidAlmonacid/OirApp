@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.ui.BienvenidaScreen
 import com.example.oirapp.ui.IniciarSesionScreen
 import com.example.oirapp.ui.MainViewModel
+import com.example.oirapp.ui.components.CustomFamilyText
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -43,11 +45,10 @@ fun MainAppBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
-        title = {
-            Text(stringResource(currentScreen.title!!))
-        },
+        title = { CustomFamilyText(textId = currentScreen.title!!, fontWeight = FontWeight.Bold) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         navigationIcon = {
             if (canNavigateBack) {
