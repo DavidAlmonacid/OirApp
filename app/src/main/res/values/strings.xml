@@ -1,19 +1,30 @@
 <resources>
     <string name="app_name">Oir App</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- Top App Bar -->
+    <string name="back_button">Back</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="crear_cuenta">Crear cuenta</string>
+    <string name="grupos">Grupos</string>
+
+    <!-- Pantalla de Bienvenida -->
+    <string name="bienvenida1">Oir App ayuda a personas con discapacidad auditiva en el ingreso y desarrollo de la educación superior.</string>
+    <string name="bienvenida2">¡Anímate a seguir aprendiendo y cumple tus sueños!</string>
+    <string name="inicio">Inicio</string>
+
+    <!-- Pantalla de Iniciar Sesión -->
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="no_account_register">¿No tienes cuenta?. Regístrate aquí.</string>
+
+    <!-- Textos compartidos -->
+    <string name="logo_description">Logo principal</string>
 
     <!-- Opciones de roles -->
     <string-array name="roles_array">
         <item>Estudiante</item>
         <item>Docente</item>
     </string-array>
-
-    <string name="title_activity_main">MainActivity</string>
-    <string name="back_button">Back</string>
-    <string name="iniciar_sesion">Iniciar sesión</string>
-    <string name="crear_cuenta">Crear cuenta</string>
-    <string name="grupos">Grupos</string>
-    <string name="logo_description">Logo principal</string>
-    <string name="bienvenida1">Oir App ayuda a personas con discapacidad auditiva en el ingreso y desarrollo de la educación superior.</string>
-    <string name="bienvenida2">¡Anímate a seguir aprendiendo y cumple tus sueños!</string>
-    <string name="inicio">Inicio</string>
 </resources>
