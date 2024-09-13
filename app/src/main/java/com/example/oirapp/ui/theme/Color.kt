@@ -9,5 +9,4 @@ val Pink80 = Color(0xFFEFB8C8)
 // Light colors
 val PurpleEminence = Color(0xFF702A8C)
 val GhostWhite = Color(0xFFEBEAEF)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Pumpkin = Color(0xFFFF7326)
