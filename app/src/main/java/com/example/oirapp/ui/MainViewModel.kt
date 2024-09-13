@@ -1,4 +1,4 @@
-package com.example.oirapp.viewmodel
+package com.example.oirapp.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
