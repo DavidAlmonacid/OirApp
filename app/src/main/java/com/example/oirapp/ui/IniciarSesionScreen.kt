@@ -14,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +25,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.ui.components.CustomFamilyText
+import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
 fun IniciarSesionScreen(
@@ -40,17 +39,17 @@ fun IniciarSesionScreen(
 
     Surface(
         color = MaterialTheme.colorScheme.background,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(24.dp),
         ) {
-           Image(
+            Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = stringResource(R.string.logo_description),
-                modifier = Modifier.size(152.dp)
+                modifier = Modifier.size(152.dp),
             )
 
             OutlinedTextField(
@@ -58,7 +57,7 @@ fun IniciarSesionScreen(
                 onValueChange = { emailState.value = it },
                 label = { CustomFamilyText(stringResource(R.string.email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             OutlinedTextField(
@@ -66,7 +65,7 @@ fun IniciarSesionScreen(
                 onValueChange = { passwordState.value = it },
                 label = { CustomFamilyText(stringResource(R.string.password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Button(
@@ -87,7 +86,7 @@ fun IniciarSesionScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(vertical = 16.dp)
-                    .clickable { onRegisterTextClicked() }
+                    .clickable { onRegisterTextClicked() },
             )
         }
     }
@@ -99,7 +98,7 @@ private fun IniciarSesionScreenPreview() {
     MyApplicationTheme {
         IniciarSesionScreen(
             onLoginButtonClicked = { _, _ -> },
-            onRegisterTextClicked = { }
+            onRegisterTextClicked = { },
         )
     }
 }
