@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
+import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomFamilyText
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
@@ -42,9 +42,11 @@ fun IniciarSesionScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .padding(top = 32.dp),
         ) {
             Image(
                 painter = painterResource(R.drawable.logo),
@@ -53,39 +55,42 @@ fun IniciarSesionScreen(
             )
 
             OutlinedTextField(
-                value = emailState.value,
-                onValueChange = { emailState.value = it },
-                label = { CustomFamilyText(stringResource(R.string.email)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth(),
+                value = emailState.value, //
+                onValueChange = { emailState.value = it }, //
+                label = { CustomFamilyText(R.string.email) }, //
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), //
+                singleLine = true,
+                shape = MaterialTheme.shapes.small,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                modifier = Modifier.fillMaxWidth(), //
             )
 
             OutlinedTextField(
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
-                label = { CustomFamilyText(stringResource(R.string.password)) },
+                label = { CustomFamilyText(R.string.password) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                shape = MaterialTheme.shapes.small,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                ),
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Button(
-                onClick = { onLoginButtonClicked(emailState.value, passwordState.value) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-            ) {
-                CustomFamilyText(text = stringResource(R.string.ingresar))
-            }
+            CustomButton(
+                onClick = { /*TODO*/ },
+                textId = R.string.ingresar,
+                modifier = Modifier.padding(top = 28.dp),
+            )
 
             CustomFamilyText(
-                text = stringResource(R.string.no_account_register),
+                textId = R.string.no_account_register,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(top = 28.dp)
                     .clickable { onRegisterTextClicked() },
             )
         }
