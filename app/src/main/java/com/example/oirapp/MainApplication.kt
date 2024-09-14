@@ -83,7 +83,7 @@ fun MainApp(
             }
         },
     ) { innerPadding ->
-        //val userUiState by viewModel.userUiState.collectAsState()
+        val userUiState by viewModel.userUiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -115,6 +115,27 @@ fun MainApp(
                 CrearCuentaScreen(
                     userEmail = viewModel.userEmail,
                     onUserEmailChanged = { viewModel.updateUserEmail(it) },
+                    userPassword = viewModel.userPassword,
+                    onUserPasswordChanged = { viewModel.updateUserPassword(it) },
+                    userName = viewModel.userName,
+                    onUserNameChanged = { viewModel.updateUserName(it) },
+                    userRol = viewModel.userRol,
+                    onUserRolChanged = { viewModel.updateUserRol(it) },
+                    onRegisterButtonClicked = {
+                        viewModel.createAccount(
+                            userEmail = userUiState.email,
+                            userPassword = userUiState.password,
+                            userName = userUiState.name,
+                            userRol = userUiState.role,
+                            onSuccess = {
+//                                navController.navigate(MainApplication.GruposEstudiante.name)
+//                                viewModel.updateCurrentScreen(MainApplication.GruposEstudiante)
+                            },
+                            onError = { error ->
+                                // Mostrar mensaje de error
+                            },
+                        )
+                    },
                 )
             }
 
