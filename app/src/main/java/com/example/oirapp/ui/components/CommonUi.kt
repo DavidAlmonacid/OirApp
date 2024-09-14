@@ -142,9 +142,13 @@ fun CustomTextField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectRoleDropdown(options: List<Int>, modifier: Modifier = Modifier) {
+fun SelectRoleDropdown(
+    options: List<Int>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("") }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -174,7 +178,7 @@ fun SelectRoleDropdown(options: List<Int>, modifier: Modifier = Modifier) {
 
                 DropdownMenuItem(
                     onClick = {
-                        selectedOption = context.resources.getString(option)
+                        onOptionSelected(context.resources.getString(option))
                         expanded = false
                     },
                     text = { CustomFamilyText(textId = option, fontSize = 16.sp) },
