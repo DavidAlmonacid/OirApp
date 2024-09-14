@@ -33,12 +33,15 @@ import com.example.oirapp.ui.theme.MyApplicationTheme
 fun CrearCuentaScreen(
     userEmail: String,
     onUserEmailChanged: (String) -> Unit,
+    userPassword: String,
+    onUserPasswordChanged: (String) -> Unit,
+    userName: String,
+    onUserNameChanged: (String) -> Unit,
+    userRol: String,
+    onUserRolChanged: (String) -> Unit,
+    onRegisterButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    //val emailState = remember { mutableStateOf("") }
-    val passwordState = remember { mutableStateOf("") }
-    val nameState = remember { mutableStateOf("") }
-
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
@@ -67,8 +70,8 @@ fun CrearCuentaScreen(
             )
 
             CustomTextField(
-                value = passwordState.value,
-                onValueChange = { passwordState.value = it },
+                value = userPassword,
+                onValueChange = { newValue -> onUserPasswordChanged(newValue) },
                 labelId = R.string.password,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -78,8 +81,8 @@ fun CrearCuentaScreen(
             )
 
             CustomTextField(
-                value = nameState.value,
-                onValueChange = { nameState.value = it },
+                value = userName,
+                onValueChange = { newValue -> onUserNameChanged(newValue) },
                 labelId = R.string.name,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
@@ -87,18 +90,27 @@ fun CrearCuentaScreen(
                 ),
             )
 
-            SelectRoleDropdown(options = listOf(R.string.rol_estudiante, R.string.rol_docente))
+            SelectRoleDropdown(
+                options = roleOptions,
+                selectedOption = userRol,
+                onOptionSelected = { newValue -> onUserRolChanged(newValue) },
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             CustomButton(
-                onClick = { /*TODO*/ },
+                onClick = onRegisterButtonClicked,
                 textId = R.string.crear_cuenta,
                 modifier = Modifier.padding(bottom = 40.dp),
             )
         }
     }
 }
+
+val roleOptions = listOf(
+    R.string.rol_estudiante,
+    R.string.rol_docente,
+)
 
 @Preview(device = "id:pixel_5", apiLevel = 28, showBackground = true)
 @Composable
@@ -109,6 +121,13 @@ private fun CrearCuentaScreenPreview() {
         CrearCuentaScreen(
             userEmail = viewModel.userEmail,
             onUserEmailChanged = { viewModel.updateUserEmail(it) },
+            userPassword = viewModel.userPassword,
+            onUserPasswordChanged = { viewModel.updateUserPassword(it) },
+            userName = viewModel.userName,
+            onUserNameChanged = { viewModel.updateUserName(it) },
+            userRol = viewModel.userRol,
+            onUserRolChanged = { viewModel.updateUserRol(it) },
+            onRegisterButtonClicked = {},
         )
     }
 }
