@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomTextField
@@ -29,8 +30,12 @@ import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
-fun CrearCuentaScreen(modifier: Modifier = Modifier) {
-    val emailState = remember { mutableStateOf("") }
+fun CrearCuentaScreen(
+    userEmail: String,
+    onUserEmailChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    //val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val nameState = remember { mutableStateOf("") }
 
@@ -52,8 +57,8 @@ fun CrearCuentaScreen(modifier: Modifier = Modifier) {
             )
 
             CustomTextField(
-                value = emailState.value,
-                onValueChange = { emailState.value = it },
+                value = userEmail,
+                onValueChange = { newValue -> onUserEmailChanged(newValue) },
                 labelId = R.string.email,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email,
@@ -99,6 +104,11 @@ fun CrearCuentaScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun CrearCuentaScreenPreview() {
     MyApplicationTheme {
-        CrearCuentaScreen()
+        val viewModel: MainViewModel = viewModel()
+
+        CrearCuentaScreen(
+            userEmail = viewModel.userEmail,
+            onUserEmailChanged = { viewModel.updateUserEmail(it) },
+        )
     }
 }
