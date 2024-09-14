@@ -1,33 +1,20 @@
 package com.example.oirapp
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.oirapp.data.entities.Usuario
 import com.example.oirapp.databinding.ActivityInformacionAdicionalBinding
-import com.example.oirapp.estudiante.GruposEstudianteActivity
-import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.database.database
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 
 class InformacionAdicionalActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInformacionAdicionalBinding
     private var imagenUri: Uri? = null
-    private lateinit var storageReference: StorageReference
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var storageReference: StorageReference
+//    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +30,10 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         }
 
         // Initialize Firebase Authentication
-        auth = Firebase.auth
-
-        // Initialize Firebase Storage
-        storageReference = FirebaseStorage.getInstance().reference
+//        auth = Firebase.auth
+//
+//        // Initialize Firebase Storage
+//        storageReference = FirebaseStorage.getInstance().reference
 
         binding.changeProfileImageButton.setOnClickListener {
             //   seleccionarImg()
@@ -68,7 +55,7 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
         // Save the user's data to the Realtime Database
         binding.continueButton.setOnClickListener {
-            val userUid = auth.currentUser!!.uid
+            //val userUid = auth.currentUser!!.uid
             val nombre = binding.nombreUsuarioEditText.text.toString()
             val rol = binding.roleSpinner.selectedItem.toString()
 
@@ -88,28 +75,28 @@ class InformacionAdicionalActivity : AppCompatActivity() {
 
             // Upload image to Firebase Storage
             imagenUri?.let {
-                val fileReference = storageReference.child(
-                    "profile_images/${
-                        nombre.trim().lowercase().replace(" ", "-")
-                    }.jpg"
-                )
+//                val fileReference = storageReference.child(
+//                    "profile_images/${
+//                        nombre.trim().lowercase().replace(" ", "-")
+//                    }.jpg"
+//                )
 
-                fileReference.putFile(it).addOnSuccessListener {
-                    fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
-                        /* saveUserDataToDatabase(
-                            id = userUid,
-                            nombre = nombre,
-                            rol = rol,
-                            email = userEmail,
-                            imageUrl = downloadUri.toString(),
-                        )
-                    }*/
-                    }.addOnFailureListener { e ->
-                        Toast.makeText(
-                            this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+//                fileReference.putFile(it).addOnSuccessListener {
+//                    fileReference.downloadUrl.addOnSuccessListener { downloadUri ->
+//                        /* saveUserDataToDatabase(
+//                            id = userUid,
+//                            nombre = nombre,
+//                            rol = rol,
+//                            email = userEmail,
+//                            imageUrl = downloadUri.toString(),
+//                        )
+//                    }*/
+//                    }.addOnFailureListener { e ->
+//                        Toast.makeText(
+//                            this, "Error al subir la imagen: ${e.message}", Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
             }
 
             /*binding.signOutButton.setOnClickListener {
