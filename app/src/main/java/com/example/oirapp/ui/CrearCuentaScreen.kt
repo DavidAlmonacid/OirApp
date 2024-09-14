@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +55,10 @@ fun CrearCuentaScreen(modifier: Modifier = Modifier) {
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
                 labelId = R.string.email,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
             )
 
             CustomTextField(
@@ -62,14 +66,20 @@ fun CrearCuentaScreen(modifier: Modifier = Modifier) {
                 onValueChange = { passwordState.value = it },
                 labelId = R.string.password,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next,
+                ),
             )
 
             CustomTextField(
                 value = nameState.value,
                 onValueChange = { nameState.value = it },
                 labelId = R.string.name,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
             )
 
             SelectRoleDropdown(options = listOf(R.string.rol_estudiante, R.string.rol_docente))
