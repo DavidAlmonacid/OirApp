@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -117,6 +118,7 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     @StringRes labelId: Int,
     modifier: Modifier = Modifier,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -125,11 +127,12 @@ fun CustomTextField(
         value = value,
         onValueChange = onValueChange,
         label = { CustomFamilyText(labelId) },
-        keyboardOptions = keyboardOptions,
         shape = MaterialTheme.shapes.medium,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
         ),
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
         singleLine = true,
         readOnly = readOnly,
         trailingIcon = trailingIcon,
