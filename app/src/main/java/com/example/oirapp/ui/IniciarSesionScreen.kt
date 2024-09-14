@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomFamilyText
+import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -54,30 +55,18 @@ fun IniciarSesionScreen(
                 modifier = Modifier.size(152.dp),
             )
 
-            OutlinedTextField(
-                value = emailState.value, //
-                onValueChange = { emailState.value = it }, //
-                label = { CustomFamilyText(R.string.email) }, //
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), //
-                singleLine = true,
-                shape = MaterialTheme.shapes.small,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                modifier = Modifier.fillMaxWidth(), //
+            CustomTextField(
+                value = emailState.value,
+                onValueChange = { emailState.value = it },
+                labelId = R.string.email,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
 
-            OutlinedTextField(
+            CustomTextField(
                 value = passwordState.value,
                 onValueChange = { passwordState.value = it },
-                label = { CustomFamilyText(R.string.password) },
+                labelId = R.string.password,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                shape = MaterialTheme.shapes.small,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                modifier = Modifier.fillMaxWidth(),
             )
 
             CustomButton(

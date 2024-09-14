@@ -59,12 +59,12 @@ class InformacionAdicionalActivity : AppCompatActivity() {
         binding.emailTextView.text = userEmail
 
         // Set the spinner options
-        ArrayAdapter.createFromResource(
-            this, R.array.roles_array, R.layout.spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.roleSpinner.adapter = adapter
-        }
+//        ArrayAdapter.createFromResource(
+//            this, R.array.roles_array, R.layout.spinner_item
+//        ).also { adapter ->
+//            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+//            binding.roleSpinner.adapter = adapter
+//        }
 
         // Save the user's data to the Realtime Database
         binding.continueButton.setOnClickListener {

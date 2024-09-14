@@ -13,18 +13,16 @@
     <string name="bienvenida2">¡Anímate a seguir aprendiendo y cumple tus sueños!</string>
     <string name="inicio">Inicio</string>
 
-    <!-- Pantalla de Iniciar Sesión -->
+    <!-- Pantalla de Iniciar Sesión y Crear Cuenta -->
     <string name="email">Correo</string>
     <string name="password">Contraseña</string>
     <string name="ingresar">Ingresar</string>
     <string name="no_account_register">¿No tienes cuenta?. Regístrate aquí.</string>
+    <string name="name">Nombre</string>
+    <string name="select_role">Elige un rol</string>
+    <string name="rol_estudiante">Estudiante</string>
+    <string name="rol_docente">Docente</string>
 
     <!-- Textos compartidos -->
     <string name="logo_description">Logo principal</string>
-
-    <!-- Opciones de roles -->
-    <string-array name="roles_array">
-        <item>Estudiante</item>
-        <item>Docente</item>
-    </string-array>
 </resources>

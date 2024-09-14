@@ -1,10 +1,8 @@
 plugins {
-    alias(libs.plugins.google.services)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.20"
-    kotlin("kapt") version "2.0.20"
 }
 
 android {
@@ -89,23 +87,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Firebase libraries
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.database)
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.analytics)
-
     // Image libraries
     implementation(libs.imagepicker)
     implementation (libs.glide)
-
-    // Room libraries
-    implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx) // Kotlin Extensions and Coroutines support for Room
-    testImplementation(libs.androidx.room.testing) // Test helpers
 
     //Supabase libraries
     implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))

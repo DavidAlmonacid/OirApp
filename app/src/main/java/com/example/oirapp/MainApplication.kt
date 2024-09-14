@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.ui.BienvenidaScreen
+import com.example.oirapp.ui.CrearCuentaScreen
 import com.example.oirapp.ui.IniciarSesionScreen
 import com.example.oirapp.ui.MainViewModel
 import com.example.oirapp.ui.components.CustomFamilyText
@@ -111,7 +112,7 @@ fun MainApp(
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
-                // Contenido de la pantalla de creación de cuenta
+                CrearCuentaScreen()
             }
 
             composable(route = MainApplication.GruposEstudiante.name) {
