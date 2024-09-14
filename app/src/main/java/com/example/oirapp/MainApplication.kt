@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -82,7 +83,7 @@ fun MainApp(
             }
         },
     ) { innerPadding ->
-        //val uiState by viewModel.uiState.collectAsState()
+        //val userUiState by viewModel.userUiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -101,7 +102,7 @@ fun MainApp(
             composable(route = MainApplication.IniciarSesion.name) {
                 IniciarSesionScreen(
                     onLoginButtonClicked = { email, password ->
-                        //viewModel.login(email, password)
+                        //
                     },
                     onRegisterTextClicked = {
                         navController.navigate(MainApplication.CrearCuenta.name)
@@ -111,7 +112,10 @@ fun MainApp(
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
-                CrearCuentaScreen()
+                CrearCuentaScreen(
+                    userEmail = viewModel.userEmail,
+                    onUserEmailChanged = { viewModel.updateUserEmail(it) },
+                )
             }
 
             composable(route = MainApplication.GruposEstudiante.name) {
