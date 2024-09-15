@@ -82,7 +82,7 @@ fun IniciarSesionScreen(
             )
 
             CustomFamilyText(
-                textId = R.string.no_account_register,
+                text = stringResource(R.string.no_account_register),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(top = 28.dp)
