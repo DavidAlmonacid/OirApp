@@ -5,5 +5,5 @@ data class UserUiState(
     val password: String = "",
     val name: String = "",
     val role: String = "",
-    val isEmailWrong: Boolean = false,
+    //val isEmailWrong: Boolean = false,
 )
