@@ -50,7 +50,7 @@ val WorkSansFamily = FontFamily(
 
 @Composable
 fun CustomFamilyText(
-    @StringRes textId: Int,
+    text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -68,7 +68,7 @@ fun CustomFamilyText(
     style: TextStyle = LocalTextStyle.current,
 ) {
     Text(
-        text = stringResource(textId),
+        text = text,
         modifier = modifier,
         color = color,
         fontSize = fontSize,
@@ -104,7 +104,7 @@ fun CustomButton(
         modifier = modifier.fillMaxWidth(),
     ) {
         CustomFamilyText(
-            textId = textId,
+            text = stringResource(textId),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
@@ -126,7 +126,7 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { CustomFamilyText(labelId) },
+        label = { CustomFamilyText(text = stringResource(labelId)) },
         shape = MaterialTheme.shapes.medium,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
@@ -181,7 +181,7 @@ fun SelectRoleDropdown(
                         onOptionSelected(context.resources.getString(option))
                         expanded = false
                     },
-                    text = { CustomFamilyText(textId = option, fontSize = 16.sp) },
+                    text = { CustomFamilyText(text = stringResource(option), fontSize = 16.sp) },
                 )
             }
         }
