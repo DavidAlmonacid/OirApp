@@ -53,8 +53,8 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp),
                 ) {
-                    CustomFamilyText(R.string.bienvenida1)
-                    CustomFamilyText(R.string.bienvenida2)
+                    CustomFamilyText(text = stringResource(R.string.bienvenida1))
+                    CustomFamilyText(text = stringResource(R.string.bienvenida2))
                 }
             }
 
@@ -67,7 +67,7 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
             )
 
             CustomFamilyText(
-                textId = R.string.app_name,
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.End,
                 fontWeight = FontWeight.Bold,
@@ -90,7 +90,7 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                     .padding(end = 24.dp, bottom = 28.dp),
             ) {
                 CustomFamilyText(
-                    textId = R.string.inicio,
+                    text = stringResource(R.string.inicio),
                     fontSize = 18.sp,
                 )
             }
