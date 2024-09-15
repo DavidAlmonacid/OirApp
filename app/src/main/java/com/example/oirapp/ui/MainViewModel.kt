@@ -1,5 +1,6 @@
 package com.example.oirapp.ui
 
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,13 +12,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.oirapp.MainApplication
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+
+private const val TAG = "MyApp"
 
 class MainViewModel : ViewModel() {
     private val _userUiState = MutableStateFlow(UserUiState())
@@ -35,7 +38,7 @@ class MainViewModel : ViewModel() {
     var userPassword by mutableStateOf("")
         private set
 
-    fun updateUserPassword(password: String){
+    fun updateUserPassword(password: String) {
         userPassword = password
     }
 
@@ -48,43 +51,52 @@ class MainViewModel : ViewModel() {
     }
 
     // User role
-    var userRol by mutableStateOf("")
+    var userRole by mutableStateOf("")
         private set
 
-    fun updateUserRol(rol: String) {
-        userRol = rol
+    fun updateUserRole(role: String) {
+        userRole = role
     }
 
+    // User account creation
     fun createAccount(
         userEmail: String,
         userPassword: String,
         userName: String,
-        userRol: String,
+        userRole: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
     ) {
-        if (userEmail.isEmpty() || userPassword.isEmpty() || userName.isEmpty()) {
+        if (userEmail.isEmpty() || userPassword.isEmpty() || userName.isEmpty() || userRole.isEmpty()) {
             onError("Por favor, ingrese los campos requeridos.")
+            Log.e(TAG, "createAccount: Por favor, ingrese los campos requeridos.")
             return
         }
 
         if (userPassword.length < 6) {
             onError("La contraseña debe tener al menos 6 caracteres.")
+            Log.e(TAG, "createAccount: La contraseña debe tener al menos 6 caracteres.")
             return
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             onError("Por favor, ingrese un correo electrónico válido.")
+            Log.e(TAG, "createAccount: Por favor, ingrese un correo electrónico válido.")
             return
         }
 
         viewModelScope.launch {
             try {
-                signUpNewUser(userEmail, userPassword, userName, userRol)
+                signUpNewUser(
+                    userEmail = userEmail,
+                    userPassword = userPassword,
+                    userName = userName,
+                    userRole = userRole,
+                )
                 onSuccess()
             } catch (e: Exception) {
-                println("Error al crear la cuenta: ${e.message}")
                 onError("Error al crear la cuenta: ${e.message}")
+                Log.e(TAG, "createAccount: Error al crear la cuenta: ${e.message}")
             }
         }
     }
@@ -93,17 +105,24 @@ class MainViewModel : ViewModel() {
         userEmail: String,
         userPassword: String,
         userName: String,
-        userRol: String,
+        userRole: String,
     ) {
         supabaseClient.auth.signUpWith(Email) {
             email = userEmail
             password = userPassword
             data = buildJsonObject {
                 put("nombre", userName)
-                put("rol", userRol)
+                put("rol", userRole)
                 put("imagen_url", "")
             }
         }
+    }
+
+    private val _showSuccessDialog = MutableLiveData(false)
+    val showSuccessDialog: LiveData<Boolean> = _showSuccessDialog
+
+    fun setShowSuccessDialog(show: Boolean) {
+        _showSuccessDialog.value = show
     }
 
     private val _currentScreen = MutableLiveData(MainApplication.Bienvenida)
