@@ -19,14 +19,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.oirapp.ui.BienvenidaScreen
 import com.example.oirapp.ui.CrearCuentaScreen
 import com.example.oirapp.ui.GruposDocenteScreen
 import com.example.oirapp.ui.GruposEstudianteScreen
 import com.example.oirapp.ui.IniciarSesionScreen
+import com.example.oirapp.ui.LoginState
 import com.example.oirapp.ui.MainViewModel
 import com.example.oirapp.ui.components.CustomFamilyText
 
@@ -90,6 +93,7 @@ fun MainApp(
         },
     ) { innerPadding ->
         //val userUiState by viewModel.userUiState.collectAsState()
+        val loginState by viewModel.loginState.observeAsState()
 
         NavHost(
             navController = navController,
@@ -107,14 +111,38 @@ fun MainApp(
 
             composable(route = MainApplication.IniciarSesion.name) {
                 IniciarSesionScreen(
+                    userEmail = viewModel.userEmail,
+                    onUserEmailChanged = { viewModel.updateUserEmail(it) },
+                    userPassword = viewModel.userPassword,
+                    onUserPasswordChanged = { viewModel.updateUserPassword(it) },
                     onLoginButtonClicked = { email, password ->
-                        //
+                        viewModel.signInWithEmail(email, password)
                     },
                     onRegisterTextClicked = {
                         navController.navigate(MainApplication.CrearCuenta.name)
                         viewModel.updateCurrentScreen(MainApplication.CrearCuenta)
                     },
                 )
+
+                loginState?.let {
+                    when (it) {
+                        is LoginState.Success -> {
+                            val route = if (it.role == "Estudiante") {
+                                "${MainApplication.GruposEstudiante.name}/${it.name}/${it.role}/${it.imageUrl}"
+                            } else {
+                                "${MainApplication.GruposDocente.name}/${it.name}/${it.role}/${it.imageUrl}"
+                            }
+
+                            navController.navigate(route)
+                            viewModel.updateCurrentScreen(
+                                if (it.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
+                            )
+                        }
+                        is LoginState.Error -> {
+                            // Mostrar mensaje de error
+                        }
+                    }
+                }
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
@@ -151,11 +179,33 @@ fun MainApp(
                 )
             }
 
-            composable(route = MainApplication.GruposEstudiante.name) {
+            composable(
+                route = "${MainApplication.GruposEstudiante.name}/{userName}/{userRole}/{userImageUrl}",
+                arguments = listOf(
+                    navArgument("userName") { type = NavType.StringType },
+                    navArgument("userRole") { type = NavType.StringType },
+                    navArgument("userImageUrl") { type = NavType.StringType }
+                )
+            ) {
+                val userName = it.arguments?.getString("userName") ?: ""
+                val userRole = it.arguments?.getString("userRole") ?: ""
+                val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
+
                 GruposEstudianteScreen()
             }
 
-            composable(route = MainApplication.GruposDocente.name) {
+            composable(
+                route = "${MainApplication.GruposDocente.name}/{userName}/{userRole}/{userImageUrl}",
+                arguments = listOf(
+                    navArgument("userName") { type = NavType.StringType },
+                    navArgument("userRole") { type = NavType.StringType },
+                    navArgument("userImageUrl") { type = NavType.StringType },
+                )
+            ) {
+                val userName = it.arguments?.getString("userName") ?: ""
+                val userRole = it.arguments?.getString("userRole") ?: ""
+                val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
+
                 GruposDocenteScreen()
             }
         }
