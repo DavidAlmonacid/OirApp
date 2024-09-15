@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
 private const val TAG = "MyApp"
@@ -30,7 +31,7 @@ class MainViewModel : ViewModel() {
     var userEmail by mutableStateOf("")
         private set
 
-    fun updateUserEmail(email: String){
+    fun updateUserEmail(email: String) {
         userEmail = email
     }
 
@@ -46,7 +47,7 @@ class MainViewModel : ViewModel() {
     var userName by mutableStateOf("")
         private set
 
-    fun updateUserName(name: String){
+    fun updateUserName(name: String) {
         userName = name
     }
 
@@ -56,6 +57,14 @@ class MainViewModel : ViewModel() {
 
     fun updateUserRole(role: String) {
         userRole = role
+    }
+
+    // Reset user data
+    private fun resetData() {
+        userEmail = ""
+        userPassword = ""
+        userName = ""
+        userRole = ""
     }
 
     // User account creation
@@ -94,6 +103,7 @@ class MainViewModel : ViewModel() {
                     userRole = userRole,
                 )
                 onSuccess()
+                resetData()
             } catch (e: Exception) {
                 onError("Error al crear la cuenta: ${e.message}")
                 Log.e(TAG, "createAccount: Error al crear la cuenta: ${e.message}")
@@ -118,6 +128,42 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    // User login
+    private val _loginState = MutableLiveData<LoginState>()
+    val loginState: LiveData<LoginState> = _loginState
+
+    fun signInWithEmail(userEmail: String, userPassword: String) {
+        if (userEmail.isEmpty() || userPassword.isEmpty()) {
+            _loginState.value = LoginState.Error("Por favor, ingrese los campos requeridos.")
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                supabaseClient.auth.signInWith(Email) {
+                    email = userEmail
+                    password = userPassword
+                }
+
+                val user = supabaseClient.auth.currentSessionOrNull()?.user
+                val userRole = user?.userMetadata?.get("rol")?.jsonPrimitive?.content
+                val userName = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content
+                val userImageUrl = user?.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
+
+                _loginState.value = LoginState.Success(
+                    role = userRole,
+                    name = userName,
+                    imageUrl = userImageUrl,
+                )
+
+                resetData()
+            } catch (e: Exception) {
+                _loginState.value = LoginState.Error("Se produjo un error al iniciar sesión.")
+                Log.e(TAG, "Error al iniciar sesión: ${e.message}")
+            }
+        }
+    }
+
     private val _showSuccessDialog = MutableLiveData(false)
     val showSuccessDialog: LiveData<Boolean> = _showSuccessDialog
 
@@ -131,4 +177,9 @@ class MainViewModel : ViewModel() {
     fun updateCurrentScreen(screen: MainApplication) {
         _currentScreen.value = screen
     }
+}
+
+sealed class LoginState {
+    data class Success(val role: String?, val name: String?, val imageUrl: String?) : LoginState()
+    data class Error(val message: String) : LoginState()
 }
