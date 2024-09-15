@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
+import com.example.oirapp.ui.components.CustomFamilyText
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.theme.MyApplicationTheme
@@ -37,9 +38,11 @@ fun CrearCuentaScreen(
     onUserPasswordChanged: (String) -> Unit,
     userName: String,
     onUserNameChanged: (String) -> Unit,
-    userRol: String,
-    onUserRolChanged: (String) -> Unit,
+    userRole: String,
+    onUserRoleChanged: (String) -> Unit,
     onRegisterButtonClicked: () -> Unit,
+    showSuccessDialog: Boolean,
+    onDismissSuccessDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -92,8 +95,8 @@ fun CrearCuentaScreen(
 
             SelectRoleDropdown(
                 options = roleOptions,
-                selectedOption = userRol,
-                onOptionSelected = { newValue -> onUserRolChanged(newValue) },
+                selectedOption = userRole,
+                onOptionSelected = { newValue -> onUserRoleChanged(newValue) },
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -103,6 +106,26 @@ fun CrearCuentaScreen(
                 textId = R.string.crear_cuenta,
                 modifier = Modifier.padding(bottom = 40.dp),
             )
+
+            if (showSuccessDialog) {
+                AlertDialog(
+                    onDismissRequest = { onDismissSuccessDialog() },
+                    title = { CustomFamilyText(text = stringResource(R.string.success)) },
+                    text = {
+                        CustomFamilyText(
+                            text = stringResource(
+                                R.string.email_verification_sent,
+                                userEmail,
+                            )
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { onDismissSuccessDialog() }) {
+                            CustomFamilyText(text = stringResource(R.string.accept))
+                        }
+                    },
+                )
+            }
         }
     }
 }
@@ -125,9 +148,11 @@ private fun CrearCuentaScreenPreview() {
             onUserPasswordChanged = { viewModel.updateUserPassword(it) },
             userName = viewModel.userName,
             onUserNameChanged = { viewModel.updateUserName(it) },
-            userRol = viewModel.userRol,
-            onUserRolChanged = { viewModel.updateUserRol(it) },
+            userRole = viewModel.userRole,
+            onUserRoleChanged = { viewModel.updateUserRole(it) },
             onRegisterButtonClicked = {},
+            showSuccessDialog = false,
+            onDismissSuccessDialog = {},
         )
     }
 }
