@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -25,6 +24,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.ui.BienvenidaScreen
 import com.example.oirapp.ui.CrearCuentaScreen
+import com.example.oirapp.ui.GruposDocenteScreen
+import com.example.oirapp.ui.GruposEstudianteScreen
 import com.example.oirapp.ui.IniciarSesionScreen
 import com.example.oirapp.ui.MainViewModel
 import com.example.oirapp.ui.components.CustomFamilyText
@@ -46,7 +47,12 @@ fun MainAppBar(
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
-        title = { CustomFamilyText(textId = currentScreen.title!!, fontWeight = FontWeight.Bold) },
+        title = {
+            CustomFamilyText(
+                text = stringResource(currentScreen.title!!),
+                fontWeight = FontWeight.Bold,
+            )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -83,7 +89,7 @@ fun MainApp(
             }
         },
     ) { innerPadding ->
-        val userUiState by viewModel.userUiState.collectAsState()
+        //val userUiState by viewModel.userUiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -112,6 +118,8 @@ fun MainApp(
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
+                val showSuccessDialog by viewModel.showSuccessDialog.observeAsState(false)
+
                 CrearCuentaScreen(
                     userEmail = viewModel.userEmail,
                     onUserEmailChanged = { viewModel.updateUserEmail(it) },
@@ -119,32 +127,36 @@ fun MainApp(
                     onUserPasswordChanged = { viewModel.updateUserPassword(it) },
                     userName = viewModel.userName,
                     onUserNameChanged = { viewModel.updateUserName(it) },
-                    userRol = viewModel.userRol,
-                    onUserRolChanged = { viewModel.updateUserRol(it) },
+                    userRole = viewModel.userRole,
+                    onUserRoleChanged = { viewModel.updateUserRole(it) },
                     onRegisterButtonClicked = {
                         viewModel.createAccount(
-                            userEmail = userUiState.email,
-                            userPassword = userUiState.password,
-                            userName = userUiState.name,
-                            userRol = userUiState.role,
-                            onSuccess = {
-//                                navController.navigate(MainApplication.GruposEstudiante.name)
-//                                viewModel.updateCurrentScreen(MainApplication.GruposEstudiante)
-                            },
-                            onError = { error ->
+                            userEmail = viewModel.userEmail,
+                            userPassword = viewModel.userPassword,
+                            userName = viewModel.userName,
+                            userRole = viewModel.userRole,
+                            onSuccess = { viewModel.setShowSuccessDialog(true) },
+                            onError = { errorMessage ->
                                 // Mostrar mensaje de error
                             },
                         )
+                    },
+                    showSuccessDialog = showSuccessDialog,
+                    onDismissSuccessDialog = {
+                        viewModel.setShowSuccessDialog(false)
+                        navController.navigate(MainApplication.IniciarSesion.name) {
+                            popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
+                        }
                     },
                 )
             }
 
             composable(route = MainApplication.GruposEstudiante.name) {
-                // Contenido de la pantalla de grupos para estudiantes
+                GruposEstudianteScreen()
             }
 
             composable(route = MainApplication.GruposDocente.name) {
-                // Contenido de la pantalla de grupos para docentes
+                GruposDocenteScreen()
             }
         }
     }
