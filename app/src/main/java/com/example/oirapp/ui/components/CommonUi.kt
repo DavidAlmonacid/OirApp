@@ -10,7 +10,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
@@ -22,71 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
-
-val WorkSansFamily = FontFamily(
-    Font(R.font.work_sans_300_normal, FontWeight.Light),
-    Font(R.font.work_sans_400_normal, FontWeight.Normal),
-    Font(R.font.work_sans_500_normal, FontWeight.Medium),
-    Font(R.font.work_sans_600_normal, FontWeight.SemiBold),
-    Font(R.font.work_sans_700_normal, FontWeight.Bold),
-)
-
-@Composable
-fun CustomFamilyText(
-    text: String,
-    modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    minLines: Int = 1,
-    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = LocalTextStyle.current,
-) {
-    Text(
-        text = text,
-        modifier = modifier,
-        color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontWeight = fontWeight,
-        fontFamily = WorkSansFamily,
-        letterSpacing = letterSpacing,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        overflow = overflow,
-        softWrap = softWrap,
-        maxLines = maxLines,
-        minLines = minLines,
-        onTextLayout = onTextLayout,
-        style = style,
-    )
-}
+import com.example.oirapp.ui.preview.CustomPreview
+import com.example.oirapp.ui.preview.DarkLightPreviews
+import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
 fun CustomButton(
@@ -97,18 +41,26 @@ fun CustomButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSecondary),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondaryContainer),
         modifier = modifier.fillMaxWidth(),
     ) {
-        CustomFamilyText(
+        Text(
             text = stringResource(textId),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
         )
+    }
+}
+
+@DarkLightPreviews
+@Composable
+private fun CustomButtonPreview() {
+    MyApplicationTheme {
+        CustomButton(onClick = {}, textId = R.string.iniciar_sesion)
     }
 }
 
@@ -126,7 +78,7 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { CustomFamilyText(text = stringResource(labelId)) },
+        label = { Text(text = stringResource(labelId)) },
         shape = MaterialTheme.shapes.medium,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
@@ -140,13 +92,21 @@ fun CustomTextField(
     )
 }
 
+@CustomPreview
+@Composable
+private fun CustomTextFieldPreview() {
+    MyApplicationTheme {
+        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectRoleDropdown(
     options: List<Int>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -160,9 +120,7 @@ fun SelectRoleDropdown(
             onValueChange = {},
             readOnly = true,
             labelId = R.string.select_role,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier.menuAnchor(
                 type = MenuAnchorType.PrimaryNotEditable,
                 enabled = true,
@@ -181,9 +139,21 @@ fun SelectRoleDropdown(
                         onOptionSelected(context.resources.getString(option))
                         expanded = false
                     },
-                    text = { CustomFamilyText(text = stringResource(option), fontSize = 16.sp) },
+                    text = { Text(text = stringResource(option), fontSize = 16.sp) },
                 )
             }
         }
+    }
+}
+
+@CustomPreview
+@Composable
+private fun SelectRoleDropdownPreview() {
+    MyApplicationTheme {
+        SelectRoleDropdown(
+            options = listOf(R.string.rol_estudiante, R.string.rol_docente),
+            selectedOption = "",
+            onOptionSelected = {},
+        )
     }
 }
