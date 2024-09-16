@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
-import com.example.oirapp.ui.components.CustomFamilyText
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
@@ -81,9 +81,9 @@ fun IniciarSesionScreen(
                 modifier = Modifier.padding(top = 28.dp),
             )
 
-            CustomFamilyText(
+            Text(
                 text = stringResource(R.string.no_account_register),
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .padding(top = 28.dp)
                     .clickable { onRegisterTextClicked() },
