@@ -87,6 +87,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Google fonts library
+    implementation(libs.androidx.ui.text.google.fonts)
+
     // Image libraries
     implementation(libs.imagepicker)
     implementation (libs.glide)
