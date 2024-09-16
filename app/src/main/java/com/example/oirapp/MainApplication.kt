@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -31,7 +32,6 @@ import com.example.oirapp.ui.GruposEstudianteScreen
 import com.example.oirapp.ui.IniciarSesionScreen
 import com.example.oirapp.ui.LoginState
 import com.example.oirapp.ui.MainViewModel
-import com.example.oirapp.ui.components.CustomFamilyText
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -51,7 +51,7 @@ fun MainAppBar(
 ) {
     TopAppBar(
         title = {
-            CustomFamilyText(
+            Text(
                 text = stringResource(currentScreen.title!!),
                 fontWeight = FontWeight.Bold,
             )
