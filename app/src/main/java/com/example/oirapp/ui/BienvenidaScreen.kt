@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
-import com.example.oirapp.ui.components.CustomFamilyText
+import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -53,8 +54,8 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp),
                 ) {
-                    CustomFamilyText(text = stringResource(R.string.bienvenida1))
-                    CustomFamilyText(text = stringResource(R.string.bienvenida2))
+                    Text(text = stringResource(R.string.bienvenida1))
+                    Text(text = stringResource(R.string.bienvenida2))
                 }
             }
 
@@ -66,7 +67,7 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                     .align(Alignment.TopCenter),
             )
 
-            CustomFamilyText(
+            Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.End,
@@ -84,12 +85,12 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary),
                 shape = MaterialTheme.shapes.medium,
-                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
+                contentPadding = PaddingValues(horizontal = 40.dp, vertical = 14.dp),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 24.dp, bottom = 28.dp),
             ) {
-                CustomFamilyText(
+                Text(
                     text = stringResource(R.string.inicio),
                     fontSize = 18.sp,
                 )
@@ -98,7 +99,7 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
     }
 }
 
-@Preview(device = "id:pixel_5", apiLevel = 28, showBackground = true)
+@DarkLightScreenPreviews
 @Composable
 private fun IniciarSesionScreenPreview() {
     MyApplicationTheme {
