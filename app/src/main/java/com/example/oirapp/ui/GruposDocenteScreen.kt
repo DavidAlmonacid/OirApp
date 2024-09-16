@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
-import com.example.oirapp.ui.components.CustomFamilyText
-
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -45,14 +44,14 @@ fun GruposDocenteScreen(modifier: Modifier = Modifier) {
                 )
 
                 Column {
-                    CustomFamilyText(
+                    Text(
                         text = "Nombre del docente",
                         //style = MaterialTheme.typography.h6,
                         fontSize = 18.sp,
                         modifier = Modifier.padding(start = 16.dp, bottom = 4.dp),
                     )
 
-                    CustomFamilyText(
+                    Text(
                         text = "Correo del docente",
                         //style = MaterialTheme.typography.body1,
                         fontSize = 14.sp,
