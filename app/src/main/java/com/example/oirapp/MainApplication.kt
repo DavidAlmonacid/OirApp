@@ -175,6 +175,7 @@ fun MainApp(
                         navController.navigate(MainApplication.IniciarSesion.name) {
                             popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
                         }
+                        viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                     },
                 )
             }
@@ -184,7 +185,7 @@ fun MainApp(
                 arguments = listOf(
                     navArgument("userName") { type = NavType.StringType },
                     navArgument("userRole") { type = NavType.StringType },
-                    navArgument("userImageUrl") { type = NavType.StringType }
+                    navArgument("userImageUrl") { type = NavType.StringType },
                 )
             ) {
                 val userName = it.arguments?.getString("userName") ?: ""
