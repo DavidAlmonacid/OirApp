@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,14 +21,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
-import com.example.oirapp.ui.components.CustomFamilyText
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
+import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -108,11 +108,14 @@ fun CrearCuentaScreen(
             )
 
             if (showSuccessDialog) {
+                // TODO: Verificar si el mensaje de éxito es correcto,
+                //  mostrando correctamente el email del usuario.
+
                 AlertDialog(
                     onDismissRequest = { onDismissSuccessDialog() },
-                    title = { CustomFamilyText(text = stringResource(R.string.success)) },
+                    title = { Text(text = stringResource(R.string.success)) },
                     text = {
-                        CustomFamilyText(
+                        Text(
                             text = stringResource(
                                 R.string.email_verification_sent,
                                 userEmail,
@@ -121,7 +124,7 @@ fun CrearCuentaScreen(
                     },
                     confirmButton = {
                         TextButton(onClick = { onDismissSuccessDialog() }) {
-                            CustomFamilyText(text = stringResource(R.string.accept))
+                            Text(text = stringResource(R.string.accept))
                         }
                     },
                 )
@@ -135,7 +138,7 @@ val roleOptions = listOf(
     R.string.rol_docente,
 )
 
-@Preview(device = "id:pixel_5", apiLevel = 28, showBackground = true)
+@DarkLightScreenPreviews
 @Composable
 private fun CrearCuentaScreenPreview() {
     MyApplicationTheme {
