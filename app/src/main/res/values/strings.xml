@@ -26,6 +26,9 @@
     <string name="email_verification_sent">Se ha enviado un correo de verificación a %1$s</string>
     <string name="accept">Aceptar</string>
 
+    <!-- Pantalla de Grupos Docente -->
+    <string name="crear_grupo">Crear grupo</string>
+
     <!-- Textos compartidos -->
     <string name="logo_description">Logo principal</string>
 </resources>
