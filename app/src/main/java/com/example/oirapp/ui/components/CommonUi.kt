@@ -78,7 +78,7 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = stringResource(labelId)) },
+        label = { Text(text = stringResource(labelId), fontWeight = FontWeight.Medium) },
         shape = MaterialTheme.shapes.medium,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,

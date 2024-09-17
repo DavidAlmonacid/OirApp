@@ -32,31 +32,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity8"
+            android:name=".ActualizarInformacionActivity"
             android:exported="false" />
         <activity
             android:name=".estudiante.GruposEstudianteActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity6"
+            android:name=".ChatActivity"
             android:exported="false" />
         <activity
             android:name=".docente.GruposDocenteActivity"
             android:exported="false" />
         <activity
-            android:name=".InformacionAdicionalActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity4"
-            android:exported="false" />
-        <activity
-            android:name=".CrearCuentaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".IniciarSesionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BienvenidaActivity"
             android:exported="false" />
     </application>
 

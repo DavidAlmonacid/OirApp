@@ -5,15 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity6">
+    tools:context=".ChatActivity">
 
+    <!-- android:fontFamily="@font/work_sans_400_normal" -->
     <EditText
         android:id="@+id/editTextTextEmailAddress"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_background_input_light"
         android:ems="10"
-        android:fontFamily="@font/work_sans_400_normal"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="14dp"
         android:textColor="@color/black"
@@ -24,12 +24,12 @@
         app:layout_constraintTop_toTopOf="@+id/textView"
         app:layout_constraintVertical_bias="0.959" />
 
+    <!-- android:fontFamily="@font/work_sans_700_normal" -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="92dp"
         android:background="@color/colorBackgroundPurple"
-        android:fontFamily="@font/work_sans_700_normal"
         android:gravity="center_vertical"
         android:paddingHorizontal="24dp"
         android:textColor="@color/colorTextLight"
@@ -54,18 +54,6 @@
         app:srcCompat="@drawable/avatar" />
 
     <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.922"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.066"
-        app:srcCompat="@drawable/puntosblancos" />
-
-    <ImageView
         android:id="@+id/imageView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,23 +73,10 @@
         android:textColor="#F2FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintHorizontal_bias="0.558"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.022" />
-
-    <TextView
-        android:layout_width="162dp"
-        android:layout_height="27dp"
-        android:gravity="center_vertical"
-        android:text="En linea"
-        android:textColor="#F3FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.562"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.068" />
+        app:layout_constraintVertical_bias="0.049" />
 
     <TextView
         android:layout_width="207dp"

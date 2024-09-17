@@ -207,7 +207,7 @@ fun MainApp(
                 val userRole = it.arguments?.getString("userRole") ?: ""
                 val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
 
-                GruposDocenteScreen()
+                GruposDocenteScreen(userName, userRole, userImageUrl)
             }
         }
     }

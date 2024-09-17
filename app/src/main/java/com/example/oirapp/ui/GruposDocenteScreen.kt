@@ -25,7 +25,12 @@ import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
-fun GruposDocenteScreen(modifier: Modifier = Modifier) {
+fun GruposDocenteScreen(
+    userName: String,
+    userRole: String,
+    userImageUrl: String,
+    modifier: Modifier = Modifier,
+) {
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
@@ -33,7 +38,7 @@ fun GruposDocenteScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 20.dp)
+                .padding(horizontal = 24.dp, vertical = 20.dp),
         ) {
             // TODO: Convertir en un componente reutilizable
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -49,13 +54,13 @@ fun GruposDocenteScreen(modifier: Modifier = Modifier) {
 
                 Column {
                     Text(
-                        text = "Nombre del usuario",
+                        text = userName,
                         fontSize = 18.sp,
                         modifier = Modifier.padding(bottom = 4.dp),
                     )
 
                     Text(
-                        text = "Rol del usuario",
+                        text = userRole,
                         fontSize = 14.sp,
                         modifier = Modifier.alpha(0.8f),
                     )
@@ -79,6 +84,10 @@ fun GruposDocenteScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun GruposDocenteScreenPreview() {
     MyApplicationTheme {
-        GruposDocenteScreen()
+        GruposDocenteScreen(
+            userName = "Francisco Garzón",
+            userRole = "Docente",
+            userImageUrl = "",
+        )
     }
 }

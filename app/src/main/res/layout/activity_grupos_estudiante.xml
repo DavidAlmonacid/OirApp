@@ -20,10 +20,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- android:fontFamily="@font/work_sans_700_normal" -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_700_normal"
             android:text="Grupos"
             android:textColor="@color/colorTextLight"
             android:textSize="24sp" />
@@ -68,22 +68,22 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
+            <!-- android:fontFamily="@font/work_sans_400_normal" -->
             <TextView
                 android:id="@+id/estudiante_nombre_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:fontFamily="@font/work_sans_400_normal"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 tools:text="David Almonacid" />
 
+            <!-- android:fontFamily="@font/work_sans_400_normal" -->
             <TextView
                 android:id="@+id/estudiante_rol_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
-                android:fontFamily="@font/work_sans_400_normal"
                 android:textColor="@color/colorTextGrey"
                 android:textSize="14sp"
                 tools:text="Estudiante" />
@@ -124,11 +124,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:background="@drawable/rounded_badge"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="CD"
@@ -139,10 +139,10 @@
                     android:layout_width="32dp"
                     android:layout_height="match_parent" />
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:text="Cálculo Diferencial"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -159,11 +159,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:background="@drawable/rounded_badge"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="EM"
@@ -174,10 +174,10 @@
                     android:layout_width="32dp"
                     android:layout_height="match_parent" />
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:text="Emprendimiento I"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -194,11 +194,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:background="@drawable/rounded_badge"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:gravity="center"
                     android:padding="16dp"
                     android:text="AL"
@@ -209,10 +209,10 @@
                     android:layout_width="32dp"
                     android:layout_height="match_parent" />
 
+                <!-- android:fontFamily="@font/work_sans_400_normal" -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/work_sans_400_normal"
                     android:text="Álgebra Lineal"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -223,6 +223,7 @@
 
     </ScrollView>
 
+    <!-- android:fontFamily="@font/work_sans_500_normal" -->
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
@@ -230,7 +231,6 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorButtonPrimary"
-        android:fontFamily="@font/work_sans_500_normal"
         android:text="Unirse a un grupo"
         android:textColor="@color/black"
         android:textSize="20sp"
