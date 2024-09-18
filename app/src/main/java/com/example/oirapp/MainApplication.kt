@@ -112,10 +112,10 @@ fun MainApp(
 
             composable(route = MainApplication.IniciarSesion.name) {
                 IniciarSesionScreen(
-                    userEmail = viewModel.userEmail,
-                    onUserEmailChanged = { viewModel.updateUserEmail(it) },
-                    userPassword = viewModel.userPassword,
-                    onUserPasswordChanged = { viewModel.updateUserPassword(it) },
+                    userEmail = viewModel.userEmailLogin,
+                    onUserEmailChanged = { viewModel.updateUserEmailLogin(it) },
+                    userPassword = viewModel.userPasswordLogin,
+                    onUserPasswordChanged = { viewModel.updateUserPasswordLogin(it) },
                     onLoginButtonClicked = { email, password ->
                         viewModel.signInWithEmail(email, password)
                     },
@@ -125,41 +125,25 @@ fun MainApp(
                     },
                 )
 
-//                loginState?.let {
-//                    when (it) {
-//                        is LoginState.Success -> {
-//                            val route = if (it.role == "Estudiante") {
-//                                "${MainApplication.GruposEstudiante.name}/${it.name}/${it.role}/${it.imageUrl}"
-//                            } else {
-//                                "${MainApplication.GruposDocente.name}/${it.name}/${it.role}/${it.imageUrl}"
-//                            }
-//
-//                            navController.navigate(route)
-//                            viewModel.updateCurrentScreen(
-//                                if (it.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
-//                            )
-//                        }
-//                        is LoginState.Error -> {
-//                            // Mostrar mensaje de error
-//                        }
-//                    }
-//                }
-
                 LaunchedEffect(loginState) {
-                    if (loginState is LoginState.Success) {
-                        val state = loginState as LoginState.Success
-                        val route = if (state.role == "Estudiante") {
-                            "${MainApplication.GruposEstudiante.name}/${state.name}/${state.role}/${state.imageUrl}"
-                        } else {
-                            "${MainApplication.GruposDocente.name}/${state.name}/${state.role}/${state.imageUrl}"
-                        }
+                    when (loginState) {
+                        is LoginState.Success -> {
+                            val state = loginState as LoginState.Success
+                            val route = if (state.role == "Estudiante") {
+                                "${MainApplication.GruposEstudiante.name}/${state.name}/${state.role}/${state.imageUrl}"
+                            } else {
+                                "${MainApplication.GruposDocente.name}/${state.name}/${state.role}/${state.imageUrl}"
+                            }
 
-                        navController.navigate(route)
-                        viewModel.updateCurrentScreen(
-                            if (state.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
-                        )
-                    } else if (loginState is LoginState.Error) {
-                        // Mostrar mensaje de error
+                            navController.navigate(route)
+                            viewModel.updateCurrentScreen(
+                                if (state.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
+                            )
+                        }
+                        is LoginState.Error -> {
+                            // Mostrar mensaje de error
+                        }
+                        else -> {}
                     }
                 }
             }
@@ -177,10 +161,14 @@ fun MainApp(
                     userRole = viewModel.userRole,
                     onUserRoleChanged = { viewModel.updateUserRole(it) },
                     onRegisterButtonClicked = {
+                        if (viewModel.userPassword.isBlank()) {
+                            viewModel.updateUserPassword("")
+                        }
+
                         viewModel.createAccount(
-                            userEmail = viewModel.userEmail,
+                            userEmail = viewModel.userEmail.trim(),
                             userPassword = viewModel.userPassword,
-                            userName = viewModel.userName,
+                            userName = viewModel.userName.trim(),
                             userRole = viewModel.userRole,
                             onSuccess = { viewModel.setShowSuccessDialog(true) },
                             onError = { errorMessage ->
@@ -190,13 +178,13 @@ fun MainApp(
                     },
                     showSuccessDialog = showSuccessDialog,
                     onDismissSuccessDialog = {
-                        viewModel.setShowSuccessDialog(false)
-                        viewModel.resetData()
-
                         navController.navigate(MainApplication.IniciarSesion.name) {
                             popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
                         }
                         viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+
+                        viewModel.setShowSuccessDialog(false)
+                        viewModel.resetData()
                     },
                 )
             }
