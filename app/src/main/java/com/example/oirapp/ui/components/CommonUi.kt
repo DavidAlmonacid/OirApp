@@ -26,7 +26,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -89,15 +88,14 @@ fun CustomTextField(
         onValueChange = onValueChange,
         label = { Text(text = stringResource(labelId), fontWeight = FontWeight.Medium) },
         shape = MaterialTheme.shapes.medium,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-        ),
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         singleLine = true,
         readOnly = readOnly,
         trailingIcon = trailingIcon,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .alpha(if (value.isEmpty()) 0.6f else 1f),
     )
 }
 
