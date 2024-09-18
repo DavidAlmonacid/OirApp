@@ -1,6 +1,5 @@
 package com.example.oirapp.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,8 +29,6 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
-
-private const val TAG = "MyApp"
 
 @Composable
 fun CrearCuentaScreen(
@@ -111,11 +108,6 @@ fun CrearCuentaScreen(
             )
 
             if (showSuccessDialog) {
-                // TODO: Verificar si el mensaje de éxito es correcto,
-                //  mostrando correctamente el email del usuario.
-
-                Log.d(TAG, "User email: $userEmail")
-
                 AlertDialog(
                     onDismissRequest = { onDismissSuccessDialog() },
                     title = { Text(text = stringResource(R.string.success)) },
