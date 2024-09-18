@@ -1,5 +1,6 @@
 package com.example.oirapp.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,8 @@ import com.example.oirapp.ui.components.UserInfo
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
+private const val TAG = "MyApp"
+
 @Composable
 fun GruposDocenteScreen(
     userName: String,
@@ -23,6 +26,9 @@ fun GruposDocenteScreen(
     userImageUrl: String,
     modifier: Modifier = Modifier,
 ) {
+
+    Log.d(TAG, "userImageUrl: $userImageUrl")
+
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
