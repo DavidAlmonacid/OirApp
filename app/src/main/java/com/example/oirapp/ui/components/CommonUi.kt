@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,13 +42,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.ui.preview.CustomPreview
-import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.utils.removeUppercaseAccents
 
 @Composable
 fun CustomButton(
@@ -72,14 +70,6 @@ fun CustomButton(
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
         )
-    }
-}
-
-@DarkLightPreviews
-@Composable
-private fun CustomButtonPreview() {
-    MyApplicationTheme {
-        CustomButton(onClick = {}, textId = R.string.iniciar_sesion)
     }
 }
 
@@ -109,14 +99,6 @@ fun CustomTextField(
         trailingIcon = trailingIcon,
         modifier = modifier.fillMaxWidth(),
     )
-}
-
-@CustomPreview
-@Composable
-private fun CustomTextFieldPreview() {
-    MyApplicationTheme {
-        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -165,18 +147,6 @@ fun SelectRoleDropdown(
     }
 }
 
-@CustomPreview
-@Composable
-private fun SelectRoleDropdownPreview() {
-    MyApplicationTheme {
-        SelectRoleDropdown(
-            options = listOf(R.string.rol_estudiante, R.string.rol_docente),
-            selectedOption = "",
-            onOptionSelected = {},
-        )
-    }
-}
-
 @Composable
 fun UserInfo(
     userName: String,
@@ -210,69 +180,124 @@ fun UserInfo(
     }
 }
 
-@CustomPreview
 @Composable
-private fun UserInfoPreview() {
-    MyApplicationTheme {
-        UserInfo(
-            userName = "David",
-            userRole = "Estudiante",
-            modifier = Modifier.padding(16.dp),
-        )
-    }
-}
-@Composable
-fun GroupCard(role: String ){
+fun GroupCard(
+    groupName: String,
+    groupCode: String,
+    role: String,
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Card(
+        onClick = onClick,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 36.dp, vertical = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(40.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
             verticalAlignment = Alignment.CenterVertically,
-
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(68.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary, // Replace with your desired color
-                        shape = CircleShape
-                    )
-                    .padding(16.dp)
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape,
+                    ),
             ) {
                 Text(
-                    text = "CAL",
-                    color = MaterialTheme.colorScheme.onPrimary, // Replace with your desired text color
-                    fontSize = 18.sp
+                    text = groupName.take(3).uppercase().removeUppercaseAccents(),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Medium,
                 )
             }
+
             Column {
-                Text(text = "Calculo", fontSize = 24.sp, modifier = Modifier.padding(bottom = 8.dp))
-                if(role == "Docente"){
-                    Text(text = "123456", fontSize = 18.sp)
+                Text(
+                    text = groupName,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                if (role == "Docente") {
+                    Text(
+                        text = groupCode,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
                 }
             }
         }
     }
 }
+
+// Previews
+//@DarkLightPreviews
+//@Composable
+//private fun CustomButtonPreview() {
+//    MyApplicationTheme {
+//        CustomButton(onClick = {}, textId = R.string.iniciar_sesion)
+//    }
+//}
+
+//@CustomPreview
+//@Composable
+//private fun CustomTextFieldPreview() {
+//    MyApplicationTheme {
+//        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
+//    }
+//}
+
+//@CustomPreview
+//@Composable
+//private fun SelectRoleDropdownPreview() {
+//    MyApplicationTheme {
+//        SelectRoleDropdown(
+//            options = listOf(R.string.rol_estudiante, R.string.rol_docente),
+//            selectedOption = "",
+//            onOptionSelected = {},
+//        )
+//    }
+//}
+
+//@CustomPreview
+//@Composable
+//private fun UserInfoPreview() {
+//    MyApplicationTheme {
+//        UserInfo(
+//            userName = "David",
+//            userRole = "Estudiante",
+//            modifier = Modifier.padding(16.dp),
+//        )
+//    }
+//}
+
 @CustomPreview
 @Composable
 private fun GroupCardDocentePreview() {
     MyApplicationTheme {
-        GroupCard("Docente")
+        GroupCard(
+            groupName = "Cálculo Diferencial",
+            groupCode = "123456",
+            role = "Docente",
+            modifier = Modifier.padding(16.dp),
+        )
     }
 }
+
 @CustomPreview
 @Composable
 private fun GroupCardEstudiantePreview() {
     MyApplicationTheme {
-        GroupCard("Estudiante")
+        GroupCard(
+            groupName = "Inglés IV",
+            groupCode = "123456",
+            role = "Estudiante",
+            modifier = Modifier.padding(16.dp),
+        )
     }
 }
