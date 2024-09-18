@@ -186,7 +186,9 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // TODO: Si algo fue mal, mostrar mensaje de error en un AlertDialog
+    /*
+     * TODO: Si algo fue mal, mostrar mensaje de error en un AlertDialog
+     */
 
     private val _showSuccessDialog = MutableLiveData(false)
     val showSuccessDialog: LiveData<Boolean> = _showSuccessDialog

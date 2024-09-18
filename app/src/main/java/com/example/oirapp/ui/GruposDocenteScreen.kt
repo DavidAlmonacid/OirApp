@@ -19,7 +19,9 @@ import com.example.oirapp.ui.theme.MyApplicationTheme
 fun GruposDocenteScreen(
     userName: String,
     userRole: String,
-    // TODO: Poder agregar una imagen desde un URL proveniente de Supabase
+    /*
+     * TODO: Poder agregar una imagen desde un URL proveniente de Supabase
+     */
     userImageUrl: String,
     modifier: Modifier = Modifier,
 ) {
@@ -39,8 +41,10 @@ fun GruposDocenteScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // TODO: El docente puede crear grupos y estos serán mostrados en una lista
-            //  con su respectivo nombre y color
+            /*
+             * TODO: El docente puede crear grupos y estos serán mostrados en una lista
+             *  con su respectivo nombre, código y color
+             */
 
             CustomButton(
                 onClick = { },
