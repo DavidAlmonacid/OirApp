@@ -191,6 +191,8 @@ fun MainApp(
                     showSuccessDialog = showSuccessDialog,
                     onDismissSuccessDialog = {
                         viewModel.setShowSuccessDialog(false)
+                        viewModel.resetData()
+
                         navController.navigate(MainApplication.IniciarSesion.name) {
                             popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
                         }

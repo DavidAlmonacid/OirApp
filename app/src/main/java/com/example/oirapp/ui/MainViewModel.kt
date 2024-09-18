@@ -60,12 +60,12 @@ class MainViewModel : ViewModel() {
     }
 
     // Reset user data
-//    private fun resetData() {
-//        userEmail = ""
-//        userPassword = ""
-//        userName = ""
-//        userRole = ""
-//    }
+    fun resetData() {
+        userEmail = ""
+        userPassword = ""
+        userName = ""
+        userRole = ""
+    }
 
     // User account creation
     fun createAccount(
@@ -103,7 +103,6 @@ class MainViewModel : ViewModel() {
                     userRole = userRole,
                 )
                 onSuccess()
-                //resetData()
             } catch (e: Exception) {
                 onError("Error al crear la cuenta: ${e.message}")
                 Log.e(TAG, "createAccount: Error al crear la cuenta: ${e.message}")
@@ -156,7 +155,7 @@ class MainViewModel : ViewModel() {
                     imageUrl = userImageUrl,
                 )
 
-                //resetData()
+                resetData()
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error("Se produjo un error al iniciar sesión.")
                 Log.e(TAG, "Se produjo un error al iniciar sesión: ${e.message}")
