@@ -1,6 +1,5 @@
 package com.example.oirapp.ui
 
-import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,8 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
-
-private const val TAG = "MyApp"
 
 class MainViewModel : ViewModel() {
     private val _userUiState = MutableStateFlow(UserUiState())
@@ -59,12 +56,30 @@ class MainViewModel : ViewModel() {
         userRole = role
     }
 
+    // User email login
+    var userEmailLogin by mutableStateOf("")
+        private set
+
+    fun updateUserEmailLogin(email: String) {
+        userEmailLogin = email
+    }
+
+    // User password login
+    var userPasswordLogin by mutableStateOf("")
+        private set
+
+    fun updateUserPasswordLogin(password: String) {
+        userPasswordLogin = password
+    }
+
     // Reset user data
     fun resetData() {
         userEmail = ""
         userPassword = ""
         userName = ""
         userRole = ""
+        userEmailLogin = ""
+        userPasswordLogin = ""
     }
 
     // User account creation
@@ -78,19 +93,19 @@ class MainViewModel : ViewModel() {
     ) {
         if (userEmail.isEmpty() || userPassword.isEmpty() || userName.isEmpty() || userRole.isEmpty()) {
             onError("Por favor, ingrese los campos requeridos.")
-            Log.e(TAG, "createAccount: Por favor, ingrese los campos requeridos.")
+            println("createAccount: Por favor, ingrese los campos requeridos.")
             return
         }
 
         if (userPassword.length < 6) {
             onError("La contraseña debe tener al menos 6 caracteres.")
-            Log.e(TAG, "createAccount: La contraseña debe tener al menos 6 caracteres.")
+            println("createAccount: La contraseña debe tener al menos 6 caracteres.")
             return
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             onError("Por favor, ingrese un correo electrónico válido.")
-            Log.e(TAG, "createAccount: Por favor, ingrese un correo electrónico válido.")
+            println("createAccount: Por favor, ingrese un correo electrónico válido.")
             return
         }
 
@@ -105,7 +120,7 @@ class MainViewModel : ViewModel() {
                 onSuccess()
             } catch (e: Exception) {
                 onError("Error al crear la cuenta: ${e.message}")
-                Log.e(TAG, "createAccount: Error al crear la cuenta: ${e.message}")
+                println("createAccount: Error al crear la cuenta: ${e.message}")
             }
         }
     }
@@ -157,12 +172,16 @@ class MainViewModel : ViewModel() {
 
                 resetData()
             } catch (e: Exception) {
-                _loginState.value = LoginState.Error("Se produjo un error al iniciar sesión.")
-                Log.e(TAG, "Se produjo un error al iniciar sesión: ${e.message}")
-
-                if (e.message == "Email not confirmed") {
-                    _loginState.value = LoginState.Error("Por favor, confirme su correo electrónico.")
+                when (e.message) {
+                    "Email not confirmed" -> {
+                        _loginState.value = LoginState.Error("Por favor, confirme su correo electrónico.")
+                    }
+                    else -> {
+                        _loginState.value = LoginState.Error("Se produjo un error al iniciar sesión.")
+                    }
                 }
+
+                println("Error: ${e.message}")
             }
         }
     }
