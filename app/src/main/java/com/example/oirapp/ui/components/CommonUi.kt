@@ -3,6 +3,9 @@ package com.example.oirapp.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -27,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -211,5 +219,60 @@ private fun UserInfoPreview() {
             userRole = "Estudiante",
             modifier = Modifier.padding(16.dp),
         )
+    }
+}
+@Composable
+fun GroupCard(role: String ){
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 36.dp, vertical = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(40.dp),
+            verticalAlignment = Alignment.CenterVertically,
+
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(68.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary, // Replace with your desired color
+                        shape = CircleShape
+                    )
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "CAL",
+                    color = MaterialTheme.colorScheme.onPrimary, // Replace with your desired text color
+                    fontSize = 18.sp
+                )
+            }
+            Column {
+                Text(text = "Calculo", fontSize = 24.sp, modifier = Modifier.padding(bottom = 8.dp))
+                if(role == "Docente"){
+                    Text(text = "123456", fontSize = 18.sp)
+                }
+            }
+        }
+    }
+}
+@CustomPreview
+@Composable
+private fun GroupCardDocentePreview() {
+    MyApplicationTheme {
+        GroupCard("Docente")
+    }
+}
+@CustomPreview
+@Composable
+private fun GroupCardEstudiantePreview() {
+    MyApplicationTheme {
+        GroupCard("Estudiante")
     }
 }
