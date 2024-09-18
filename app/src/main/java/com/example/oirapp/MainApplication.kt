@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -124,23 +125,41 @@ fun MainApp(
                     },
                 )
 
-                loginState?.let {
-                    when (it) {
-                        is LoginState.Success -> {
-                            val route = if (it.role == "Estudiante") {
-                                "${MainApplication.GruposEstudiante.name}/${it.name}/${it.role}/${it.imageUrl}"
-                            } else {
-                                "${MainApplication.GruposDocente.name}/${it.name}/${it.role}/${it.imageUrl}"
-                            }
+//                loginState?.let {
+//                    when (it) {
+//                        is LoginState.Success -> {
+//                            val route = if (it.role == "Estudiante") {
+//                                "${MainApplication.GruposEstudiante.name}/${it.name}/${it.role}/${it.imageUrl}"
+//                            } else {
+//                                "${MainApplication.GruposDocente.name}/${it.name}/${it.role}/${it.imageUrl}"
+//                            }
+//
+//                            navController.navigate(route)
+//                            viewModel.updateCurrentScreen(
+//                                if (it.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
+//                            )
+//                        }
+//                        is LoginState.Error -> {
+//                            // Mostrar mensaje de error
+//                        }
+//                    }
+//                }
 
-                            navController.navigate(route)
-                            viewModel.updateCurrentScreen(
-                                if (it.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
-                            )
+                LaunchedEffect(loginState) {
+                    if (loginState is LoginState.Success) {
+                        val state = loginState as LoginState.Success
+                        val route = if (state.role == "Estudiante") {
+                            "${MainApplication.GruposEstudiante.name}/${state.name}/${state.role}/${state.imageUrl}"
+                        } else {
+                            "${MainApplication.GruposDocente.name}/${state.name}/${state.role}/${state.imageUrl}"
                         }
-                        is LoginState.Error -> {
-                            // Mostrar mensaje de error
-                        }
+
+                        navController.navigate(route)
+                        viewModel.updateCurrentScreen(
+                            if (state.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
+                        )
+                    } else if (loginState is LoginState.Error) {
+                        // Mostrar mensaje de error
                     }
                 }
             }
