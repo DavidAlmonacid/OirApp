@@ -5,7 +5,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.bumptech.glide.Glide
 import com.example.oirapp.R
 import com.example.oirapp.databinding.ActivityGruposEstudianteBinding
 
@@ -35,10 +34,10 @@ class GruposEstudianteActivity : AppCompatActivity() {
         binding.estudianteRolTv.text = userRole
 
         // Load the user's image
-        Glide.with(this)
-            .load(userImageUrl)
-            .placeholder(R.drawable.user_placeholder)
-            .error(R.drawable.user_placeholder)
-            .into(binding.estudianteImagenIv)
+//        Glide.with(this)
+//            .load(userImageUrl)
+//            .placeholder(R.drawable.user_placeholder)
+//            .error(R.drawable.user_placeholder)
+//            .into(binding.estudianteImagenIv)
     }
 }
