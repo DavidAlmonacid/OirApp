@@ -97,14 +97,13 @@ dependencies {
 
     // Image libraries
     implementation(libs.imagepicker)
-    implementation (libs.glide)
 
     //Supabase libraries
-    implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.github.jan-tennert.supabase:gotrue-kt")
-    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.gotrue.kt)
+    implementation(libs.postgrest.kt)
+    //implementation(libs.realtime.kt)
 
     // Ktor library
-    implementation("io.ktor:ktor-client-android:2.3.12")
+    implementation(libs.ktor.client.android)
 }
