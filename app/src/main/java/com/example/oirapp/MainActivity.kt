@@ -1,6 +1,5 @@
 package com.example.oirapp
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,9 +17,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
+    override fun onStart() {
+        super.onStart()
+
+        println("onStart: Starting App")
+
+        /*
+         * TODO: Verificar si el usuario ya ha iniciado sesión,
+         *  si es así, redirigir a la pantalla de Grupos dependiendo del rol del usuario,
+         *  si es 'Estudiante' redirigir a la pantalla de Grupos Estudiante,
+         *  si es 'Docente' redirigir a la pantalla de Grupos Docente.
+         */
+
 //        val currentUser = auth.currentUser
 //        if (currentUser != null) {
 //            val intent = Intent(this, InformacionAdicionalActivity::class.java)
@@ -28,5 +36,5 @@ class MainActivity : ComponentActivity() {
 //            startActivity(intent)
 //            finish()
 //        }
-//    }
+    }
 }
