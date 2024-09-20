@@ -106,6 +106,11 @@ fun MainApp(
                         navController.navigate(MainApplication.IniciarSesion.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                     },
+
+                    /*
+                     * TODO: Al darle al botón de "Inicio", sacar la pantalla actual de la pila de navegación.
+                     *  Luego de esto, navegar a la pantalla de "IniciarSesion" y actualizar el estado de la pantalla actual.
+                     */
                 )
             }
 
@@ -136,6 +141,11 @@ fun MainApp(
                         )
                     },
                 )
+
+                /*
+                 * TODO: Al navegar a la pantalla de "GruposEstudiante" o "GruposDocente",
+                 *  quitar todas las pantallas de la pila de navegación excepto la pantalla actual.
+                 */
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
@@ -179,6 +189,10 @@ fun MainApp(
                     showErrorDialog = showErrorDialog,
                     onDismissErrorDialog = { registerViewModel.setShowErrorDialog(false) },
                 )
+
+                /*
+                 * TODO: Al realizar la acción de retroceso, actualizar el estado de la pantalla actual.
+                 */
             }
 
             composable(
