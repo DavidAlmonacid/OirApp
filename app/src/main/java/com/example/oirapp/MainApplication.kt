@@ -86,6 +86,8 @@ fun MainApp(
         topBar = {
             val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
 
+            println("Current Screen: $currentScreen")
+
             if (currentScreen != MainApplication.Bienvenida) {
                 MainAppBar(
                     currentScreen = currentScreen,
@@ -103,14 +105,11 @@ fun MainApp(
             composable(route = MainApplication.Bienvenida.name) {
                 BienvenidaScreen(
                     onStartButtonClicked = {
-                        navController.navigate(MainApplication.IniciarSesion.name)
+                        navController.navigate(MainApplication.IniciarSesion.name) {
+                            popUpTo(MainApplication.Bienvenida.name) { inclusive = true }
+                        }
                         navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                     },
-
-                    /*
-                     * TODO: Al darle al botón de "Inicio", sacar la pantalla actual de la pila de navegación.
-                     *  Luego de esto, navegar a la pantalla de "IniciarSesion" y actualizar el estado de la pantalla actual.
-                     */
                 )
             }
 
