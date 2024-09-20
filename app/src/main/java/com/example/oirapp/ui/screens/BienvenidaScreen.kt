@@ -1,4 +1,4 @@
-package com.example.oirapp.ui
+package com.example.oirapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

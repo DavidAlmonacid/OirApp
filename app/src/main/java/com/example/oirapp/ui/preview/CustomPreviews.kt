@@ -37,19 +37,3 @@ annotation class DarkLightPreviews
     device = "id:pixel_5",
 )
 annotation class DarkLightScreenPreviews
-
-@Preview(
-    name = "Light Mode",
-    group = "UI mode screens landscape",
-    apiLevel = 28,
-    uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:parent=pixel_5,orientation=landscape",
-)
-@Preview(
-    name = "Dark Mode",
-    group = "UI mode screens landscape",
-    apiLevel = 28,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:parent=pixel_5,orientation=landscape",
-)
-annotation class DarkLightLandscapeScreenPreviews

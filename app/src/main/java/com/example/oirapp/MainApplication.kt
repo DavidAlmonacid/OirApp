@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -26,13 +25,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.oirapp.ui.BienvenidaScreen
-import com.example.oirapp.ui.CrearCuentaScreen
-import com.example.oirapp.ui.GruposDocenteScreen
-import com.example.oirapp.ui.GruposEstudianteScreen
-import com.example.oirapp.ui.IniciarSesionScreen
-import com.example.oirapp.ui.LoginState
-import com.example.oirapp.ui.MainViewModel
+import com.example.oirapp.ui.screens.BienvenidaScreen
+import com.example.oirapp.ui.screens.CrearCuentaScreen
+import com.example.oirapp.ui.screens.GruposDocenteScreen
+import com.example.oirapp.ui.screens.GruposEstudianteScreen
+import com.example.oirapp.ui.screens.IniciarSesionScreen
+import com.example.oirapp.ui.viewmodel.LoginViewModel
+import com.example.oirapp.ui.viewmodel.NavigationViewModel
+import com.example.oirapp.ui.viewmodel.RegisterViewModel
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -77,12 +77,14 @@ fun MainAppBar(
 
 @Composable
 fun MainApp(
-    viewModel: MainViewModel = viewModel(),
+    navigationViewModel: NavigationViewModel = viewModel(),
+    registerViewModel: RegisterViewModel = viewModel(),
+    loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     Scaffold(
         topBar = {
-            val currentScreen by viewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
+            val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
 
             if (currentScreen != MainApplication.Bienvenida) {
                 MainAppBar(
@@ -93,9 +95,6 @@ fun MainApp(
             }
         },
     ) { innerPadding ->
-        //val userUiState by viewModel.userUiState.collectAsState()
-        val loginState by viewModel.loginState.observeAsState()
-
         NavHost(
             navController = navController,
             startDestination = MainApplication.Bienvenida.name,
@@ -105,87 +104,80 @@ fun MainApp(
                 BienvenidaScreen(
                     onStartButtonClicked = {
                         navController.navigate(MainApplication.IniciarSesion.name)
-                        viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                     },
                 )
             }
 
             composable(route = MainApplication.IniciarSesion.name) {
+                val loginState by loginViewModel.loginState.observeAsState()
+
                 IniciarSesionScreen(
-                    userEmail = viewModel.userEmailLogin,
-                    onUserEmailChanged = { viewModel.updateUserEmailLogin(it) },
-                    userPassword = viewModel.userPasswordLogin,
-                    onUserPasswordChanged = { viewModel.updateUserPasswordLogin(it) },
+                    userEmail = loginViewModel.userEmail,
+                    onUserEmailChanged = { loginViewModel.updateUserEmail(it) },
+                    userPassword = loginViewModel.userPassword,
+                    onUserPasswordChanged = { loginViewModel.updateUserPassword(it) },
                     onLoginButtonClicked = { email, password ->
-                        viewModel.signInWithEmail(email, password)
+                        loginViewModel.signInWithEmail(email, password)
                     },
                     onRegisterTextClicked = {
                         navController.navigate(MainApplication.CrearCuenta.name)
-                        viewModel.updateCurrentScreen(MainApplication.CrearCuenta)
+                        navigationViewModel.updateCurrentScreen(MainApplication.CrearCuenta)
+                    },
+                    loginState = loginState,
+                    onNavigateToGroups = { route ->
+                        navController.navigate(route)
+                        navigationViewModel.updateCurrentScreen(
+                            if (route.contains(MainApplication.GruposEstudiante.name)) {
+                                MainApplication.GruposEstudiante
+                            } else {
+                                MainApplication.GruposDocente
+                            }
+                        )
                     },
                 )
-
-                LaunchedEffect(loginState) {
-                    when (loginState) {
-                        is LoginState.Success -> {
-                            val state = loginState as LoginState.Success
-                            val route = if (state.role == "Estudiante") {
-                                "${MainApplication.GruposEstudiante.name}/${state.name}/${state.role}/${state.imageUrl}"
-                            } else {
-                                "${MainApplication.GruposDocente.name}/${state.name}/${state.role}/${state.imageUrl}"
-                            }
-
-                            navController.navigate(route)
-                            viewModel.updateCurrentScreen(
-                                if (state.role == "Estudiante") MainApplication.GruposEstudiante else MainApplication.GruposDocente
-                            )
-                        }
-                        is LoginState.Error -> {
-                            // Mostrar mensaje de error
-                        }
-                        else -> {}
-                    }
-                }
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
-                val showSuccessDialog by viewModel.showSuccessDialog.observeAsState(false)
+                val registerState by registerViewModel.registerState.observeAsState()
+                val showSuccessDialog by registerViewModel.showSuccessDialog.observeAsState(false)
+                val showErrorDialog by registerViewModel.showErrorDialog.observeAsState(false)
 
                 CrearCuentaScreen(
-                    userEmail = viewModel.userEmail,
-                    onUserEmailChanged = { viewModel.updateUserEmail(it) },
-                    userPassword = viewModel.userPassword,
-                    onUserPasswordChanged = { viewModel.updateUserPassword(it) },
-                    userName = viewModel.userName,
-                    onUserNameChanged = { viewModel.updateUserName(it) },
-                    userRole = viewModel.userRole,
-                    onUserRoleChanged = { viewModel.updateUserRole(it) },
+                    userEmail = registerViewModel.userEmail,
+                    onUserEmailChanged = { registerViewModel.updateUserEmail(it) },
+                    userPassword = registerViewModel.userPassword,
+                    onUserPasswordChanged = { registerViewModel.updateUserPassword(it) },
+                    userName = registerViewModel.userName,
+                    onUserNameChanged = { registerViewModel.updateUserName(it) },
+                    userRole = registerViewModel.userRole,
+                    onUserRoleChanged = { registerViewModel.updateUserRole(it) },
                     onRegisterButtonClicked = {
-                        if (viewModel.userPassword.isBlank()) {
-                            viewModel.updateUserPassword("")
+                        if (registerViewModel.userPassword.isBlank()) {
+                            registerViewModel.updateUserPassword("")
                         }
 
-                        viewModel.createAccount(
-                            userEmail = viewModel.userEmail.trim(),
-                            userPassword = viewModel.userPassword,
-                            userName = viewModel.userName.trim(),
-                            userRole = viewModel.userRole,
-                            onSuccess = { viewModel.setShowSuccessDialog(true) },
-                            onError = { errorMessage ->
-                                // Mostrar mensaje de error
-                            },
+                        registerViewModel.createAccount(
+                            userEmail = registerViewModel.userEmail.trim(),
+                            userPassword = registerViewModel.userPassword,
+                            userName = registerViewModel.userName.trim(),
+                            userRole = registerViewModel.userRole,
                         )
                     },
+                    registerState = registerState,
                     showSuccessDialog = showSuccessDialog,
                     onDismissSuccessDialog = {
+                        registerViewModel.setShowSuccessDialog(false)
+
                         navController.navigate(MainApplication.IniciarSesion.name) {
                             popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
                         }
-                        viewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
 
-                        viewModel.setShowSuccessDialog(false)
-                        viewModel.resetData()
+                        registerViewModel.resetData()
                     },
+                    showErrorDialog = showErrorDialog,
+                    onDismissErrorDialog = { registerViewModel.setShowErrorDialog(false) },
                 )
             }
 

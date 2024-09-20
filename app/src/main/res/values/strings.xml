@@ -24,6 +24,7 @@
     <string name="rol_docente">Docente</string>
     <string name="success">Éxito</string>
     <string name="email_verification_sent">Se ha enviado un correo de verificación a %1$s</string>
+    <string name="error">Error</string>
     <string name="accept">Aceptar</string>
 
     <!-- Pantalla de Grupos Docente -->

@@ -1,4 +1,4 @@
-package com.example.oirapp.ui
+package com.example.oirapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +22,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -41,8 +41,11 @@ fun CrearCuentaScreen(
     userRole: String,
     onUserRoleChanged: (String) -> Unit,
     onRegisterButtonClicked: () -> Unit,
+    registerState: RegisterState?,
     showSuccessDialog: Boolean,
     onDismissSuccessDialog: () -> Unit,
+    showErrorDialog: Boolean,
+    onDismissErrorDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -126,6 +129,19 @@ fun CrearCuentaScreen(
                     },
                 )
             }
+
+            if (showErrorDialog) {
+                AlertDialog(
+                    onDismissRequest = { onDismissErrorDialog() },
+                    title = { Text(text = stringResource(R.string.error)) },
+                    text = { Text(text = "Error") },
+                    confirmButton = {
+                        TextButton(onClick = { onDismissErrorDialog() }) {
+                            Text(text = stringResource(R.string.accept))
+                        }
+                    },
+                )
+            }
         }
     }
 }
@@ -139,20 +155,21 @@ val roleOptions = listOf(
 @Composable
 private fun CrearCuentaScreenPreview() {
     MyApplicationTheme {
-        val viewModel: MainViewModel = viewModel()
-
         CrearCuentaScreen(
-            userEmail = viewModel.userEmail,
-            onUserEmailChanged = { viewModel.updateUserEmail(it) },
-            userPassword = viewModel.userPassword,
-            onUserPasswordChanged = { viewModel.updateUserPassword(it) },
-            userName = viewModel.userName,
-            onUserNameChanged = { viewModel.updateUserName(it) },
-            userRole = viewModel.userRole,
-            onUserRoleChanged = { viewModel.updateUserRole(it) },
+            userEmail = "",
+            onUserEmailChanged = {},
+            userPassword = "",
+            onUserPasswordChanged = {},
+            userName = "",
+            onUserNameChanged = {},
+            userRole = "",
+            onUserRoleChanged = {},
             onRegisterButtonClicked = {},
+            registerState = null,
             showSuccessDialog = false,
             onDismissSuccessDialog = {},
+            showErrorDialog = false,
+            onDismissErrorDialog = {},
         )
     }
 }
