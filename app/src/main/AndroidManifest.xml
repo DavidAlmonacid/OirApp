@@ -35,16 +35,7 @@
             android:name=".ActualizarInformacionActivity"
             android:exported="false" />
         <activity
-            android:name=".estudiante.GruposEstudianteActivity"
-            android:exported="false" />
-        <activity
             android:name=".ChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".docente.GruposDocenteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity4"
             android:exported="false" />
     </application>
 
