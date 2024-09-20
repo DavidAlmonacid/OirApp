@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-import com.example.oirapp.ui.components.CustomButton
+import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
@@ -103,7 +103,7 @@ fun CrearCuentaScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            CustomButton(
+            PrimaryButton(
                 onClick = onRegisterButtonClicked,
                 textId = R.string.crear_cuenta,
                 modifier = Modifier.padding(bottom = 40.dp),

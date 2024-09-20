@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-import com.example.oirapp.ui.components.CustomButton
+import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
@@ -74,7 +74,7 @@ fun IniciarSesionScreen(
                 ),
             )
 
-            CustomButton(
+            PrimaryButton(
                 onClick = { onLoginButtonClicked(userEmail, userPassword) },
                 textId = R.string.ingresar,
                 modifier = Modifier.padding(top = 28.dp),
