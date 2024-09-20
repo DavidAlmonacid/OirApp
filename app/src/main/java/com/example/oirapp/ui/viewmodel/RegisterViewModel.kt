@@ -54,20 +54,20 @@ class RegisterViewModel : BaseViewModel() {
         userRole: String,
     ) {
         if (userEmail.isEmpty() || userPassword.isEmpty() || userName.isEmpty() || userRole.isEmpty()) {
-            _registerState.value = RegisterState.Error("Por favor, ingrese los campos requeridos.")
-            this.setShowErrorDialog(true)
+            _registerState.value = RegisterState.Error("Ingrese los campos requeridos.")
+            this.setShowDialog(true)
             return
         }
 
         if (userPassword.length < 6) {
             _registerState.value = RegisterState.Error("La contraseña debe tener al menos 6 caracteres.")
-            this.setShowErrorDialog(true)
+            this.setShowDialog(true)
             return
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
-            _registerState.value = RegisterState.Error("Por favor, ingrese un correo electrónico válido.")
-            this.setShowErrorDialog(true)
+            _registerState.value = RegisterState.Error("Ingrese un correo electrónico válido.")
+            this.setShowDialog(true)
             return
         }
 
@@ -80,10 +80,12 @@ class RegisterViewModel : BaseViewModel() {
                     userRole = userRole,
                 )
                 _registerState.value = RegisterState.Success("Se ha enviado un correo de verificación a $userEmail")
-                this@RegisterViewModel.setShowSuccessDialog(true)
+                this@RegisterViewModel.setShowDialog(true)
             } catch (e: Exception) {
-                _registerState.value = RegisterState.Error("Error al crear la cuenta: ${e.message}")
-                this@RegisterViewModel.setShowErrorDialog(true)
+                println("Error al crear la cuenta: ${e.message}")
+
+                _registerState.value = RegisterState.Error("Error al crear la cuenta, intente de nuevo.")
+                this@RegisterViewModel.setShowDialog(true)
             }
         }
     }
@@ -112,7 +114,3 @@ class RegisterViewModel : BaseViewModel() {
         userRole = ""
     }
 }
-
-/*
- * TODO: Si algo fue mal, mostrar mensaje de error en un AlertDialog
- */
