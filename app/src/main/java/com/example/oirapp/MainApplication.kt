@@ -33,6 +33,7 @@ import com.example.oirapp.ui.screens.GruposDocenteScreen
 import com.example.oirapp.ui.screens.GruposEstudianteScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.state.LoginState
+import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
@@ -165,8 +166,8 @@ fun MainApp(
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
-                val showSuccessDialog by registerViewModel.showSuccessDialog.observeAsState(false)
-                val showErrorDialog by registerViewModel.showErrorDialog.observeAsState(false)
+                val registerState by registerViewModel.registerState.observeAsState()
+                val showDialog by registerViewModel.showDialog.observeAsState(false)
 
                 DisposableEffect(Unit) {
                     onDispose {
@@ -196,19 +197,20 @@ fun MainApp(
                             userRole = registerViewModel.userRole,
                         )
                     },
-                    showSuccessDialog = showSuccessDialog,
-                    onDismissSuccessDialog = {
-                        registerViewModel.setShowSuccessDialog(false)
+                    registerState = registerState,
+                    showDialog = showDialog,
+                    onDismissDialog = {
+                        registerViewModel.setShowDialog(false)
 
-                        navController.navigate(MainApplication.IniciarSesion.name) {
-                            popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
+                        if (registerState is RegisterState.Success) {
+                            navController.navigate(MainApplication.IniciarSesion.name) {
+                                popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
+                            }
+                            navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+
+                            registerViewModel.resetData()
                         }
-                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
-
-                        registerViewModel.resetData()
                     },
-                    showErrorDialog = showErrorDialog,
-                    onDismissErrorDialog = { registerViewModel.setShowErrorDialog(false) },
                 )
             }
 
