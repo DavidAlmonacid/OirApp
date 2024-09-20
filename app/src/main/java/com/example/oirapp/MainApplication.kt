@@ -29,8 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
-import com.example.oirapp.ui.screens.GruposDocenteScreen
-import com.example.oirapp.ui.screens.GruposEstudianteScreen
+import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
@@ -42,8 +41,7 @@ enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
     IniciarSesion(title = R.string.iniciar_sesion),
     CrearCuenta(title = R.string.crear_cuenta),
-    GruposEstudiante(title = R.string.grupos),
-    GruposDocente(title = R.string.grupos),
+    Grupos(title = R.string.grupos),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -138,21 +136,15 @@ fun MainApp(
                     val currentState = loginState
 
                     if (currentState is LoginState.Success) {
-                        val route = if (currentState.role == "Estudiante") {
-                            "${MainApplication.GruposEstudiante.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
-                        } else {
-                            "${MainApplication.GruposDocente.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
-                        }
+                        val route = "${MainApplication.Grupos.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
 
-                        navController.navigate(route)
-                        navigationViewModel.updateCurrentScreen(
-                            if (route.contains(MainApplication.GruposEstudiante.name)) {
-                                MainApplication.GruposEstudiante
-                            } else {
-                                MainApplication.GruposDocente
-                            }
-                        )
-                    } else if (currentState is LoginState.Error) {
+                        navController.navigate(route) {
+                            popUpTo(MainApplication.IniciarSesion.name) { inclusive = true }
+                        }
+                        navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+                    }
+
+                    if (currentState is LoginState.Error) {
 
                         println("Error: ${currentState.message}")
 
@@ -215,7 +207,7 @@ fun MainApp(
             }
 
             composable(
-                route = "${MainApplication.GruposEstudiante.name}/{userName}/{userRole}/{userImageUrl}",
+                route = "${MainApplication.Grupos.name}/{userName}/{userRole}/{userImageUrl}",
                 arguments = listOf(
                     navArgument("userName") { type = NavType.StringType },
                     navArgument("userRole") { type = NavType.StringType },
@@ -226,22 +218,7 @@ fun MainApp(
                 val userRole = it.arguments?.getString("userRole") ?: ""
                 val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
 
-                GruposEstudianteScreen()
-            }
-
-            composable(
-                route = "${MainApplication.GruposDocente.name}/{userName}/{userRole}/{userImageUrl}",
-                arguments = listOf(
-                    navArgument("userName") { type = NavType.StringType },
-                    navArgument("userRole") { type = NavType.StringType },
-                    navArgument("userImageUrl") { type = NavType.StringType },
-                )
-            ) {
-                val userName = it.arguments?.getString("userName") ?: ""
-                val userRole = it.arguments?.getString("userRole") ?: ""
-                val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
-
-                GruposDocenteScreen(userName, userRole, userImageUrl)
+                GruposScreen(userName, userRole, userImageUrl)
             }
         }
     }
