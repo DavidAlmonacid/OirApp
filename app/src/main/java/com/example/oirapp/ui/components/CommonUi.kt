@@ -44,12 +44,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
-import com.example.oirapp.ui.preview.CustomPreview
+import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
 
 @Composable
-fun CustomButton(
+fun PrimaryButton(
     onClick: () -> Unit,
     @StringRes textId: Int,
     modifier: Modifier = Modifier,
@@ -71,6 +71,13 @@ fun CustomButton(
         )
     }
 }
+//@DarkLightPreviews
+//@Composable
+//private fun PrimaryButtonPreview() {
+//    MyApplicationTheme {
+//        PrimaryButton(onClick = {}, textId = R.string.iniciar_sesion)
+//    }
+//}
 
 @Composable
 fun CustomTextField(
@@ -98,6 +105,13 @@ fun CustomTextField(
             .alpha(if (value.isEmpty()) 0.6f else 1f),
     )
 }
+//@CustomPreview
+//@Composable
+//private fun CustomTextFieldPreview() {
+//    MyApplicationTheme {
+//        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,6 +158,17 @@ fun SelectRoleDropdown(
         }
     }
 }
+//@CustomPreview
+//@Composable
+//private fun SelectRoleDropdownPreview() {
+//    MyApplicationTheme {
+//        SelectRoleDropdown(
+//            options = listOf(R.string.rol_estudiante, R.string.rol_docente),
+//            selectedOption = "",
+//            onOptionSelected = {},
+//        )
+//    }
+//}
 
 @Composable
 fun UserInfo(
@@ -177,6 +202,17 @@ fun UserInfo(
         }
     }
 }
+//@DarkLightPreviews
+//@Composable
+//private fun UserInfoPreview() {
+//    MyApplicationTheme {
+//        UserInfo(
+//            userName = "David",
+//            userRole = "Estudiante",
+//            modifier = Modifier.padding(16.dp),
+//        )
+//    }
+//}
 
 @Composable
 fun GroupCard(
@@ -195,9 +231,9 @@ fun GroupCard(
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalArrangement = Arrangement.spacedBy(18.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -219,6 +255,8 @@ fun GroupCard(
                 Text(
                     text = groupName,
                     style = MaterialTheme.typography.titleLarge,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -232,70 +270,27 @@ fun GroupCard(
         }
     }
 }
-
-// Previews
 //@DarkLightPreviews
 //@Composable
-//private fun CustomButtonPreview() {
+//private fun GroupCardDocentePreview() {
 //    MyApplicationTheme {
-//        CustomButton(onClick = {}, textId = R.string.iniciar_sesion)
-//    }
-//}
-
-//@CustomPreview
-//@Composable
-//private fun CustomTextFieldPreview() {
-//    MyApplicationTheme {
-//        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
-//    }
-//}
-
-//@CustomPreview
-//@Composable
-//private fun SelectRoleDropdownPreview() {
-//    MyApplicationTheme {
-//        SelectRoleDropdown(
-//            options = listOf(R.string.rol_estudiante, R.string.rol_docente),
-//            selectedOption = "",
-//            onOptionSelected = {},
-//        )
-//    }
-//}
-
-//@CustomPreview
-//@Composable
-//private fun UserInfoPreview() {
-//    MyApplicationTheme {
-//        UserInfo(
-//            userName = "David",
-//            userRole = "Estudiante",
+//        GroupCard(
+//            groupName = "Cálculo Diferencial",
+//            groupCode = "123456",
+//            role = "Docente",
 //            modifier = Modifier.padding(16.dp),
 //        )
 //    }
 //}
-
-@CustomPreview
-@Composable
-private fun GroupCardDocentePreview() {
-    MyApplicationTheme {
-        GroupCard(
-            groupName = "Cálculo Diferencial",
-            groupCode = "123456",
-            role = "Docente",
-            modifier = Modifier.padding(16.dp),
-        )
-    }
-}
-
-@CustomPreview
-@Composable
-private fun GroupCardEstudiantePreview() {
-    MyApplicationTheme {
-        GroupCard(
-            groupName = "Inglés IV",
-            groupCode = "123456",
-            role = "Estudiante",
-            modifier = Modifier.padding(16.dp),
-        )
-    }
-}
+//@DarkLightPreviews
+//@Composable
+//private fun GroupCardEstudiantePreview() {
+//    MyApplicationTheme {
+//        GroupCard(
+//            groupName = "Inglés IV",
+//            groupCode = "123456",
+//            role = "Estudiante",
+//            modifier = Modifier.padding(16.dp),
+//        )
+//    }
+//}
