@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,6 +28,7 @@ import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -40,10 +42,9 @@ fun CrearCuentaScreen(
     userRole: String,
     onUserRoleChanged: (String) -> Unit,
     onRegisterButtonClicked: () -> Unit,
-    showSuccessDialog: Boolean,
-    onDismissSuccessDialog: () -> Unit,
-    showErrorDialog: Boolean,
-    onDismissErrorDialog: () -> Unit,
+    registerState: RegisterState?,
+    showDialog: Boolean,
+    onDismissDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -108,36 +109,27 @@ fun CrearCuentaScreen(
                 modifier = Modifier.padding(bottom = 40.dp),
             )
 
-            if (showSuccessDialog) {
+            if (showDialog) {
                 AlertDialog(
-                    onDismissRequest = { onDismissSuccessDialog() },
-                    title = { Text(text = stringResource(R.string.success)) },
-                    text = {
+                    onDismissRequest = { onDismissDialog() },
+                    title = {
                         Text(
                             text = stringResource(
-                                R.string.email_verification_sent,
-                                userEmail,
+                                if (registerState is RegisterState.Success) {
+                                    R.string.success
+                                } else {
+                                    R.string.error
+                                }
                             )
                         )
                     },
+                    text = { Text(text = registerState?.message!!) },
                     confirmButton = {
-                        TextButton(onClick = { onDismissSuccessDialog() }) {
+                        TextButton(onClick = { onDismissDialog() }) {
                             Text(text = stringResource(R.string.accept))
                         }
                     },
-                )
-            }
-
-            if (showErrorDialog) {
-                AlertDialog(
-                    onDismissRequest = { onDismissErrorDialog() },
-                    title = { Text(text = stringResource(R.string.error)) },
-                    text = { Text(text = "Error") },
-                    confirmButton = {
-                        TextButton(onClick = { onDismissErrorDialog() }) {
-                            Text(text = stringResource(R.string.accept))
-                        }
-                    },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -163,10 +155,9 @@ private fun CrearCuentaScreenPreview() {
             userRole = "",
             onUserRoleChanged = {},
             onRegisterButtonClicked = {},
-            showSuccessDialog = false,
-            onDismissSuccessDialog = {},
-            showErrorDialog = false,
-            onDismissErrorDialog = {},
+            registerState = null,
+            showDialog = false,
+            onDismissDialog = {},
         )
     }
 }
