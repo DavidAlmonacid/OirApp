@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -30,6 +32,7 @@ import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposDocenteScreen
 import com.example.oirapp.ui.screens.GruposEstudianteScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
+import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
@@ -128,8 +131,18 @@ fun MainApp(
                         navController.navigate(MainApplication.CrearCuenta.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.CrearCuenta)
                     },
-                    loginState = loginState,
-                    onNavigateToGroups = { route ->
+                )
+
+                LaunchedEffect(loginState) {
+                    val currentState = loginState
+
+                    if (currentState is LoginState.Success) {
+                        val route = if (currentState.role == "Estudiante") {
+                            "${MainApplication.GruposEstudiante.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
+                        } else {
+                            "${MainApplication.GruposDocente.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
+                        }
+
                         navController.navigate(route)
                         navigationViewModel.updateCurrentScreen(
                             if (route.contains(MainApplication.GruposEstudiante.name)) {
@@ -138,8 +151,12 @@ fun MainApp(
                                 MainApplication.GruposDocente
                             }
                         )
-                    },
-                )
+                    } else if (currentState is LoginState.Error) {
+
+                        println("Error: ${currentState.message}")
+
+                    }
+                }
 
                 /*
                  * TODO: Al navegar a la pantalla de "GruposEstudiante" o "GruposDocente",
@@ -148,9 +165,15 @@ fun MainApp(
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
-                val registerState by registerViewModel.registerState.observeAsState()
                 val showSuccessDialog by registerViewModel.showSuccessDialog.observeAsState(false)
                 val showErrorDialog by registerViewModel.showErrorDialog.observeAsState(false)
+
+                DisposableEffect(Unit) {
+                    onDispose {
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        registerViewModel.resetData()
+                    }
+                }
 
                 CrearCuentaScreen(
                     userEmail = registerViewModel.userEmail,
@@ -173,7 +196,6 @@ fun MainApp(
                             userRole = registerViewModel.userRole,
                         )
                     },
-                    registerState = registerState,
                     showSuccessDialog = showSuccessDialog,
                     onDismissSuccessDialog = {
                         registerViewModel.setShowSuccessDialog(false)
@@ -188,10 +210,6 @@ fun MainApp(
                     showErrorDialog = showErrorDialog,
                     onDismissErrorDialog = { registerViewModel.setShowErrorDialog(false) },
                 )
-
-                /*
-                 * TODO: Al realizar la acción de retroceso, actualizar el estado de la pantalla actual.
-                 */
             }
 
             composable(

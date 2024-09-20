@@ -27,7 +27,6 @@ import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -41,7 +40,6 @@ fun CrearCuentaScreen(
     userRole: String,
     onUserRoleChanged: (String) -> Unit,
     onRegisterButtonClicked: () -> Unit,
-    registerState: RegisterState?,
     showSuccessDialog: Boolean,
     onDismissSuccessDialog: () -> Unit,
     showErrorDialog: Boolean,
@@ -165,7 +163,6 @@ private fun CrearCuentaScreenPreview() {
             userRole = "",
             onUserRoleChanged = {},
             onRegisterButtonClicked = {},
-            registerState = null,
             showSuccessDialog = false,
             onDismissSuccessDialog = {},
             showErrorDialog = false,

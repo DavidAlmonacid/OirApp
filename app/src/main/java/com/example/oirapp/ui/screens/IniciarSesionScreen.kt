@@ -12,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,12 +20,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.oirapp.MainApplication
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -37,8 +34,6 @@ fun IniciarSesionScreen(
     onUserPasswordChanged: (String) -> Unit,
     onLoginButtonClicked: (String, String) -> Unit,
     onRegisterTextClicked: () -> Unit,
-    loginState: LoginState?,
-    onNavigateToGroups: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -94,18 +89,6 @@ fun IniciarSesionScreen(
             )
         }
     }
-
-    LaunchedEffect(loginState) {
-        if (loginState is LoginState.Success) {
-            val route = if (loginState.role == "Estudiante") {
-                "${MainApplication.GruposEstudiante.name}/${loginState.name}/${loginState.role}/${loginState.imageUrl}"
-            } else {
-                "${MainApplication.GruposDocente.name}/${loginState.name}/${loginState.role}/${loginState.imageUrl}"
-            }
-
-            onNavigateToGroups(route)
-        }
-    }
 }
 
 @DarkLightScreenPreviews
@@ -119,8 +102,6 @@ private fun IniciarSesionScreenPreview() {
             onUserPasswordChanged = {},
             onLoginButtonClicked = { _, _ -> },
             onRegisterTextClicked = {},
-            loginState = null,
-            onNavigateToGroups = {},
         )
     }
 }
