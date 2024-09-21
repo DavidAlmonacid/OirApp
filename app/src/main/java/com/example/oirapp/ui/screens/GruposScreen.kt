@@ -141,14 +141,6 @@ fun GruposScreen(
             }
 
             Spacer(modifier = Modifier.weight(1f))
-
-            PrimaryButton(
-                onClick = {
-                    //gruposViewModel.createGroup(groupName)
-                },
-                textId = if (userRole == "Estudiante") R.string.unirse_grupo else R.string.crear_grupo,
-                modifier = Modifier.padding(bottom = 20.dp),
-            )
         }
     }
 }

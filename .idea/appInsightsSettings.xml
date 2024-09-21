@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.oirapp" />
-                  <option name="mobileSdkAppId" value="1:404957507696:android:db1af0b6522e740be484b5" />
-                  <option name="projectId" value="oir-app-56b5e" />
-                  <option name="projectNumber" value="404957507696" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
