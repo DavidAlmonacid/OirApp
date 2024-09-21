@@ -27,9 +27,12 @@ class GruposViewModel : ViewModel() {
 
     private fun generateAccessCode(): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return (1..6)
-            .map { chars.random() }
-            .joinToString("")
-    }
+        val randomLimit = (5..chars.length).random()
 
+        val charsArray = chars.toCharArray()
+        charsArray.shuffle()
+
+        val code = String(charsArray.sliceArray((randomLimit - 5)..randomLimit))
+        return code
+    }
 }
