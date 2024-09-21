@@ -30,6 +30,8 @@
     <string name="crear_grupo">Crear grupo</string>
     <string name="unirse_grupo">Unirse a un grupo</string>
     <string name="cancel">Cancelar</string>
+    <string name="nombre_grupo">Ingrese el nombre del grupo</string>
+    <string name="codigo_acceso">Ingrese el código de acceso</string>
 
     <!-- Textos compartidos -->
     <string name="logo_description">Logo principal</string>
