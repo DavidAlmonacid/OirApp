@@ -59,9 +59,10 @@ fun GruposScreen(
     //userState: UserUiState,
     showDialog: Boolean,
     onDismissDialog: () -> Unit,
+    onConfirmDialog: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var groupName by remember { mutableStateOf("") }
+    var userInput by remember { mutableStateOf("") }
     var grupos by remember { mutableStateOf<List<Group>>(listOf()) }
 
     LaunchedEffect(Unit) {
@@ -106,13 +107,13 @@ fun GruposScreen(
 
             if (showDialog) {
                 GroupInputDialog(
-                    inputText = groupName,
-                    onInputTextChange = { newValue -> groupName = newValue },
+                    inputText = userInput,
+                    onInputTextChange = { newValue -> userInput = newValue },
                     role = userRole,
                     onDismissRequest = onDismissDialog,
-                    onConfirm = {
-                        //gruposViewModel.createGroup(groupName)
-                    },
+                    onConfirm = {onConfirmDialog(userInput)},
+
+
                 )
             }
 
@@ -285,6 +286,7 @@ private fun GruposScreenDocentePreview() {
             userImageUrl = "",
             showDialog = true,
             onDismissDialog = {},
+            onConfirmDialog = {},
         )
     }
 }
@@ -299,6 +301,7 @@ private fun GruposScreenEstudiantePreview() {
             userImageUrl = "",
             showDialog = false,
             onDismissDialog = {},
+            onConfirmDialog = {},
         )
     }
 }

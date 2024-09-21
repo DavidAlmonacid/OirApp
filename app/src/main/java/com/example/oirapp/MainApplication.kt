@@ -236,7 +236,18 @@ fun MainApp(
                     //gruposViewModel = gruposViewModel,
                     showDialog = showDialog,
                     onDismissDialog = { gruposViewModel.setShowDialog(false) },
-                )
+                        onConfirmDialog = { userInput ->
+                            if (userRole == "Docente") {
+                                gruposViewModel.createGroup(userInput)
+                            }
+                            else
+                            {
+                                println("No se puede crear grupo")
+                            }
+                            gruposViewModel.setShowDialog(false)
+                        },
+                    )
+
             }
         }
     }
