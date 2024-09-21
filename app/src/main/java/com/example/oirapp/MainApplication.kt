@@ -102,7 +102,7 @@ fun MainApp(
         },
         floatingActionButton = {
             if (currentScreen == MainApplication.Grupos) {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
+                FloatingActionButton(onClick = { gruposViewModel.setShowDialog(true) }) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 }
             }
