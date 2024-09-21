@@ -38,7 +38,6 @@ import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
-import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.UserInfo
 import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
@@ -201,51 +200,75 @@ fun GroupInputDialog(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    AlertDialog(onDismissRequest = onDismissRequest, title = {
-        Text(
-            text = stringResource(
-                if (role == "Estudiante") {
-                    R.string.codigo_acceso
-                } else {
-                    R.string.nombre_grupo
-                }
-            )
-        )
-    }, text = {
-        Column {
-            CustomTextField(
-                value = inputText,
-                onValueChange = onInputTextChange,
-                labelId = R.string.iniciar_sesion
-            )
-        }
-    }, confirmButton = {
-        TextButton(onClick = onConfirm) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
             Text(
-                text = stringResource(
+                text = "Ingrese el " + stringResource(
                     if (role == "Estudiante") {
-                        R.string.unirse_grupo
+                        R.string.codigo_acceso
                     } else {
-                        R.string.crear_grupo
+                        R.string.nombre_grupo
                     }
-                )
+                ).lowercase()
             )
-        }
-    }, dismissButton = {
-        TextButton(onClick = onDismissRequest) {
-            Text(text = stringResource(R.string.cancel))
-        }
-    })
+        },
+        text = {
+            Column {
+                CustomTextField(
+                    value = inputText,
+                    onValueChange = onInputTextChange,
+                    labelId = if (role == "Estudiante") {
+                        R.string.codigo_acceso
+                    } else {
+                        R.string.nombre_grupo
+                    },
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = stringResource(
+                        if (role == "Estudiante") {
+                            R.string.unirse
+                        } else {
+                            R.string.crear_grupo
+                        }
+                    )
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        },
+    )
 }
 
 @CustomPreview
 @Composable
-private fun GroupInputDialogPreview() {
+private fun GroupInputDialogDocentePreview() {
     MyApplicationTheme {
         GroupInputDialog(
             inputText = "",
             onInputTextChange = {},
             role = "Docente",
+            onDismissRequest = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@CustomPreview
+@Composable
+private fun GroupInputDialogEstudiantePreview() {
+    MyApplicationTheme {
+        GroupInputDialog(
+            inputText = "",
+            onInputTextChange = {},
+            role = "Estudiante",
             onDismissRequest = {},
             onConfirm = {},
         )
