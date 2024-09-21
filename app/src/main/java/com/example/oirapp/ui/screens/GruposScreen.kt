@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,28 +32,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
+import com.example.oirapp.data.network.Group
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.UserInfo
+import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
-import io.github.jan.supabase.postgrest.postgrest
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.oirapp.data.network.Group
-import com.example.oirapp.ui.components.CustomTextField
-import com.example.oirapp.ui.preview.CustomPreview
-import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.utils.removeUppercaseAccents
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -76,8 +67,7 @@ fun GruposScreen(
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            grupos = supabaseClient.from("grupos")
-                .select().decodeList<Group>()
+            grupos = supabaseClient.from("grupos").select().decodeList<Group>()
         }
     }
 
@@ -119,6 +109,7 @@ fun GruposScreen(
                 GroupInputDialog(
                     inputText = groupName,
                     onInputTextChange = { newValue -> groupName = newValue },
+                    role = userRole,
                     onDismissRequest = onDismissDialog,
                     onConfirm = {
                         //gruposViewModel.createGroup(groupName)
@@ -214,50 +205,47 @@ fun GroupCard(
 fun GroupInputDialog(
     inputText: String,
     onInputTextChange: (String) -> Unit,
+    role: String,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text(
-            text =
-//            stringResource(
-//                if (inputText.isEmpty()) {
-//                    R.string.unirse_grupo
-//                } else {
-//                    R.string.crear_grupo
-//                }
-//            )
-            "Ingrese el nombre del grupo o el código de acceso"
-        ) },
-        text = {
-            Column {
-                CustomTextField(
-                    value = inputText,
-                    onValueChange = onInputTextChange,
-                    labelId = R.string.iniciar_sesion
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(text = stringResource(
-//                    if (userState.role == "Estudiante") {
-//                        R.string.unirse_grupo
-//                    } else {
-//                        R.string.crear_grupo
-//                    }
-                    R.string.accept
-                ))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(text = stringResource(R.string.cancel))
-            }
+    AlertDialog(onDismissRequest = onDismissRequest, title = {
+        Text(
+            text = stringResource(
+                if (role == "Estudiante") {
+                    R.string.codigo_acceso
+                } else {
+                    R.string.nombre_grupo
+                }
+            )
+        )
+    }, text = {
+        Column {
+            CustomTextField(
+                value = inputText,
+                onValueChange = onInputTextChange,
+                labelId = R.string.iniciar_sesion
+            )
         }
-    )
+    }, confirmButton = {
+        TextButton(onClick = onConfirm) {
+            Text(
+                text = stringResource(
+                    if (role == "Estudiante") {
+                        R.string.unirse_grupo
+                    } else {
+                        R.string.crear_grupo
+                    }
+                )
+            )
+        }
+    }, dismissButton = {
+        TextButton(onClick = onDismissRequest) {
+            Text(text = stringResource(R.string.cancel))
+        }
+    })
 }
+
 @CustomPreview
 @Composable
 private fun GroupInputDialogPreview() {
@@ -265,6 +253,7 @@ private fun GroupInputDialogPreview() {
         GroupInputDialog(
             inputText = "",
             onInputTextChange = {},
+            role = "Docente",
             onDismissRequest = {},
             onConfirm = {},
         )
