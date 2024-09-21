@@ -1,8 +1,8 @@
 package com.example.oirapp.ui.state
 
 data class UserUiState(
-    val email: String = "",
-    val password: String = "",
+    val id: String = "",
     val name: String = "",
     val role: String = "",
+    val imageUrl: String = "",
 )
