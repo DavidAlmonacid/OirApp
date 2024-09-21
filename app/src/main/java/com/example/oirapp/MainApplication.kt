@@ -4,7 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
+import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
@@ -82,20 +85,26 @@ fun MainApp(
     navigationViewModel: NavigationViewModel = viewModel(),
     registerViewModel: RegisterViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
+    gruposViewModel: GruposViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
+    val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
+
     Scaffold(
         topBar = {
-            val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
-
-            println("Current Screen: $currentScreen")
-
             if (currentScreen != MainApplication.Bienvenida) {
                 MainAppBar(
                     currentScreen = currentScreen,
                     canNavigateBack = false,
                     navigateUp = {},
                 )
+            }
+        },
+        floatingActionButton = {
+            if (currentScreen == MainApplication.Grupos) {
+                FloatingActionButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
             }
         },
     ) { innerPadding ->
@@ -214,11 +223,20 @@ fun MainApp(
                     navArgument("userImageUrl") { type = NavType.StringType },
                 )
             ) {
+                val showDialog by gruposViewModel.showDialog.observeAsState(false)
+
                 val userName = it.arguments?.getString("userName") ?: ""
                 val userRole = it.arguments?.getString("userRole") ?: ""
                 val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
 
-                GruposScreen(userName, userRole, userImageUrl)
+                GruposScreen(
+                    userName = userName,
+                    userRole = userRole,
+                    userImageUrl = userImageUrl,
+                    //gruposViewModel = gruposViewModel,
+                    showDialog = showDialog,
+                    onDismissDialog = { gruposViewModel.setShowDialog(false) },
+                )
             }
         }
     }
