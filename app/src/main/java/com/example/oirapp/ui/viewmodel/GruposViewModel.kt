@@ -1,6 +1,5 @@
 package com.example.oirapp.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import io.github.jan.supabase.postgrest.postgrest
@@ -8,7 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-class GruposViewModel : ViewModel() {
+class GruposViewModel : BaseViewModel() {
     fun createGroup(groupName: String) {
         val accessCode = generateAccessCode()
         viewModelScope.launch {
