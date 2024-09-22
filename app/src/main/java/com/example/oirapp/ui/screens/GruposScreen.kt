@@ -41,6 +41,7 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.UserInfo
 import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
 import io.github.jan.supabase.postgrest.from
@@ -49,6 +50,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun GruposScreen(
+    //userId: String,
     userName: String,
     userRole: String,
     /*
@@ -56,10 +58,10 @@ fun GruposScreen(
      */
     userImageUrl: String,
     //gruposViewModel: GruposViewModel,
-    //userState: UserUiState,
+    userState: UserUiState,
     showDialog: Boolean,
     onDismissDialog: () -> Unit,
-    onConfirmDialog: (String) -> Unit,
+    onConfirmDialog: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var userInput by remember { mutableStateOf("") }
@@ -82,7 +84,7 @@ fun GruposScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 20.dp),
         ) {
-            UserInfo(userName, userRole)
+            UserInfo(userState.name, userRole)
 
             HorizontalDivider(
                 thickness = 2.dp,
@@ -111,7 +113,7 @@ fun GruposScreen(
                     onInputTextChange = { newValue -> userInput = newValue },
                     role = userRole,
                     onDismissRequest = onDismissDialog,
-                    onConfirm = {onConfirmDialog(userInput)},
+                    onConfirm = {onConfirmDialog(userInput, userState.id)},
 
 
                 )
@@ -286,7 +288,13 @@ private fun GruposScreenDocentePreview() {
             userImageUrl = "",
             showDialog = true,
             onDismissDialog = {},
-            onConfirmDialog = {},
+            onConfirmDialog = { _, _ -> },
+            userState = UserUiState(
+                id = "9499763e-b013-4e76-a714-52d8ba052886",
+                name = "Francisco Garzón",
+                role = "Docente",
+                imageUrl = "",
+            ),
         )
     }
 }
@@ -301,7 +309,13 @@ private fun GruposScreenEstudiantePreview() {
             userImageUrl = "",
             showDialog = false,
             onDismissDialog = {},
-            onConfirmDialog = {},
+            onConfirmDialog = { _, _ -> },
+            userState = UserUiState(
+                id = "9499763e-b013-4e76-a714-52d8ba052886",
+                name = "David Almonacid",
+                role = "Estudiante",
+                imageUrl = "",
+            ),
         )
     }
 }

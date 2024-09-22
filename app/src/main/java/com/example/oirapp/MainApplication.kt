@@ -39,6 +39,7 @@ import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
+import androidx.compose.runtime.collectAsState
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -145,7 +146,7 @@ fun MainApp(
                     val currentState = loginState
 
                     if (currentState is LoginState.Success) {
-                        val route = "${MainApplication.Grupos.name}/${currentState.name}/${currentState.role}/${currentState.imageUrl}"
+                        val route = "${MainApplication.Grupos.name}/${currentState.data.id}/${currentState.data.name}/${currentState.data.role}/${currentState.data.imageUrl}"
 
                         navController.navigate(route) {
                             popUpTo(MainApplication.IniciarSesion.name) { inclusive = true }
@@ -216,29 +217,32 @@ fun MainApp(
             }
 
             composable(
-                route = "${MainApplication.Grupos.name}/{userName}/{userRole}/{userImageUrl}",
+                route = "${MainApplication.Grupos.name}/{userId}/{userName}/{userRole}/{userImageUrl}",
                 arguments = listOf(
+                    navArgument("userId") { type = NavType.StringType },
                     navArgument("userName") { type = NavType.StringType },
                     navArgument("userRole") { type = NavType.StringType },
                     navArgument("userImageUrl") { type = NavType.StringType },
                 )
             ) {
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
-
+                val userUiState by loginViewModel.userUiState.collectAsState()
+                val userId = it.arguments?.getString("userId") ?: ""
                 val userName = it.arguments?.getString("userName") ?: ""
                 val userRole = it.arguments?.getString("userRole") ?: ""
                 val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
 
                 GruposScreen(
+                    //userId = userId,
                     userName = userName,
                     userRole = userRole,
                     userImageUrl = userImageUrl,
-                    //gruposViewModel = gruposViewModel,
+                    userState = userUiState,
                     showDialog = showDialog,
                     onDismissDialog = { gruposViewModel.setShowDialog(false) },
-                        onConfirmDialog = { userInput ->
+                        onConfirmDialog = { userInput, userId ->
                             if (userRole == "Docente") {
-                                gruposViewModel.createGroup(userInput)
+                                gruposViewModel.createGroup(userInput, userId)
                             }
                             else
                             {

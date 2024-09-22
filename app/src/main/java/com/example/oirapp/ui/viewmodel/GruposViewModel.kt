@@ -8,19 +8,19 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class GruposViewModel : BaseViewModel() {
-    fun createGroup(groupName: String) {
+    fun createGroup(groupName: String, idDocente: String) {
         val accessCode = generateAccessCode()
         viewModelScope.launch {
-            createGroupSuspend(groupName, accessCode)
+            createGroupSuspend(groupName, accessCode, idDocente)
         }
     }
 
-    private suspend fun createGroupSuspend(groupName: String, accessCode: String) {
+    private suspend fun createGroupSuspend(groupName: String, accessCode: String, idDocente: String) {
         val table = supabaseClient.postgrest["grupos"]
         table.insert(buildJsonObject {
             put("nombre_grupo", groupName)
             put("codigo_acceso", accessCode)
-            put("id_docente", "9499763e-b013-4e76-a714-52d8ba052886")
+            put("id_docente", idDocente)
         })
     }
 

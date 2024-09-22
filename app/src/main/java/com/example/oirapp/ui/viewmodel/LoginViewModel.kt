@@ -8,20 +8,30 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.state.LoginState
+import com.example.oirapp.ui.state.UserUiState
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonPrimitive
 
 class LoginViewModel : BaseViewModel() {
-    private val _loginState = MutableLiveData<LoginState>()
-    val loginState: LiveData<LoginState> = _loginState
+    private val _loginState = MutableLiveData<LoginState<UserUiState>>()
+    val loginState: LiveData<LoginState<UserUiState>> = _loginState
+
+    private val _userUiState = MutableStateFlow(UserUiState())
+    val userUiState: StateFlow<UserUiState> = _userUiState.asStateFlow()
 
     var userEmail by mutableStateOf("")
         private set
 
     var userPassword by mutableStateOf("")
         private set
+
+    //var userUiState by mutableStateOf(UserUiState())
+    //  private set
 
     fun updateUserEmail(email: String) {
         userEmail = email
@@ -49,11 +59,15 @@ class LoginViewModel : BaseViewModel() {
                 val userName = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content
                 val userImageUrl = user?.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
 
-                _loginState.value = LoginState.Success(
-                    role = userRole,
-                    name = userName,
-                    imageUrl = userImageUrl,
+                val newUserUiState = UserUiState(
+                    id = user?.id ?: "",
+                    name = userName ?: "",
+                    role = userRole ?: "",
+                    imageUrl = userImageUrl ?: ""
                 )
+
+                _userUiState.value = newUserUiState
+                _loginState.value = LoginState.Success(newUserUiState)
 
                 resetData()
             } catch (e: Exception) {
