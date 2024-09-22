@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -24,11 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
@@ -39,7 +38,6 @@ import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
-import androidx.compose.runtime.collectAsState
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -56,6 +54,11 @@ fun MainAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    /*
+     * TODO: El usuario puede cerrar sesión
+     */
+
     TopAppBar(
         title = {
             Text(
@@ -143,28 +146,15 @@ fun MainApp(
                 )
 
                 LaunchedEffect(loginState) {
-                    val currentState = loginState
+                    if (loginState is LoginState.Success) {
+                        println((loginState as LoginState.Success).message)
 
-                    if (currentState is LoginState.Success) {
-                        val route = "${MainApplication.Grupos.name}/${currentState.data.id}/${currentState.data.name}/${currentState.data.role}/${currentState.data.imageUrl}"
-
-                        navController.navigate(route) {
+                        navController.navigate(MainApplication.Grupos.name) {
                             popUpTo(MainApplication.IniciarSesion.name) { inclusive = true }
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                     }
-
-                    if (currentState is LoginState.Error) {
-
-                        println("Error: ${currentState.message}")
-
-                    }
                 }
-
-                /*
-                 * TODO: Al navegar a la pantalla de "GruposEstudiante" o "GruposDocente",
-                 *  quitar todas las pantallas de la pila de navegación excepto la pantalla actual.
-                 */
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
@@ -216,42 +206,26 @@ fun MainApp(
                 )
             }
 
-            composable(
-                route = "${MainApplication.Grupos.name}/{userId}/{userName}/{userRole}/{userImageUrl}",
-                arguments = listOf(
-                    navArgument("userId") { type = NavType.StringType },
-                    navArgument("userName") { type = NavType.StringType },
-                    navArgument("userRole") { type = NavType.StringType },
-                    navArgument("userImageUrl") { type = NavType.StringType },
-                )
-            ) {
+            composable(route = MainApplication.Grupos.name) {
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
                 val userUiState by loginViewModel.userUiState.collectAsState()
-                val userId = it.arguments?.getString("userId") ?: ""
-                val userName = it.arguments?.getString("userName") ?: ""
-                val userRole = it.arguments?.getString("userRole") ?: ""
-                val userImageUrl = it.arguments?.getString("userImageUrl") ?: ""
 
                 GruposScreen(
-                    //userId = userId,
-                    userName = userName,
-                    userRole = userRole,
-                    userImageUrl = userImageUrl,
                     userState = userUiState,
+                    userInput = gruposViewModel.userInput,
+                    onUserInputChanged = { gruposViewModel.updateUserInput(it) },
                     showDialog = showDialog,
                     onDismissDialog = { gruposViewModel.setShowDialog(false) },
-                        onConfirmDialog = { userInput, userId ->
-                            if (userRole == "Docente") {
-                                gruposViewModel.createGroup(userInput, userId)
-                            }
-                            else
-                            {
-                                println("No se puede crear grupo")
-                            }
-                            gruposViewModel.setShowDialog(false)
-                        },
-                    )
+                    onConfirmDialog = { userInput, userId ->
+                        if (userUiState.role == "Docente") {
+                            gruposViewModel.createGroup(userInput, userId)
+                        } else {
+                            println("No se puede crear grupo")
+                        }
 
+                        gruposViewModel.setShowDialog(false)
+                    },
+                )
             }
         }
     }
