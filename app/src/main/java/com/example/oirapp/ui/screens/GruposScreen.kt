@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +38,6 @@ import com.example.oirapp.data.network.Group
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.UserInfo
-import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
@@ -50,21 +48,21 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun GruposScreen(
-    //userId: String,
-    userName: String,
-    userRole: String,
-    /*
-     * TODO: Poder agregar una imagen desde un URL proveniente de Supabase
-     */
-    userImageUrl: String,
-    //gruposViewModel: GruposViewModel,
     userState: UserUiState,
+    userInput: String,
+    onUserInputChanged: (String) -> Unit,
     showDialog: Boolean,
     onDismissDialog: () -> Unit,
     onConfirmDialog: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var userInput by remember { mutableStateOf("") }
+
+    /*
+     * TODO: Poder agregar una imagen desde un URL proveniente de Supabase
+     */
+
+    println("userImageUrl: ${userState.imageUrl}")
+
     var grupos by remember { mutableStateOf<List<Group>>(listOf()) }
 
     LaunchedEffect(Unit) {
@@ -72,8 +70,6 @@ fun GruposScreen(
             grupos = supabaseClient.from("grupos").select().decodeList<Group>()
         }
     }
-
-    println("userImageUrl: $userImageUrl")
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -84,7 +80,7 @@ fun GruposScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 20.dp),
         ) {
-            UserInfo(userState.name, userRole)
+            UserInfo(userName = userState.name, userRole = userState.role)
 
             HorizontalDivider(
                 thickness = 2.dp,
@@ -95,10 +91,6 @@ fun GruposScreen(
             )
 
             /*
-             * TODO: El usuario puede cerrar sesión
-             */
-
-            /*
              * TODO: El docente puede crear grupos y estos serán mostrados en una lista
              *  con su respectivo nombre, código y color
              */
@@ -107,33 +99,29 @@ fun GruposScreen(
              * TODO: El estudiante puede unirse a un grupo con un código y este será mostrado en una lista
              */
 
-            if (showDialog) {
-                GroupInputDialog(
-                    inputText = userInput,
-                    onInputTextChange = { newValue -> userInput = newValue },
-                    role = userRole,
-                    onDismissRequest = onDismissDialog,
-                    onConfirm = {onConfirmDialog(userInput, userState.id)},
-
-
-                )
-            }
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 20.dp),
             ) {
                 items(grupos) { group ->
                     GroupCard(
                         groupName = group.name,
                         groupCode = group.code,
-                        role = userRole,
+                        role = userState.role,
                         onClick = {},
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            if (showDialog) {
+                GroupInputDialog(
+                    inputText = userInput,
+                    onInputTextChange = { newValue -> onUserInputChanged(newValue) },
+                    role = userState.role,
+                    onDismissRequest = onDismissDialog,
+                    onConfirm = { onConfirmDialog(userInput, userState.id) },
+                )
+            }
         }
     }
 }
@@ -208,74 +196,32 @@ fun GroupInputDialog(
         title = {
             Text(
                 text = "Ingrese el " + stringResource(
-                    if (role == "Estudiante") {
-                        R.string.codigo_acceso
-                    } else {
-                        R.string.nombre_grupo
-                    }
-                ).lowercase()
+                    if (role == "Estudiante") R.string.codigo_acceso else R.string.nombre_grupo
+                ).lowercase(),
             )
         },
         text = {
-            Column {
-                CustomTextField(
-                    value = inputText,
-                    onValueChange = onInputTextChange,
-                    labelId = if (role == "Estudiante") {
-                        R.string.codigo_acceso
-                    } else {
-                        R.string.nombre_grupo
-                    },
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = stringResource(
-                        if (role == "Estudiante") {
-                            R.string.unirse
-                        } else {
-                            R.string.crear_grupo
-                        }
-                    )
-                )
-            }
+            CustomTextField(
+                value = inputText,
+                onValueChange = { newValue -> onInputTextChange(newValue) },
+                labelId = if (role == "Estudiante") R.string.codigo_acceso else R.string.nombre_grupo,
+            )
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
                 Text(text = stringResource(R.string.cancel))
             }
         },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = stringResource(
+                        if (role == "Estudiante") R.string.unirse else R.string.crear_grupo
+                    )
+                )
+            }
+        },
     )
-}
-
-@CustomPreview
-@Composable
-private fun GroupInputDialogDocentePreview() {
-    MyApplicationTheme {
-        GroupInputDialog(
-            inputText = "",
-            onInputTextChange = {},
-            role = "Docente",
-            onDismissRequest = {},
-            onConfirm = {},
-        )
-    }
-}
-
-@CustomPreview
-@Composable
-private fun GroupInputDialogEstudiantePreview() {
-    MyApplicationTheme {
-        GroupInputDialog(
-            inputText = "",
-            onInputTextChange = {},
-            role = "Estudiante",
-            onDismissRequest = {},
-            onConfirm = {},
-        )
-    }
 }
 
 @DarkLightScreenPreviews
@@ -283,18 +229,17 @@ private fun GroupInputDialogEstudiantePreview() {
 private fun GruposScreenDocentePreview() {
     MyApplicationTheme {
         GruposScreen(
-            userName = "Francisco Garzón",
-            userRole = "Docente",
-            userImageUrl = "",
-            showDialog = true,
-            onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
             userState = UserUiState(
-                id = "9499763e-b013-4e76-a714-52d8ba052886",
+                id = "",
                 name = "Francisco Garzón",
                 role = "Docente",
                 imageUrl = "",
             ),
+            userInput = "",
+            onUserInputChanged = {},
+            showDialog = true,
+            onDismissDialog = {},
+            onConfirmDialog = { _, _ -> },
         )
     }
 }
@@ -304,18 +249,17 @@ private fun GruposScreenDocentePreview() {
 private fun GruposScreenEstudiantePreview() {
     MyApplicationTheme {
         GruposScreen(
-            userName = "David Almonacid",
-            userRole = "Estudiante",
-            userImageUrl = "",
-            showDialog = false,
-            onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
             userState = UserUiState(
-                id = "9499763e-b013-4e76-a714-52d8ba052886",
+                id = "",
                 name = "David Almonacid",
                 role = "Estudiante",
                 imageUrl = "",
             ),
+            userInput = "",
+            onUserInputChanged = {},
+            showDialog = true,
+            onDismissDialog = {},
+            onConfirmDialog = { _, _ -> },
         )
     }
 }
