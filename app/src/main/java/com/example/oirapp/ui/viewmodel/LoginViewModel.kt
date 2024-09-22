@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonPrimitive
 
 class LoginViewModel : BaseViewModel() {
-    private val _loginState = MutableLiveData<LoginState<UserUiState>>()
-    val loginState: LiveData<LoginState<UserUiState>> = _loginState
+    private val _loginState = MutableLiveData<LoginState>()
+    val loginState: LiveData<LoginState> = _loginState
 
     private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState: StateFlow<UserUiState> = _userUiState.asStateFlow()
@@ -29,9 +29,6 @@ class LoginViewModel : BaseViewModel() {
 
     var userPassword by mutableStateOf("")
         private set
-
-    //var userUiState by mutableStateOf(UserUiState())
-    //  private set
 
     fun updateUserEmail(email: String) {
         userEmail = email
@@ -59,16 +56,14 @@ class LoginViewModel : BaseViewModel() {
                 val userName = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content
                 val userImageUrl = user?.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
 
-                val newUserUiState = UserUiState(
+                _userUiState.value = UserUiState(
                     id = user?.id ?: "",
                     name = userName ?: "",
                     role = userRole ?: "",
-                    imageUrl = userImageUrl ?: ""
+                    imageUrl = userImageUrl ?: "",
                 )
 
-                _userUiState.value = newUserUiState
-                _loginState.value = LoginState.Success(newUserUiState)
-
+                _loginState.value = LoginState.Success("Inicio de sesión exitoso.")
                 resetData()
             } catch (e: Exception) {
                 when (e.message) {
