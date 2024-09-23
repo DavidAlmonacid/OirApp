@@ -38,6 +38,11 @@ class LoginViewModel : BaseViewModel() {
         userPassword = password
     }
 
+    private fun resetData() {
+        userEmail = ""
+        userPassword = ""
+    }
+
     fun signInWithEmail(userEmail: String, userPassword: String) {
         if (userEmail.isEmpty() || userPassword.isEmpty()) {
             _loginState.value = LoginState.Error("Por favor, ingrese los campos requeridos.")
@@ -81,11 +86,6 @@ class LoginViewModel : BaseViewModel() {
                 println("Error: ${e.message}")
             }
         }
-    }
-
-    private fun resetData() {
-        userEmail = ""
-        userPassword = ""
     }
 
     fun signOut() {
