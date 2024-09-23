@@ -84,11 +84,13 @@ fun MainAppBar(
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO: Open menu */ }) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(R.string.open_menu),
-                )
+            if (currentScreen == MainApplication.Grupos) {
+                IconButton(onClick = { /* TODO: Open menu */ }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.open_menu),
+                    )
+                }
             }
         },
         modifier = modifier,
