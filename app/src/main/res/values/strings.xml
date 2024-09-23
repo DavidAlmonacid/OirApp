@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Oir App</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <!-- Top App Bar -->
     <string name="back_button">Back</string>
@@ -8,6 +7,10 @@
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="grupos">Grupos</string>
+
+    <!-- Menú opciones -->
+    <string name="mi_cuenta">Mi cuenta</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
 
     <!-- Pantalla de Bienvenida -->
     <string name="bienvenida1">Oir App ayuda a personas con discapacidad auditiva en el ingreso y desarrollo de la educación superior.</string>
