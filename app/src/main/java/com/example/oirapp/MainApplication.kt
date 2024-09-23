@@ -150,19 +150,30 @@ fun MainApp(
 
             composable(route = MainApplication.IniciarSesion.name) {
                 val loginState by loginViewModel.loginState.observeAsState()
+                val showDialog by loginViewModel.showDialog.observeAsState(false)
 
                 IniciarSesionScreen(
                     userEmail = loginViewModel.userEmail,
                     onUserEmailChanged = { loginViewModel.updateUserEmail(it) },
                     userPassword = loginViewModel.userPassword,
                     onUserPasswordChanged = { loginViewModel.updateUserPassword(it) },
-                    onLoginButtonClicked = { email, password ->
-                        loginViewModel.signInWithEmail(email, password)
+                    onLoginButtonClicked = {
+                        if (loginViewModel.userPassword.isBlank()) {
+                            loginViewModel.updateUserPassword("")
+                        }
+
+                        loginViewModel.signInWithEmail(
+                            userEmail = loginViewModel.userEmail.trim(),
+                            userPassword = loginViewModel.userPassword,
+                        )
                     },
                     onRegisterTextClicked = {
                         navController.navigate(MainApplication.CrearCuenta.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.CrearCuenta)
                     },
+                    loginState = loginState,
+                    showDialog = showDialog,
+                    onDismissDialog = { loginViewModel.setShowDialog(false) },
                 )
 
                 LaunchedEffect(loginState) {
