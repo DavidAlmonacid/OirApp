@@ -90,8 +90,9 @@ class LoginViewModel : BaseViewModel() {
 
     fun signOut() {
         viewModelScope.launch {
-            supabaseClient.auth.signOut()
+            _loginState.value = LoginState.Idle
             _userUiState.value = UserUiState()
+            supabaseClient.auth.signOut()
         }
     }
 }

@@ -126,7 +126,7 @@ fun MainApp(
                     currentScreen = currentScreen,
                     canNavigateBack = false,
                     navigateUp = {},
-                    onMenuButtonClick = { showMenuCard.value = !showMenuCard.value }
+                    onMenuButtonClick = { showMenuCard.value = !showMenuCard.value },
                 )
             }
         },
@@ -259,21 +259,24 @@ fun MainApp(
     if (showMenuCard.value) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f))
-                .clickable { showMenuCard.value = false }
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(onClick = { showMenuCard.value = false }),
         ) {
             MenuCard(
                 onCloseSession = {
-                    //loginViewModel.signOut()
-                     navController.navigate(MainApplication.IniciarSesion.name) {
+                    loginViewModel.signOut()
+
+                    showMenuCard.value = false
+
+                    navController.navigate(MainApplication.IniciarSesion.name) {
                         popUpTo(MainApplication.Grupos.name) { inclusive = true }
                     }
                     navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(end = 24.dp, top = 88.dp),
+                    .padding(top = 88.dp, end = 24.dp),
             )
         }
     }
