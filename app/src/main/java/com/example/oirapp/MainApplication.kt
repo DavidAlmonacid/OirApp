@@ -1,7 +1,6 @@
 package com.example.oirapp
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,9 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,11 +65,6 @@ fun MainAppBar(
     onMenuButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    /*
-     * TODO: El usuario puede cerrar sesión
-     */
-
     TopAppBar(
         title = {
             Text(
@@ -117,7 +111,7 @@ fun MainApp(
     navController: NavHostController = rememberNavController(),
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
-    val showMenuCard = remember { mutableStateOf(false) }
+    var showMenuCard by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -126,7 +120,7 @@ fun MainApp(
                     currentScreen = currentScreen,
                     canNavigateBack = false,
                     navigateUp = {},
-                    onMenuButtonClick = { showMenuCard.value = !showMenuCard.value },
+                    onMenuButtonClick = { showMenuCard = true },
                 )
             }
         },
@@ -237,11 +231,14 @@ fun MainApp(
                 val userUiState by loginViewModel.userUiState.collectAsState()
 
                 GruposScreen(
-                    userState = userUiState,
+                    userUiState = userUiState,
                     userInput = gruposViewModel.userInput,
                     onUserInputChanged = { gruposViewModel.updateUserInput(it) },
                     showDialog = showDialog,
-                    onDismissDialog = { gruposViewModel.setShowDialog(false) },
+                    onDismissDialog = {
+                        gruposViewModel.setShowDialog(false)
+                        gruposViewModel.resetData()
+                    },
                     onConfirmDialog = { userInput, userId ->
                         if (userUiState.role == "Docente") {
                             gruposViewModel.createGroup(userInput, userId)
@@ -256,18 +253,17 @@ fun MainApp(
         }
     }
 
-    if (showMenuCard.value) {
+    if (showMenuCard) {
         Box(
             modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
-            .clickable(onClick = { showMenuCard.value = false }),
+                .fillMaxSize()
+                .clickable(onClick = { showMenuCard = false }),
         ) {
             MenuCard(
                 onCloseSession = {
                     loginViewModel.signOut()
 
-                    showMenuCard.value = false
+                    showMenuCard = false
 
                     navController.navigate(MainApplication.IniciarSesion.name) {
                         popUpTo(MainApplication.Grupos.name) { inclusive = true }
@@ -276,7 +272,7 @@ fun MainApp(
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 88.dp, end = 24.dp),
+                    .padding(top = 80.dp, end = 24.dp),
             )
         }
     }
