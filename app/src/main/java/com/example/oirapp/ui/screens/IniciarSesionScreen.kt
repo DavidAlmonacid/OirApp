@@ -5,13 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import com.example.oirapp.R
 import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -33,8 +37,11 @@ fun IniciarSesionScreen(
     onUserEmailChanged: (String) -> Unit,
     userPassword: String,
     onUserPasswordChanged: (String) -> Unit,
-    onLoginButtonClicked: (String, String) -> Unit,
+    onLoginButtonClicked: () -> Unit,
     onRegisterTextClicked: () -> Unit,
+    loginState: LoginState?,
+    showDialog: Boolean,
+    onDismissDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -74,12 +81,12 @@ fun IniciarSesionScreen(
                     imeAction = ImeAction.Done,
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { onLoginButtonClicked(userEmail, userPassword) }
+                    onDone = { onLoginButtonClicked() }
                 ),
             )
 
             PrimaryButton(
-                onClick = { onLoginButtonClicked(userEmail, userPassword) },
+                onClick = onLoginButtonClicked,
                 textId = R.string.ingresar,
                 modifier = Modifier.padding(top = 28.dp),
             )
@@ -93,6 +100,20 @@ fun IniciarSesionScreen(
             )
         }
     }
+
+    if (showDialog && loginState is LoginState.Error) {
+        AlertDialog(
+            onDismissRequest = { onDismissDialog() },
+            title = { Text(text = stringResource(R.string.error)) },
+            text = { Text(text = loginState.message) },
+            confirmButton = {
+                TextButton(onClick = { onDismissDialog() }) {
+                    Text(text = stringResource(R.string.accept))
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @DarkLightScreenPreviews
@@ -104,8 +125,11 @@ private fun IniciarSesionScreenPreview() {
             onUserEmailChanged = {},
             userPassword = "",
             onUserPasswordChanged = {},
-            onLoginButtonClicked = { _, _ -> },
+            onLoginButtonClicked = {},
             onRegisterTextClicked = {},
+            loginState = null,
+            showDialog = true,
+            onDismissDialog = {},
         )
     }
 }

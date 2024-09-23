@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.viewmodel
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -45,7 +46,14 @@ class LoginViewModel : BaseViewModel() {
 
     fun signInWithEmail(userEmail: String, userPassword: String) {
         if (userEmail.isEmpty() || userPassword.isEmpty()) {
-            _loginState.value = LoginState.Error("Por favor, ingrese los campos requeridos.")
+            _loginState.value = LoginState.Error("Ingrese los campos requeridos.")
+            this.setShowDialog(true)
+            return
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            _loginState.value = LoginState.Error("Ingrese un correo electrónico válido.")
+            this.setShowDialog(true)
             return
         }
 
@@ -71,19 +79,23 @@ class LoginViewModel : BaseViewModel() {
                 _loginState.value = LoginState.Success("Inicio de sesión exitoso.")
                 resetData()
             } catch (e: Exception) {
+                println("Error: ${e.message}")
+
                 when (e.message) {
                     "Email not confirmed" -> {
-                        _loginState.value =
-                            LoginState.Error("Por favor, confirme su correo electrónico.")
+                        _loginState.value = LoginState.Error("Confirme su correo electrónico.")
+                    }
+
+                    "Invalid login credentials" -> {
+                        _loginState.value = LoginState.Error("Correo electrónico o contraseña incorrectos.")
                     }
 
                     else -> {
-                        _loginState.value =
-                            LoginState.Error("Se produjo un error al iniciar sesión.")
+                        _loginState.value = LoginState.Error("Se produjo un error al iniciar sesión.")
                     }
                 }
 
-                println("Error: ${e.message}")
+                this@LoginViewModel.setShowDialog(true)
             }
         }
     }
@@ -96,7 +108,3 @@ class LoginViewModel : BaseViewModel() {
         }
     }
 }
-
-/*
- * TODO: Si algo fue mal, mostrar mensaje de error en un AlertDialog
- */
