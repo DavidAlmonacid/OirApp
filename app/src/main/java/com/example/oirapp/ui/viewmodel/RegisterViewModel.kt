@@ -79,7 +79,7 @@ class RegisterViewModel : BaseViewModel() {
                     userName = userName,
                     userRole = userRole,
                 )
-                _registerState.value = RegisterState.Success("Se ha enviado un correo de verificación a $userEmail")
+                _registerState.value = RegisterState.Success("Se ha enviado un correo de verificación a $userEmail.")
                 this@RegisterViewModel.setShowDialog(true)
             } catch (e: Exception) {
                 println("Error al crear la cuenta: ${e.message}")
