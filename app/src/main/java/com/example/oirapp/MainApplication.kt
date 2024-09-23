@@ -167,20 +167,12 @@ fun MainApp(
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                     }
-
                 }
             }
 
             composable(route = MainApplication.CrearCuenta.name) {
                 val registerState by registerViewModel.registerState.observeAsState()
                 val showDialog by registerViewModel.showDialog.observeAsState(false)
-
-                DisposableEffect(Unit) {
-                    onDispose {
-                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
-                        registerViewModel.resetData()
-                    }
-                }
 
                 CrearCuentaScreen(
                     userEmail = registerViewModel.userEmail,
@@ -218,6 +210,13 @@ fun MainApp(
                         }
                     },
                 )
+
+                DisposableEffect(Unit) {
+                    onDispose {
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        registerViewModel.resetData()
+                    }
+                }
             }
 
             composable(route = MainApplication.Grupos.name) {

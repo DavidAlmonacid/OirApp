@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -86,7 +87,7 @@ fun GruposScreen(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier
-                    .padding(vertical = 20.dp)
+                    .padding(top = 20.dp)
                     .alpha(0.2f),
             )
 
@@ -101,7 +102,7 @@ fun GruposScreen(
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
-                modifier = Modifier.padding(top = 20.dp),
+                contentPadding = PaddingValues(vertical = 20.dp),
             ) {
                 items(grupos) { group ->
                     GroupCard(
