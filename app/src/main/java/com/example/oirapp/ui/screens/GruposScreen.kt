@@ -52,7 +52,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun GruposScreen(
-    userState: UserUiState,
+    userUiState: UserUiState,
     userInput: String,
     onUserInputChanged: (String) -> Unit,
     showDialog: Boolean,
@@ -65,7 +65,7 @@ fun GruposScreen(
      * TODO: Poder agregar una imagen desde un URL proveniente de Supabase
      */
 
-    println("userImageUrl: ${userState.imageUrl}")
+    println("userImageUrl: ${userUiState.imageUrl}")
 
     var grupos by remember { mutableStateOf<List<Group>>(listOf()) }
 
@@ -84,7 +84,7 @@ fun GruposScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 20.dp),
         ) {
-            UserInfo(userName = userState.name, userRole = userState.role)
+            UserInfo(userName = userUiState.name, userRole = userUiState.role)
 
             HorizontalDivider(
                 thickness = 2.dp,
@@ -111,7 +111,7 @@ fun GruposScreen(
                     GroupCard(
                         groupName = group.name,
                         groupCode = group.code,
-                        role = userState.role,
+                        role = userUiState.role,
                         onClick = {},
                     )
                 }
@@ -121,9 +121,9 @@ fun GruposScreen(
                 GroupInputDialog(
                     inputText = userInput,
                     onInputTextChange = { newValue -> onUserInputChanged(newValue) },
-                    role = userState.role,
+                    role = userUiState.role,
                     onDismissRequest = onDismissDialog,
-                    onConfirm = { onConfirmDialog(userInput, userState.id) },
+                    onConfirm = { onConfirmDialog(userInput, userUiState.id) },
                 )
             }
         }
@@ -237,7 +237,7 @@ private fun GroupInputDialog(
 private fun GruposScreenDocentePreview() {
     MyApplicationTheme {
         GruposScreen(
-            userState = UserUiState(
+            userUiState = UserUiState(
                 id = "",
                 name = "Francisco Garzón",
                 role = "Docente",
@@ -257,7 +257,7 @@ private fun GruposScreenDocentePreview() {
 private fun GruposScreenEstudiantePreview() {
     MyApplicationTheme {
         GruposScreen(
-            userState = UserUiState(
+            userUiState = UserUiState(
                 id = "",
                 name = "David Almonacid",
                 role = "Estudiante",
