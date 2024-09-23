@@ -108,31 +108,27 @@ fun CrearCuentaScreen(
                 textId = R.string.crear_cuenta,
                 modifier = Modifier.padding(bottom = 40.dp),
             )
-
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { onDismissDialog() },
-                    title = {
-                        Text(
-                            text = stringResource(
-                                if (registerState is RegisterState.Success) {
-                                    R.string.success
-                                } else {
-                                    R.string.error
-                                }
-                            )
-                        )
-                    },
-                    text = { Text(text = registerState?.message!!) },
-                    confirmButton = {
-                        TextButton(onClick = { onDismissDialog() }) {
-                            Text(text = stringResource(R.string.accept))
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
         }
+    }
+
+    if (showDialog && registerState != null) {
+        AlertDialog(
+            onDismissRequest = { onDismissDialog() },
+            title = {
+                Text(
+                    text = stringResource(
+                        if (registerState is RegisterState.Success) R.string.success else R.string.error
+                    ),
+                )
+            },
+            text = { Text(text = registerState.message) },
+            confirmButton = {
+                TextButton(onClick = { onDismissDialog() }) {
+                    Text(text = stringResource(R.string.accept))
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
