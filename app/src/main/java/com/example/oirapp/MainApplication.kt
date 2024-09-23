@@ -154,6 +154,7 @@ fun MainApp(
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                     }
+
                 }
             }
 
