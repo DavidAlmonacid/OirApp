@@ -266,7 +266,7 @@ fun MainApp(
             MenuCard(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(end = 24.dp, top = 88.dp),
             )
         }
     }
