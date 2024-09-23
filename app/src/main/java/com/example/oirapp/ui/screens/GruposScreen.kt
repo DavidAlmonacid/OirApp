@@ -128,7 +128,7 @@ fun GruposScreen(
 }
 
 @Composable
-fun GroupCard(
+private fun GroupCard(
     groupName: String,
     groupCode: String,
     role: String,
@@ -185,7 +185,7 @@ fun GroupCard(
 }
 
 @Composable
-fun GroupInputDialog(
+private fun GroupInputDialog(
     inputText: String,
     onInputTextChange: (String) -> Unit,
     role: String,
