@@ -87,6 +87,13 @@ class LoginViewModel : BaseViewModel() {
         userEmail = ""
         userPassword = ""
     }
+
+    fun signOut() {
+        viewModelScope.launch {
+            supabaseClient.auth.signOut()
+            _userUiState.value = UserUiState()
+        }
+    }
 }
 
 /*

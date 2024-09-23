@@ -264,6 +264,13 @@ fun MainApp(
                 .clickable { showMenuCard.value = false }
         ) {
             MenuCard(
+                onCloseSession = {
+                    //loginViewModel.signOut()
+                     navController.navigate(MainApplication.IniciarSesion.name) {
+                        popUpTo(MainApplication.Grupos.name) { inclusive = true }
+                    }
+                    navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(end = 24.dp, top = 88.dp),
