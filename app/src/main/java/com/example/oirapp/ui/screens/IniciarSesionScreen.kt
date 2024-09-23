@@ -89,7 +89,7 @@ fun IniciarSesionScreen(
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .padding(top = 28.dp)
-                    .clickable { onRegisterTextClicked() },
+                    .clickable(onClick = onRegisterTextClicked),
             )
         }
     }
