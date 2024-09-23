@@ -18,28 +18,26 @@ class GruposViewModel : BaseViewModel() {
         userInput = input
     }
 
-    fun createGroup(groupName: String, idDocente: String) {
-        viewModelScope.launch {
-            createGroupSuspend(
-                groupName = groupName,
-                accessCode = generateAccessCode(),
-                idDocente = idDocente,
-            )
-        }
+    fun resetData() {
+        userInput = ""
     }
 
-    private suspend fun createGroupSuspend(
-        groupName: String,
-        accessCode: String,
-        idDocente: String,
-    ) {
-        val table = supabaseClient.postgrest["grupos"]
+    fun createGroup(groupName: String, idDocente: String) {
+        viewModelScope.launch {
+            try {
+                val table = supabaseClient.postgrest["grupos"]
 
-        table.insert(buildJsonObject {
-            put("nombre_grupo", groupName)
-            put("codigo_acceso", accessCode)
-            put("id_docente", idDocente)
-        })
+                table.insert(buildJsonObject {
+                    put("nombre_grupo", groupName)
+                    put("codigo_acceso", generateAccessCode())
+                    put("id_docente", idDocente)
+                })
+
+                resetData()
+            } catch (e: Exception) {
+                println("Error: ${e.message}")
+            }
+        }
     }
 
     private fun generateAccessCode(): String {
