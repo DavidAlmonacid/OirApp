@@ -87,7 +87,7 @@ fun MainAppBar(
             IconButton(onClick = { /* TODO: Open menu */ }) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Localized description"
+                    contentDescription = stringResource(R.string.open_menu),
                 )
             }
         },

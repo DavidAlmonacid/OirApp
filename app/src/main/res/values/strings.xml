@@ -4,6 +4,7 @@
 
     <!-- Top App Bar -->
     <string name="back_button">Back</string>
+    <string name="open_menu">Open menu</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="grupos">Grupos</string>
