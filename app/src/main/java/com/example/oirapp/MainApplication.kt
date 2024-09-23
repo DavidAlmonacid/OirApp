@@ -1,6 +1,10 @@
 package com.example.oirapp
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,14 +25,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
@@ -53,6 +63,7 @@ fun MainAppBar(
     currentScreen: MainApplication,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    onMenuButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -85,7 +96,7 @@ fun MainAppBar(
         },
         actions = {
             if (currentScreen == MainApplication.Grupos) {
-                IconButton(onClick = { /* TODO: Open menu */ }) {
+                IconButton(onClick = onMenuButtonClick) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.open_menu),
@@ -106,6 +117,7 @@ fun MainApp(
     navController: NavHostController = rememberNavController(),
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
+    val showMenuCard = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -114,6 +126,7 @@ fun MainApp(
                     currentScreen = currentScreen,
                     canNavigateBack = false,
                     navigateUp = {},
+                    onMenuButtonClick = { showMenuCard.value = !showMenuCard.value }
                 )
             }
         },
@@ -240,6 +253,21 @@ fun MainApp(
                     },
                 )
             }
+        }
+    }
+
+    if (showMenuCard.value) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable { showMenuCard.value = false }
+        ) {
+            MenuCard(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            )
         }
     }
 }

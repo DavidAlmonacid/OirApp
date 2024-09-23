@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
@@ -216,3 +217,24 @@ fun UserInfo(
 //        )
 //    }
 //}
+@Composable
+fun MenuCard(modifier: Modifier = Modifier) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ){
+            Text(text = "Mi cuenta")
+            Text(text = "Cerrar sesión")
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun MenuCardPreview() {
+    MyApplicationTheme {
+        MenuCard()
+    }
+    
+}
