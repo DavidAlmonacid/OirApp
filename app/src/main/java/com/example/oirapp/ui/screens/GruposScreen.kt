@@ -24,11 +24,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,20 +34,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
-import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.UserInfo
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
-import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun GruposScreen(
     userUiState: UserUiState,
+    groups: List<Group>,
     userInput: String,
     onUserInputChanged: (String) -> Unit,
     showDialog: Boolean,
@@ -66,14 +58,6 @@ fun GruposScreen(
      */
 
     println("userImageUrl: ${userUiState.imageUrl}")
-
-    var grupos by remember { mutableStateOf<List<Group>>(listOf()) }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            grupos = supabaseClient.from("grupos").select().decodeList<Group>()
-        }
-    }
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -95,8 +79,11 @@ fun GruposScreen(
             )
 
             /*
-             * TODO: El docente puede crear grupos y estos serán mostrados en una lista
-             *  con su respectivo nombre, código y color
+             * TODO: El docente puede editar el nombre de un grupo
+             */
+
+            /*
+             * TODO: El docente puede eliminar un grupo
              */
 
             /*
@@ -107,12 +94,15 @@ fun GruposScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 contentPadding = PaddingValues(vertical = 20.dp),
             ) {
-                items(grupos) { group ->
+                items(
+                    items = groups,
+                    key = { group -> group.id },
+                ) { group ->
                     GroupCard(
+                        onClick = {},
                         groupName = group.name,
                         groupCode = group.code,
                         role = userUiState.role,
-                        onClick = {},
                     )
                 }
             }
@@ -132,10 +122,10 @@ fun GruposScreen(
 
 @Composable
 private fun GroupCard(
+    onClick: () -> Unit,
     groupName: String,
     groupCode: String,
     role: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -243,6 +233,7 @@ private fun GruposScreenDocentePreview() {
                 role = "Docente",
                 imageUrl = "",
             ),
+            groups = emptyList(),
             userInput = "",
             onUserInputChanged = {},
             showDialog = true,
@@ -263,6 +254,7 @@ private fun GruposScreenEstudiantePreview() {
                 role = "Estudiante",
                 imageUrl = "",
             ),
+            groups = emptyList(),
             userInput = "",
             onUserInputChanged = {},
             showDialog = true,
