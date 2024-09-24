@@ -79,7 +79,7 @@ class LoginViewModel : BaseViewModel() {
                 _loginState.value = LoginState.Success("Inicio de sesión exitoso.")
                 resetData()
             } catch (e: Exception) {
-                println("Error: ${e.message}")
+                println("LoginViewModel.signInWithEmail: Error: ${e.message}")
 
                 when (e.message) {
                     "Email not confirmed" -> {
