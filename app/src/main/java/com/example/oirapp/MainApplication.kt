@@ -119,7 +119,6 @@ fun MainApp(
 
     LaunchedEffect(Unit) {
         val user = supabaseClient.auth.currentSessionOrNull()?.user
-        println("MainApp: Session: $user")
 
         if (user != null) {
             val userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!
