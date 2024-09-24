@@ -31,6 +31,10 @@ class LoginViewModel : BaseViewModel() {
     var userPassword by mutableStateOf("")
         private set
 
+    fun updateUserUiState(userUiState: UserUiState) {
+        _userUiState.value = userUiState
+    }
+
     fun updateUserEmail(email: String) {
         userEmail = email
     }
@@ -65,16 +69,19 @@ class LoginViewModel : BaseViewModel() {
                 }
 
                 val user = supabaseClient.auth.currentSessionOrNull()?.user
-                val userRole = user?.userMetadata?.get("rol")?.jsonPrimitive?.content
-                val userName = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content
-                val userImageUrl = user?.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
 
-                _userUiState.value = UserUiState(
-                    id = user?.id ?: "",
-                    name = userName ?: "",
-                    role = userRole ?: "",
-                    imageUrl = userImageUrl ?: "",
-                )
+                if (user != null) {
+                    val userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!
+                    val userRole = user.userMetadata?.get("rol")?.jsonPrimitive?.content!!
+                    val userImageUrl = user.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
+
+                    _userUiState.value = UserUiState(
+                        id = user.id,
+                        name = userName,
+                        role = userRole,
+                        imageUrl = userImageUrl,
+                    )
+                }
 
                 _loginState.value = LoginState.Success("Inicio de sesión exitoso.")
                 resetData()
