@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
@@ -44,10 +45,13 @@ import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
+import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
+import io.github.jan.supabase.gotrue.auth
+import kotlinx.serialization.json.jsonPrimitive
 
 enum class MainApplication(@StringRes val title: Int? = null) {
     Bienvenida,
@@ -104,14 +108,39 @@ fun MainAppBar(
 
 @Composable
 fun MainApp(
+    navController: NavHostController = rememberNavController(),
     navigationViewModel: NavigationViewModel = viewModel(),
     registerViewModel: RegisterViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     gruposViewModel: GruposViewModel = viewModel(),
-    navController: NavHostController = rememberNavController(),
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
     var showMenuCard by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val user = supabaseClient.auth.currentSessionOrNull()?.user
+        println("MainApp: Session: $user")
+
+        if (user != null) {
+            val userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!
+            val userRole = user.userMetadata?.get("rol")?.jsonPrimitive?.content!!
+            val userImageUrl = user.userMetadata?.get("imagen_url")?.jsonPrimitive?.content
+
+            loginViewModel.updateUserUiState(
+                UserUiState(
+                    id = user.id,
+                    name = userName,
+                    role = userRole,
+                    imageUrl = userImageUrl,
+                )
+            )
+
+            navController.navigate(MainApplication.Grupos.name) {
+                popUpTo(MainApplication.Bienvenida.name) { inclusive = true }
+            }
+            navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+        }
+    }
 
     Scaffold(
         topBar = {
