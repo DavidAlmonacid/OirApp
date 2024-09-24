@@ -266,11 +266,17 @@ fun MainApp(
             }
 
             composable(route = MainApplication.Grupos.name) {
-                val showDialog by gruposViewModel.showDialog.observeAsState(false)
                 val userUiState by loginViewModel.userUiState.collectAsState()
+                val showDialog by gruposViewModel.showDialog.observeAsState(false)
+                val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
+
+                LaunchedEffect(Unit) {
+                    gruposViewModel.getCreatedGroups()
+                }
 
                 GruposScreen(
                     userUiState = userUiState,
+                    groups = if (userUiState.role == "Docente") teacherGroups else emptyList(),
                     userInput = gruposViewModel.userInput,
                     onUserInputChanged = { gruposViewModel.updateUserInput(it) },
                     showDialog = showDialog,
