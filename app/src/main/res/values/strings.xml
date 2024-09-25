@@ -36,7 +36,7 @@
 
     <!-- Textos compartidos -->
     <string name="logo_description">Logo principal</string>
-
-    <!-- Otros -->
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
 </resources>
