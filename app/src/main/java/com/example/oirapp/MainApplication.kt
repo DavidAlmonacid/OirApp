@@ -267,11 +267,16 @@ fun MainApp(
 
             composable(route = MainApplication.Grupos.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
+
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
                 val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
 
                 LaunchedEffect(Unit) {
-                    gruposViewModel.getCreatedGroups()
+                    if (userUiState.role == "Docente") {
+                        gruposViewModel.getCreatedGroups()
+                    } else {
+                        //gruposViewModel.getJoinedGroups()
+                    }
                 }
 
                 GruposScreen(
@@ -288,7 +293,7 @@ fun MainApp(
                         if (userUiState.role == "Docente") {
                             gruposViewModel.createGroup(userInput, userId)
                         } else {
-                            println("No se puede crear grupo")
+                            //gruposViewModel.joinGroup(userInput, userId)
                         }
 
                         gruposViewModel.setShowDialog(false)
