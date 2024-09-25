@@ -27,7 +27,7 @@
     <string name="error">Error</string>
     <string name="accept">Aceptar</string>
 
-    <!-- Pantalla de Grupos Docente -->
+    <!-- Pantalla de Grupos -->
     <string name="crear_grupo">Crear grupo</string>
     <string name="unirse">Unirse</string>
     <string name="cancel">Cancelar</string>
