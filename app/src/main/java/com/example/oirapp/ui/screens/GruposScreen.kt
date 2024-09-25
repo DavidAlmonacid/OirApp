@@ -15,10 +15,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,13 +34,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.UserInfo
-import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
@@ -137,14 +142,14 @@ private fun GroupCard(
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(18.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(68.dp)
+                    .size(64.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape,
@@ -157,12 +162,14 @@ private fun GroupCard(
                 )
             }
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = groupName,
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.W500,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -173,7 +180,48 @@ private fun GroupCard(
                     )
                 }
             }
+
+            if (role == "Docente") {
+                IconButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .size(24.dp)
+                        .align(Alignment.Top),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.open_menu),
+                    )
+                }
+            }
         }
+    }
+}
+
+@DarkLightPreviews
+@Composable
+private fun GroupCardDocentePreview() {
+    MyApplicationTheme {
+        GroupCard(
+            onClick = {},
+            groupName = "Grupo de Matemáticas",
+            groupCode = "ABC123",
+            role = "Docente",
+        )
+    }
+}
+
+@DarkLightPreviews
+@Composable
+private fun GroupCardEstudiantePreview() {
+    MyApplicationTheme {
+        GroupCard(
+            onClick = {},
+            groupName = "Grupo de Matemáticas",
+            groupCode = "ABC123",
+            role = "Estudiante",
+        )
     }
 }
 
@@ -222,44 +270,44 @@ private fun GroupInputDialog(
     )
 }
 
-@DarkLightScreenPreviews
-@Composable
-private fun GruposScreenDocentePreview() {
-    MyApplicationTheme {
-        GruposScreen(
-            userUiState = UserUiState(
-                id = "",
-                name = "Francisco Garzón",
-                role = "Docente",
-                imageUrl = "",
-            ),
-            groups = emptyList(),
-            userInput = "",
-            onUserInputChanged = {},
-            showDialog = true,
-            onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
-        )
-    }
-}
+//@DarkLightScreenPreviews
+//@Composable
+//private fun GruposScreenDocentePreview() {
+//    MyApplicationTheme {
+//        GruposScreen(
+//            userUiState = UserUiState(
+//                id = "",
+//                name = "Francisco Garzón",
+//                role = "Docente",
+//                imageUrl = "",
+//            ),
+//            groups = emptyList(),
+//            userInput = "",
+//            onUserInputChanged = {},
+//            showDialog = true,
+//            onDismissDialog = {},
+//            onConfirmDialog = { _, _ -> },
+//        )
+//    }
+//}
 
-@DarkLightScreenPreviews
-@Composable
-private fun GruposScreenEstudiantePreview() {
-    MyApplicationTheme {
-        GruposScreen(
-            userUiState = UserUiState(
-                id = "",
-                name = "David Almonacid",
-                role = "Estudiante",
-                imageUrl = "",
-            ),
-            groups = emptyList(),
-            userInput = "",
-            onUserInputChanged = {},
-            showDialog = true,
-            onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
-        )
-    }
-}
+//@DarkLightScreenPreviews
+//@Composable
+//private fun GruposScreenEstudiantePreview() {
+//    MyApplicationTheme {
+//        GruposScreen(
+//            userUiState = UserUiState(
+//                id = "",
+//                name = "David Almonacid",
+//                role = "Estudiante",
+//                imageUrl = "",
+//            ),
+//            groups = emptyList(),
+//            userInput = "",
+//            onUserInputChanged = {},
+//            showDialog = true,
+//            onDismissDialog = {},
+//            onConfirmDialog = { _, _ -> },
+//        )
+//    }
+//}
