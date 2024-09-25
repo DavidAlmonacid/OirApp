@@ -38,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.model.MenuItemRepository
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
@@ -309,7 +310,8 @@ fun MainApp(
                 .fillMaxSize()
                 .clickable(onClick = { showMenuCard = false }),
         ) {
-            MenuCard(
+            val menuItems = MenuItemRepository.getMainOptions(
+                onGoToMyAccount = {},
                 onCloseSession = {
                     loginViewModel.signOut()
 
@@ -320,6 +322,10 @@ fun MainApp(
                     }
                     navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
                 },
+            )
+
+            MenuCard(
+                menuItems = menuItems,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 80.dp, end = 24.dp),
