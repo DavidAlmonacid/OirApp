@@ -141,7 +141,7 @@ private fun GroupCard(
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
-    Box {
+    Box(contentAlignment = Alignment.TopEnd) {
         Card(
             onClick = onClick,
             colors = CardDefaults.cardColors(
@@ -215,9 +215,7 @@ private fun GroupCard(
 
             MenuCard(
                 menuItems = menuItems,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 48.dp),
+                modifier = Modifier.padding(top = 48.dp),
             )
         }
     }
