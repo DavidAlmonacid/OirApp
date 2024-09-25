@@ -28,6 +28,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,7 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
+import com.example.oirapp.model.MenuItemRepository
 import com.example.oirapp.ui.components.CustomTextField
+import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.UserInfo
 import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.state.UserUiState
@@ -133,68 +139,86 @@ private fun GroupCard(
     role: String,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(64.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape,
-                    ),
-            ) {
-                Text(
-                    text = groupName.take(3).uppercase().removeUppercaseAccents(),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
+    var showMenuCard by remember { mutableStateOf(false) }
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = groupName,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.W500,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+    Box {
+        Card(
+            onClick = onClick,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
+            modifier = modifier.fillMaxWidth(),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape,
+                        ),
+                ) {
+                    Text(
+                        text = groupName.take(3).uppercase().removeUppercaseAccents(),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = groupName,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.W500,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    if (role == "Docente") {
+                        Text(
+                            text = groupCode,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                    }
+                }
 
                 if (role == "Docente") {
-                    Text(
-                        text = groupCode,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
+                    IconButton(
+                        onClick = { showMenuCard = !showMenuCard },
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .size(24.dp)
+                            .align(Alignment.Top),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.open_menu),
+                        )
+                    }
                 }
             }
+        }
 
-            if (role == "Docente") {
-                IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .size(24.dp)
-                        .align(Alignment.Top),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = stringResource(R.string.open_menu),
-                    )
-                }
-            }
+        if (showMenuCard) {
+            val menuItems = MenuItemRepository.getCardOptions(
+                onEdit = { /*TODO*/ },
+                onDelete = { /*TODO*/ },
+            )
+
+            MenuCard(
+                menuItems = menuItems,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 48.dp),
+            )
         }
     }
 }
@@ -208,19 +232,6 @@ private fun GroupCardDocentePreview() {
             groupName = "Grupo de Matemáticas",
             groupCode = "ABC123",
             role = "Docente",
-        )
-    }
-}
-
-@DarkLightPreviews
-@Composable
-private fun GroupCardEstudiantePreview() {
-    MyApplicationTheme {
-        GroupCard(
-            onClick = {},
-            groupName = "Grupo de Matemáticas",
-            groupCode = "ABC123",
-            role = "Estudiante",
         )
     }
 }
