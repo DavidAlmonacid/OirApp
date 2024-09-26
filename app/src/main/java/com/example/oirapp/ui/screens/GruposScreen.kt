@@ -64,9 +64,10 @@ fun GruposScreen(
     groups: List<Group>,
     userInput: String,
     onUserInputChanged: (String) -> Unit,
+    errorMessage: String,
     showDialog: Boolean,
     onDismissDialog: () -> Unit,
-    onConfirmDialog: (String, String) -> Unit,
+    onConfirmDialog: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -122,7 +123,8 @@ fun GruposScreen(
                     onInputTextChange = { newValue -> onUserInputChanged(newValue) },
                     role = userUiState.role,
                     onDismissRequest = onDismissDialog,
-                    onConfirm = { onConfirmDialog(userInput, userUiState.id) },
+                    onConfirm = { onConfirmDialog(userUiState.id) },
+                    errorMessage = errorMessage,
                 )
             }
         }
@@ -131,11 +133,11 @@ fun GruposScreen(
 
 @Composable
 private fun GroupCard(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     groupName: String,
     groupCode: String,
     role: String,
-    modifier: Modifier = Modifier,
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
@@ -250,6 +252,7 @@ private fun GroupInputDialog(
     role: String,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
+    errorMessage: String,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -261,15 +264,24 @@ private fun GroupInputDialog(
             )
         },
         text = {
-            CustomTextField(
-                value = inputText,
-                onValueChange = { newValue -> onInputTextChange(newValue) },
-                labelId = if (role == "Estudiante") R.string.codigo_acceso else R.string.nombre_grupo,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Words,
-                ),
-                keyboardActions = KeyboardActions(onDone = { onConfirm() }),
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                CustomTextField(
+                    value = inputText,
+                    onValueChange = { newValue -> onInputTextChange(newValue) },
+                    labelId = if (role == "Estudiante") R.string.codigo_acceso else R.string.nombre_grupo,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Words,
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { onConfirm() }),
+                )
+
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
@@ -298,6 +310,7 @@ private fun GroupInputDialogDocentePreview() {
             role = "Docente",
             onDismissRequest = {},
             onConfirm = {},
+            errorMessage = "El nombre del grupo ya existe."
         )
     }
 }
@@ -312,6 +325,7 @@ private fun GroupInputDialogEstudiantePreview() {
             role = "Estudiante",
             onDismissRequest = {},
             onConfirm = {},
+            errorMessage = "",
         )
     }
 }
@@ -330,9 +344,10 @@ private fun GruposScreenDocentePreview() {
             groups = emptyList(),
             userInput = "",
             onUserInputChanged = {},
+            errorMessage = "",
             showDialog = true,
             onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
+            onConfirmDialog = { _ -> },
         )
     }
 }
@@ -364,9 +379,10 @@ private fun GruposScreenEstudiantePreview() {
             ),
             userInput = "",
             onUserInputChanged = {},
+            errorMessage = "",
             showDialog = false,
             onDismissDialog = {},
-            onConfirmDialog = { _, _ -> },
+            onConfirmDialog = { _ -> },
         )
     }
 }

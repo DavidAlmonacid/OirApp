@@ -23,12 +23,20 @@ class GruposViewModel : BaseViewModel() {
     var userInput by mutableStateOf("")
         private set
 
+    var errorMessage by mutableStateOf("")
+        private set
+
     fun updateUserInput(input: String) {
         userInput = input
     }
 
     fun resetData() {
         userInput = ""
+        errorMessage = ""
+    }
+
+    private fun getTeacherGroupNames(): List<String> {
+        return teacherGroups.value.map { it.name }
     }
 
     fun getCreatedGroups() {
@@ -46,6 +54,18 @@ class GruposViewModel : BaseViewModel() {
     }
 
     fun createGroup(groupName: String, idDocente: String) {
+        if (groupName.isEmpty()) {
+            errorMessage = "Ingrese el nombre del grupo."
+            this.setShowDialog(true)
+            return
+        }
+
+        if (groupName in getTeacherGroupNames()) {
+            errorMessage = "El nombre del grupo ya existe."
+            this.setShowDialog(true)
+            return
+        }
+
         viewModelScope.launch {
             try {
                 val table = supabaseClient.postgrest["grupos"]
@@ -57,6 +77,8 @@ class GruposViewModel : BaseViewModel() {
                         put("id_docente", idDocente)
                     })
                 }
+
+                this@GruposViewModel.setShowDialog(false)
 
                 getCreatedGroups()
                 resetData()

@@ -285,19 +285,25 @@ fun MainApp(
                     groups = if (userUiState.role == "Docente") teacherGroups else emptyList(),
                     userInput = gruposViewModel.userInput,
                     onUserInputChanged = { gruposViewModel.updateUserInput(it) },
+                    errorMessage = gruposViewModel.errorMessage,
                     showDialog = showDialog,
                     onDismissDialog = {
                         gruposViewModel.setShowDialog(false)
                         gruposViewModel.resetData()
                     },
-                    onConfirmDialog = { userInput, userId ->
+                    onConfirmDialog = { userId ->
+                        if (gruposViewModel.userInput.isBlank()) {
+                            gruposViewModel.updateUserInput("")
+                        }
+
                         if (userUiState.role == "Docente") {
-                            gruposViewModel.createGroup(userInput, userId)
+                            gruposViewModel.createGroup(
+                                groupName = gruposViewModel.userInput.trim(),
+                                idDocente = userId,
+                            )
                         } else {
                             //gruposViewModel.joinGroup(userInput, userId)
                         }
-
-                        gruposViewModel.setShowDialog(false)
                     },
                 )
             }
