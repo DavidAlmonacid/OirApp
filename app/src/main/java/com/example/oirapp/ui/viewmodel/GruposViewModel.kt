@@ -61,6 +61,9 @@ class GruposViewModel : BaseViewModel() {
                 getCreatedGroups()
                 resetData()
             } catch (e: Exception) {
+
+                /* TODO('Manejar error de nombre de grupo duplicado') */
+
                 println("GruposViewModel.createGroup: Error: ${e.message}")
             }
         }
