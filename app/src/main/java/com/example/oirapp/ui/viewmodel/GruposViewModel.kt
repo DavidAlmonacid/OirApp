@@ -9,16 +9,14 @@ import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class GruposViewModel : BaseViewModel() {
-    private val _teacherGroups = MutableStateFlow<List<Group>>(emptyList())
-    val teacherGroups: StateFlow<List<Group>> = _teacherGroups
+    var teacherGroups by mutableStateOf<List<Group>>(emptyList())
+        private set
 
     var userInput by mutableStateOf("")
         private set
@@ -36,7 +34,7 @@ class GruposViewModel : BaseViewModel() {
     }
 
     private fun getTeacherGroupNames(): List<String> {
-        return teacherGroups.value.map { it.name }
+        return teacherGroups.map { it.name }
     }
 
     fun getCreatedGroups() {
@@ -46,7 +44,7 @@ class GruposViewModel : BaseViewModel() {
                     supabaseClient.from("grupos").select().decodeList<Group>()
                 }
 
-                _teacherGroups.value = fetchedGroups
+                teacherGroups = fetchedGroups
             } catch (e: Exception) {
                 println("GruposViewModel.getCreatedGroups: Error: ${e.message}")
             }

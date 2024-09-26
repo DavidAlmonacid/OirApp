@@ -268,9 +268,9 @@ fun MainApp(
 
             composable(route = MainApplication.Grupos.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
-
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
-                val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
+
+                val teacherGroups = gruposViewModel.teacherGroups
 
                 LaunchedEffect(Unit) {
                     if (userUiState.role == "Docente") {
