@@ -26,12 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-import com.example.oirapp.model.MenuItem
 import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
-fun MenuCard(menuItems: List<MenuItem>, modifier: Modifier = Modifier) {
+fun MenuCard(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     Card(
         onClick = {},
         enabled = false,
@@ -48,23 +50,17 @@ fun MenuCard(menuItems: List<MenuItem>, modifier: Modifier = Modifier) {
                 .padding(vertical = 14.dp, horizontal = 24.dp)
                 .width(IntrinsicSize.Max),
         ) {
-            menuItems.forEach { item ->
-                MenuOption(
-                    onClick = item.onClick,
-                    icon = item.icon,
-                    textId = item.textId,
-                )
-            }
+            content()
         }
     }
 }
 
 @Composable
-fun MenuOption(
+fun MenuItem(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
     @StringRes textId: Int,
-    modifier: Modifier = Modifier,
 ) {
     TextButton(
         onClick = onClick,
@@ -87,11 +83,18 @@ fun MenuOption(
 @Composable
 private fun MenuCardPreview() {
     MyApplicationTheme {
-        MenuCard(
-            menuItems = listOf(
-                MenuItem(onClick = {}, icon = Icons.Default.Edit, textId = R.string.editar),
-                MenuItem(onClick = {}, icon = Icons.Default.Delete, textId = R.string.eliminar),
-            ),
-        )
+        MenuCard {
+            MenuItem(
+                onClick = {},
+                icon = Icons.Default.Edit,
+                textId = R.string.editar,
+            )
+
+            MenuItem(
+                onClick = {},
+                icon = Icons.Default.Delete,
+                textId = R.string.eliminar,
+            )
+        }
     }
 }
