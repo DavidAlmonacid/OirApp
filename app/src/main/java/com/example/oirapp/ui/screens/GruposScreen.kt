@@ -137,13 +137,14 @@ private fun GroupCard(
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.TopEnd) {
+    Box {
         Card(
             onClick = onClick,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
             modifier = modifier.fillMaxWidth(),
         ) {
             Row(
