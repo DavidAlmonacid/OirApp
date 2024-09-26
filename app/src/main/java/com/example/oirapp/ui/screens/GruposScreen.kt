@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -43,11 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
-import com.example.oirapp.model.MenuItemRepository
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.MenuCard
+import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.UserInfo
+import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightPreviews
+import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
@@ -88,14 +92,6 @@ fun GruposScreen(
                     .padding(top = 20.dp)
                     .alpha(0.2f),
             )
-
-            /*
-             * TODO: El docente puede editar el nombre de un grupo
-             */
-
-            /*
-             * TODO: El docente puede eliminar un grupo
-             */
 
             /*
              * TODO: El estudiante puede unirse a un grupo con un código y este será mostrado en una lista
@@ -208,15 +204,19 @@ private fun GroupCard(
         }
 
         if (showMenuCard) {
-            val menuItems = MenuItemRepository.getCardOptions(
-                onEdit = { /*TODO*/ },
-                onDelete = { /*TODO*/ },
-            )
+            MenuCard(Modifier.padding(top = 48.dp)) {
+                MenuItem(
+                    onClick = { /* TODO('El docente puede editar el nombre de un grupo') */ },
+                    icon = Icons.Default.Edit,
+                    textId = R.string.editar,
+                )
 
-            MenuCard(
-                menuItems = menuItems,
-                modifier = Modifier.padding(top = 48.dp),
-            )
+                MenuItem(
+                    onClick = { /* TODO('El docente puede eliminar un grupo') */ },
+                    icon = Icons.Default.Delete,
+                    textId = R.string.eliminar,
+                )
+            }
         }
     }
 }
@@ -279,44 +279,85 @@ private fun GroupInputDialog(
     )
 }
 
-//@DarkLightScreenPreviews
-//@Composable
-//private fun GruposScreenDocentePreview() {
-//    MyApplicationTheme {
-//        GruposScreen(
-//            userUiState = UserUiState(
-//                id = "",
-//                name = "Francisco Garzón",
-//                role = "Docente",
-//                imageUrl = "",
-//            ),
-//            groups = emptyList(),
-//            userInput = "",
-//            onUserInputChanged = {},
-//            showDialog = true,
-//            onDismissDialog = {},
-//            onConfirmDialog = { _, _ -> },
-//        )
-//    }
-//}
+@CustomPreview
+@Composable
+private fun GroupInputDialogDocentePreview() {
+    MyApplicationTheme {
+        GroupInputDialog(
+            inputText = "",
+            onInputTextChange = {},
+            role = "Docente",
+            onDismissRequest = {},
+            onConfirm = {},
+        )
+    }
+}
 
-//@DarkLightScreenPreviews
-//@Composable
-//private fun GruposScreenEstudiantePreview() {
-//    MyApplicationTheme {
-//        GruposScreen(
-//            userUiState = UserUiState(
-//                id = "",
-//                name = "David Almonacid",
-//                role = "Estudiante",
-//                imageUrl = "",
-//            ),
-//            groups = emptyList(),
-//            userInput = "",
-//            onUserInputChanged = {},
-//            showDialog = true,
-//            onDismissDialog = {},
-//            onConfirmDialog = { _, _ -> },
-//        )
-//    }
-//}
+@CustomPreview
+@Composable
+private fun GroupInputDialogEstudiantePreview() {
+    MyApplicationTheme {
+        GroupInputDialog(
+            inputText = "",
+            onInputTextChange = {},
+            role = "Estudiante",
+            onDismissRequest = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@DarkLightScreenPreviews
+@Composable
+private fun GruposScreenDocentePreview() {
+    MyApplicationTheme {
+        GruposScreen(
+            userUiState = UserUiState(
+                id = "",
+                name = "Francisco Garzón",
+                role = "Docente",
+                imageUrl = "",
+            ),
+            groups = emptyList(),
+            userInput = "",
+            onUserInputChanged = {},
+            showDialog = true,
+            onDismissDialog = {},
+            onConfirmDialog = { _, _ -> },
+        )
+    }
+}
+
+@DarkLightScreenPreviews
+@Composable
+private fun GruposScreenEstudiantePreview() {
+    MyApplicationTheme {
+        GruposScreen(
+            userUiState = UserUiState(
+                id = "",
+                name = "David Almonacid",
+                role = "Estudiante",
+                imageUrl = "",
+            ),
+            groups = listOf(
+                Group(
+                    id = 1,
+                    name = "Grupo de Matemáticas",
+                    code = "ABC123",
+                    idDocente = "1",
+                ),
+                Group(
+                    id = 2,
+                    name = "Grupo de Física",
+                    code = "DEF456",
+                    idDocente = "2",
+                ),
+            ),
+            userInput = "",
+            onUserInputChanged = {},
+            showDialog = false,
+            onDismissDialog = {},
+            onConfirmDialog = { _, _ -> },
+        )
+    }
+}
