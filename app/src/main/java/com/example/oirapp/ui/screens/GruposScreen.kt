@@ -41,8 +41,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Group
 import com.example.oirapp.ui.components.CustomTextField
@@ -205,18 +207,24 @@ private fun GroupCard(
         }
 
         if (showMenuCard) {
-            MenuCard(Modifier.padding(top = 48.dp)) {
-                MenuItem(
-                    onClick = { /* TODO('El docente puede editar el nombre de un grupo') */ },
-                    icon = Icons.Default.Edit,
-                    textId = R.string.editar,
-                )
+            Popup(
+                alignment = Alignment.TopEnd,
+                offset = IntOffset(x = -40, y = 88),
+                onDismissRequest = { showMenuCard = false },
+            ) {
+                MenuCard {
+                    MenuItem(
+                        onClick = { /* TODO('El docente puede editar el nombre de un grupo') */ },
+                        icon = Icons.Default.Edit,
+                        textId = R.string.editar,
+                    )
 
-                MenuItem(
-                    onClick = { /* TODO('El docente puede eliminar un grupo') */ },
-                    icon = Icons.Default.Delete,
-                    textId = R.string.eliminar,
-                )
+                    MenuItem(
+                        onClick = { /* TODO('El docente puede eliminar un grupo') */ },
+                        icon = Icons.Default.Delete,
+                        textId = R.string.eliminar,
+                    )
+                }
             }
         }
     }
