@@ -1,9 +1,6 @@
 package com.example.oirapp
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,7 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -307,13 +305,12 @@ fun MainApp(
     }
 
     if (showMenuCard) {
-        Box(
-            contentAlignment = Alignment.TopEnd,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(onClick = { showMenuCard = false }),
+        Popup(
+            alignment = Alignment.TopEnd,
+            offset = IntOffset(x = -48, y = 160),
+            onDismissRequest = { showMenuCard = false },
         ) {
-            MenuCard(Modifier.padding(top = 80.dp, end = 24.dp)) {
+            MenuCard {
                 MenuItem(
                     onClick = { /* TODO('Go to profile screen') */ },
                     icon = Icons.Default.AccountCircle,
