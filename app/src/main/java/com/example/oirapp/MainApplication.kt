@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,8 +40,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.model.MenuItemRepository
 import com.example.oirapp.ui.components.MenuCard
+import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
@@ -306,30 +308,33 @@ fun MainApp(
 
     if (showMenuCard) {
         Box(
+            contentAlignment = Alignment.TopEnd,
             modifier = Modifier
                 .fillMaxSize()
                 .clickable(onClick = { showMenuCard = false }),
         ) {
-            val menuItems = MenuItemRepository.getMainOptions(
-                onGoToMyAccount = {},
-                onCloseSession = {
-                    loginViewModel.signOut()
+            MenuCard(Modifier.padding(top = 80.dp, end = 24.dp)) {
+                MenuItem(
+                    onClick = { /* TODO('Go to profile screen') */ },
+                    icon = Icons.Default.AccountCircle,
+                    textId = R.string.mi_cuenta,
+                )
 
-                    showMenuCard = false
+                MenuItem(
+                    onClick = {
+                        loginViewModel.signOut()
 
-                    navController.navigate(MainApplication.IniciarSesion.name) {
-                        popUpTo(MainApplication.Grupos.name) { inclusive = true }
-                    }
-                    navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
-                },
-            )
+                        showMenuCard = false
 
-            MenuCard(
-                menuItems = menuItems,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 80.dp, end = 24.dp),
-            )
+                        navController.navigate(MainApplication.IniciarSesion.name) {
+                            popUpTo(MainApplication.Grupos.name) { inclusive = true }
+                        }
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                    },
+                    icon = Icons.AutoMirrored.Filled.ExitToApp,
+                    textId = R.string.cerrar_sesion,
+                )
+            }
         }
     }
 }
