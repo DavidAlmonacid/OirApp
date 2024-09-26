@@ -35,11 +35,9 @@ fun MenuCard(
     content: @Composable () -> Unit,
 ) {
     Card(
-        onClick = {},
-        enabled = false,
-        elevation = CardDefaults.cardElevation(disabledElevation = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         modifier = modifier,
