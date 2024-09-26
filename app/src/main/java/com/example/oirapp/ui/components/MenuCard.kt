@@ -60,7 +60,7 @@ fun MenuCard(menuItems: List<MenuItem>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MenuOption(
+fun MenuOption(
     onClick: () -> Unit,
     icon: ImageVector,
     @StringRes textId: Int,
