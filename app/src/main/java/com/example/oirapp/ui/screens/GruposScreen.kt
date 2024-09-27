@@ -303,8 +303,7 @@ private fun GroupInputDialog(
                     text = stringResource(
                         if (role == "Estudiante") {
                             R.string.unirse
-                        }
-                        else {
+                        } else {
                             if (groupState is GroupState.Create) {
                                 R.string.crear_grupo
                             } else {
