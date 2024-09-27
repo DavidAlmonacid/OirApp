@@ -220,7 +220,10 @@ private fun GroupCard(
             ) {
                 MenuCard {
                     MenuItem(
-                        onClick = openDialog,
+                        onClick = {
+                            openDialog()
+                            showMenuCard = false
+                        },
                         icon = Icons.Default.Edit,
                         textId = R.string.editar,
                     )
