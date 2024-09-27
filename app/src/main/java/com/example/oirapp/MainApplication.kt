@@ -44,6 +44,7 @@ import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
+import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.state.UserUiState
@@ -155,7 +156,11 @@ fun MainApp(
         },
         floatingActionButton = {
             if (currentScreen == MainApplication.Grupos) {
-                FloatingActionButton(onClick = { gruposViewModel.setShowDialog(true) }) {
+                FloatingActionButton(
+                    onClick = {
+                        gruposViewModel.openDialog(GroupState.Create)
+                    },
+                ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 }
             }
@@ -268,9 +273,13 @@ fun MainApp(
 
             composable(route = MainApplication.Grupos.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
+                
+                val groupState by gruposViewModel.groupState.observeAsState()
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
 
                 val teacherGroups = gruposViewModel.teacherGroups
+
+                println("MainApp: Group id: ${gruposViewModel.groupId}")
 
                 LaunchedEffect(Unit) {
                     if (userUiState.role == "Docente") {
@@ -282,6 +291,7 @@ fun MainApp(
 
                 GruposScreen(
                     userUiState = userUiState,
+                    groupState = groupState,
                     groups = if (userUiState.role == "Docente") teacherGroups else emptyList(),
                     userInput = gruposViewModel.userInput,
                     onUserInputChanged = { gruposViewModel.updateUserInput(it) },
@@ -297,13 +307,24 @@ fun MainApp(
                         }
 
                         if (userUiState.role == "Docente") {
-                            gruposViewModel.createGroup(
-                                groupName = gruposViewModel.userInput.trim(),
-                                idDocente = userId,
-                            )
-                        } else {
-                            //gruposViewModel.joinGroup(userInput, userId)
+                            if (groupState is GroupState.Create) {
+                                gruposViewModel.createGroup(
+                                    groupName = gruposViewModel.userInput.trim(),
+                                    idDocente = userId,
+                                )
+                            }
+
+                            if (groupState is GroupState.Edit) {
+                                gruposViewModel.editGroup(
+                                    id = gruposViewModel.groupId,
+                                    newName = gruposViewModel.userInput.trim(),
+                                )
+                            }
                         }
+                    },
+                    openEditDialog = { groupId ->
+                        gruposViewModel.openDialog(GroupState.Edit)
+                        gruposViewModel.updateGroupId(groupId)
                     },
                 )
             }

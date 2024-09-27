@@ -51,24 +51,25 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.UserInfo
-import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.preview.DarkLightPreviews
-import com.example.oirapp.ui.preview.DarkLightScreenPreviews
+import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
 
 @Composable
 fun GruposScreen(
+    modifier: Modifier = Modifier,
     userUiState: UserUiState,
+    groupState: GroupState?,
     groups: List<Group>,
+    showDialog: Boolean,
     userInput: String,
     onUserInputChanged: (String) -> Unit,
-    errorMessage: String,
-    showDialog: Boolean,
     onDismissDialog: () -> Unit,
     onConfirmDialog: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    errorMessage: String,
+    openEditDialog: (Int) -> Unit,
 ) {
 
     /*
@@ -113,12 +114,14 @@ fun GruposScreen(
                         groupName = group.name,
                         groupCode = group.code,
                         role = userUiState.role,
+                        openDialog = { openEditDialog(group.id) },
                     )
                 }
             }
 
             if (showDialog) {
                 GroupInputDialog(
+                    groupState = groupState,
                     inputText = userInput,
                     onInputTextChange = { newValue -> onUserInputChanged(newValue) },
                     role = userUiState.role,
@@ -138,6 +141,7 @@ private fun GroupCard(
     groupName: String,
     groupCode: String,
     role: String,
+    openDialog: () -> Unit,
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
@@ -216,7 +220,7 @@ private fun GroupCard(
             ) {
                 MenuCard {
                     MenuItem(
-                        onClick = { /* TODO('El docente puede editar el nombre de un grupo') */ },
+                        onClick = openDialog,
                         icon = Icons.Default.Edit,
                         textId = R.string.editar,
                     )
@@ -241,12 +245,14 @@ private fun GroupCardDocentePreview() {
             groupName = "Grupo de Matemáticas",
             groupCode = "ABC123",
             role = "Docente",
+            openDialog = {},
         )
     }
 }
 
 @Composable
 private fun GroupInputDialog(
+    groupState: GroupState?,
     inputText: String,
     onInputTextChange: (String) -> Unit,
     role: String,
@@ -292,97 +298,19 @@ private fun GroupInputDialog(
             TextButton(onClick = onConfirm) {
                 Text(
                     text = stringResource(
-                        if (role == "Estudiante") R.string.unirse else R.string.crear_grupo
+                        if (role == "Estudiante") {
+                            R.string.unirse
+                        }
+                        else {
+                            if (groupState is GroupState.Create) {
+                                R.string.crear_grupo
+                            } else {
+                                R.string.editar
+                            }
+                        }
                     )
                 )
             }
         },
     )
-}
-
-@CustomPreview
-@Composable
-private fun GroupInputDialogDocentePreview() {
-    MyApplicationTheme {
-        GroupInputDialog(
-            inputText = "",
-            onInputTextChange = {},
-            role = "Docente",
-            onDismissRequest = {},
-            onConfirm = {},
-            errorMessage = "El nombre del grupo ya existe."
-        )
-    }
-}
-
-@CustomPreview
-@Composable
-private fun GroupInputDialogEstudiantePreview() {
-    MyApplicationTheme {
-        GroupInputDialog(
-            inputText = "",
-            onInputTextChange = {},
-            role = "Estudiante",
-            onDismissRequest = {},
-            onConfirm = {},
-            errorMessage = "",
-        )
-    }
-}
-
-@DarkLightScreenPreviews
-@Composable
-private fun GruposScreenDocentePreview() {
-    MyApplicationTheme {
-        GruposScreen(
-            userUiState = UserUiState(
-                id = "",
-                name = "Francisco Garzón",
-                role = "Docente",
-                imageUrl = "",
-            ),
-            groups = emptyList(),
-            userInput = "",
-            onUserInputChanged = {},
-            errorMessage = "",
-            showDialog = true,
-            onDismissDialog = {},
-            onConfirmDialog = { _ -> },
-        )
-    }
-}
-
-@DarkLightScreenPreviews
-@Composable
-private fun GruposScreenEstudiantePreview() {
-    MyApplicationTheme {
-        GruposScreen(
-            userUiState = UserUiState(
-                id = "",
-                name = "David Almonacid",
-                role = "Estudiante",
-                imageUrl = "",
-            ),
-            groups = listOf(
-                Group(
-                    id = 1,
-                    name = "Grupo de Matemáticas",
-                    code = "ABC123",
-                    idDocente = "1",
-                ),
-                Group(
-                    id = 2,
-                    name = "Grupo de Física",
-                    code = "DEF456",
-                    idDocente = "2",
-                ),
-            ),
-            userInput = "",
-            onUserInputChanged = {},
-            errorMessage = "",
-            showDialog = false,
-            onDismissDialog = {},
-            onConfirmDialog = { _ -> },
-        )
-    }
 }

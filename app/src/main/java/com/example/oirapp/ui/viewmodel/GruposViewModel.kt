@@ -1,11 +1,15 @@
 package com.example.oirapp.ui.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Group
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.ui.state.GroupState
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +19,9 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class GruposViewModel : BaseViewModel() {
+    private val _groupState = MutableLiveData<GroupState>()
+    val groupState: LiveData<GroupState> = _groupState
+
     var teacherGroups by mutableStateOf<List<Group>>(emptyList())
         private set
 
@@ -24,13 +31,26 @@ class GruposViewModel : BaseViewModel() {
     var errorMessage by mutableStateOf("")
         private set
 
+    var groupId by mutableIntStateOf(0)
+        private set
+
     fun updateUserInput(input: String) {
         userInput = input
+    }
+
+    fun updateGroupId(id: Int) {
+        groupId = id
     }
 
     fun resetData() {
         userInput = ""
         errorMessage = ""
+        groupId = 0
+    }
+
+    fun openDialog(state: GroupState) {
+        this.setShowDialog(true)
+        _groupState.value = state
     }
 
     private fun getTeacherGroupNames(): List<String> {
@@ -82,6 +102,22 @@ class GruposViewModel : BaseViewModel() {
                 resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.createGroup: Error: ${e.message}")
+            }
+        }
+    }
+
+    fun editGroup(id: Int, newName: String) {
+        viewModelScope.launch {
+            try {
+                supabaseClient.from("grupos").update({
+                    set("nombre_grupo", newName)
+                }) {
+                    filter {
+                        eq("id_grupo", id)
+                    }
+                }
+            } catch (e: Exception) {
+                println("GruposViewModel.editGroup: Error: ${e.message}")
             }
         }
     }
