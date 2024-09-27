@@ -116,6 +116,11 @@ class GruposViewModel : BaseViewModel() {
                         eq("id_grupo", id)
                     }
                 }
+
+                this@GruposViewModel.setShowDialog(false)
+
+                getCreatedGroups()
+                resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.editGroup: Error: ${e.message}")
             }
