@@ -322,9 +322,10 @@ fun MainApp(
                             }
                         }
                     },
-                    openEditDialog = { groupId ->
+                    openEditDialog = { groupId, groupName ->
                         gruposViewModel.openDialog(GroupState.Edit)
                         gruposViewModel.updateGroupId(groupId)
+                        gruposViewModel.updateUserInput(groupName)
                     },
                 )
             }
