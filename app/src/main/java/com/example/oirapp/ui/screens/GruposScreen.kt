@@ -69,7 +69,7 @@ fun GruposScreen(
     onDismissDialog: () -> Unit,
     onConfirmDialog: (String) -> Unit,
     errorMessage: String,
-    openEditDialog: (Int) -> Unit,
+    openEditDialog: (Int, String) -> Unit,
 ) {
 
     /*
@@ -114,7 +114,7 @@ fun GruposScreen(
                         groupName = group.name,
                         groupCode = group.code,
                         role = userUiState.role,
-                        openDialog = { openEditDialog(group.id) },
+                        openDialog = { openEditDialog(group.id, group.name) },
                     )
                 }
             }
