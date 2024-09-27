@@ -12,6 +12,7 @@ import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.state.GroupState
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,7 +62,9 @@ class GruposViewModel : BaseViewModel() {
         viewModelScope.launch {
             try {
                 val fetchedGroups = withContext(Dispatchers.IO) {
-                    supabaseClient.from("grupos").select().decodeList<Group>()
+                    supabaseClient.from("grupos").select {
+                        order(column = "id_grupo", order = Order.ASCENDING)
+                    }.decodeList<Group>()
                 }
 
                 teacherGroups = fetchedGroups
