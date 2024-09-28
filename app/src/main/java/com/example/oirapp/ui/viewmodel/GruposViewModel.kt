@@ -111,7 +111,7 @@ class GruposViewModel : BaseViewModel() {
         }
     }
 
-    fun editGroup(id: Int, newName: String) {
+    fun updateGroupName(id: Int, newName: String) {
         viewModelScope.launch {
             try {
                 supabaseClient.from("grupos").update({

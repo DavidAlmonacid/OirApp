@@ -314,7 +314,7 @@ fun MainApp(
                             }
 
                             if (groupState is GroupState.Edit) {
-                                gruposViewModel.editGroup(
+                                gruposViewModel.updateGroupName(
                                     id = gruposViewModel.groupId,
                                     newName = gruposViewModel.userInput.trim(),
                                 )
