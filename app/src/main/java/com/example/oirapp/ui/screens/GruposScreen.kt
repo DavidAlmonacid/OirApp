@@ -51,10 +51,8 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.UserInfo
-import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
-import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.utils.removeUppercaseAccents
 
 @Composable
@@ -235,8 +233,8 @@ private fun GroupCard(
 
                     MenuItem(
                         onClick = {
-                        /* TODO('El docente puede eliminar un grupo') */
-                        onDeleteGroup(groupId)},
+                            onDeleteGroup(groupId)
+                        },
                         icon = Icons.Default.Delete,
                         textId = R.string.eliminar,
                     )
