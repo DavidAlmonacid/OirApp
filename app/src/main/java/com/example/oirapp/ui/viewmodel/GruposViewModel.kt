@@ -14,6 +14,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
@@ -23,8 +25,8 @@ class GruposViewModel : BaseViewModel() {
     private val _groupState = MutableLiveData<GroupState>()
     val groupState: LiveData<GroupState> = _groupState
 
-    var teacherGroups by mutableStateOf<List<Group>>(emptyList())
-        private set
+    private val _teacherGroups = MutableStateFlow<List<Group>>(emptyList())
+    val teacherGroups: StateFlow<List<Group>> = _teacherGroups
 
     var userInput by mutableStateOf("")
         private set
@@ -55,7 +57,7 @@ class GruposViewModel : BaseViewModel() {
     }
 
     private fun getTeacherGroupNames(): List<String> {
-        return teacherGroups.map { it.name }
+        return _teacherGroups.value.map { it.name }
     }
 
     fun getCreatedGroups() {
@@ -67,7 +69,7 @@ class GruposViewModel : BaseViewModel() {
                     }.decodeList<Group>()
                 }
 
-                teacherGroups = fetchedGroups
+                _teacherGroups.value = fetchedGroups
             } catch (e: Exception) {
                 println("GruposViewModel.getCreatedGroups: Error: ${e.message}")
             }

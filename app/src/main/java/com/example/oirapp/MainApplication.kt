@@ -276,8 +276,7 @@ fun MainApp(
                 
                 val groupState by gruposViewModel.groupState.observeAsState()
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
-
-                val teacherGroups = gruposViewModel.teacherGroups
+                val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
 
                 println("MainApp: Group id: ${gruposViewModel.groupId}")
 
