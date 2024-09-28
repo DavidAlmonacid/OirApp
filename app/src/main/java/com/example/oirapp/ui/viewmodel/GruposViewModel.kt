@@ -132,6 +132,10 @@ class GruposViewModel : BaseViewModel() {
         }
     }
 
+    fun deleteGroup(id: Int) {
+        // code
+    }
+
     private fun generateAccessCode(): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         val randomLimit = (5..chars.length).random()
