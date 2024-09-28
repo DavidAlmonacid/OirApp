@@ -326,6 +326,9 @@ fun MainApp(
                         gruposViewModel.updateGroupId(groupId)
                         gruposViewModel.updateUserInput(groupName)
                     },
+                    onDeleteGroup = { groupId ->
+                        gruposViewModel.deleteGroup(groupId)
+                    },
                 )
             }
         }

@@ -133,6 +133,18 @@ class GruposViewModel : BaseViewModel() {
     }
 
     fun deleteGroup(id: Int) {
+        viewModelScope.launch {
+            try {
+                supabaseClient.from("grupos").delete {
+                    filter {
+                        eq("id_grupo", id)
+                    }
+                }
+                getCreatedGroups()
+            } catch (e: Exception) {
+                println("GruposViewModel.deleteGroup: Error: ${e.message}")
+            }
+        }
         // code
     }
 

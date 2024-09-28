@@ -70,6 +70,7 @@ fun GruposScreen(
     onConfirmDialog: (String) -> Unit,
     errorMessage: String,
     openEditDialog: (Int, String) -> Unit,
+    onDeleteGroup: (Int) -> Unit,
 ) {
 
     /*
@@ -115,6 +116,8 @@ fun GruposScreen(
                         groupCode = group.code,
                         role = userUiState.role,
                         openDialog = { openEditDialog(group.id, group.name) },
+                        onDeleteGroup = onDeleteGroup,
+                        groupId = group.id,
                     )
                 }
             }
@@ -142,6 +145,8 @@ private fun GroupCard(
     groupCode: String,
     role: String,
     openDialog: () -> Unit,
+    groupId: Int,
+    onDeleteGroup: (Int) -> Unit,
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
@@ -189,7 +194,7 @@ private fun GroupCard(
 
                     if (role == "Docente") {
                         Text(
-                            text = groupCode,
+                            text = "Código: $groupCode",
                             modifier = Modifier.padding(top = 8.dp),
                         )
                     }
@@ -229,7 +234,9 @@ private fun GroupCard(
                     )
 
                     MenuItem(
-                        onClick = { /* TODO('El docente puede eliminar un grupo') */ },
+                        onClick = {
+                        /* TODO('El docente puede eliminar un grupo') */
+                        onDeleteGroup(groupId)},
                         icon = Icons.Default.Delete,
                         textId = R.string.eliminar,
                     )
@@ -239,19 +246,19 @@ private fun GroupCard(
     }
 }
 
-@DarkLightPreviews
-@Composable
-private fun GroupCardDocentePreview() {
-    MyApplicationTheme {
-        GroupCard(
-            onClick = {},
-            groupName = "Grupo de Matemáticas",
-            groupCode = "ABC123",
-            role = "Docente",
-            openDialog = {},
-        )
-    }
-}
+//@DarkLightPreviews
+//@Composable
+//private fun GroupCardDocentePreview() {
+//    MyApplicationTheme {
+//        GroupCard(
+//            onClick = {},
+//            groupName = "Grupo de Matemáticas",
+//            groupCode = "ABC123",
+//            role = "Docente",
+//            openDialog = {},
+//        )
+//    }
+//}
 
 @Composable
 private fun GroupInputDialog(
