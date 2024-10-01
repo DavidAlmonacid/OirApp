@@ -145,7 +145,36 @@ class GruposViewModel : BaseViewModel() {
                 println("GruposViewModel.deleteGroup: Error: ${e.message}")
             }
         }
-        // code
+    }
+
+    fun joinGroup(accessCode: String, idEstudiante: String) {
+        viewModelScope.launch {
+            try {
+                val group = withContext(Dispatchers.IO) {
+                    supabaseClient.from("grupos").select {
+                        filter {
+                            eq("codigo_acceso", accessCode)
+                        }
+                    }.decodeSingleOrNull<Group>()
+                }
+
+                if (group == null) {
+                    errorMessage = "Código de acceso incorrecto."
+                    return@launch
+                }
+
+                val table = supabaseClient.postgrest["estudiantes_grupos"]
+
+                withContext(Dispatchers.IO) {
+                    table.insert(buildJsonObject {
+                        put("id_estudiante", idEstudiante)
+                        put("id_grupo", group.id)
+                    })
+                }
+            } catch (e: Exception) {
+                println("GruposViewModel.joinGroup: Error: ${e.message}")
+            }
+        }
     }
 
     private fun generateAccessCode(): String {
