@@ -284,7 +284,11 @@ private fun GroupInputDialog(
                     onValueChange = { newValue -> onInputTextChange(newValue) },
                     labelId = if (role == "Estudiante") R.string.codigo_acceso else R.string.nombre_grupo,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Words,
+                        capitalization = if (role == "Estudiante") {
+                            KeyboardCapitalization.Characters
+                        } else {
+                            KeyboardCapitalization.Words
+                        },
                     ),
                     keyboardActions = KeyboardActions(onDone = { onConfirm() }),
                 )
