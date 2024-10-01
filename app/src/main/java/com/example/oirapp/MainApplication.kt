@@ -158,7 +158,11 @@ fun MainApp(
             if (currentScreen == MainApplication.Grupos) {
                 FloatingActionButton(
                     onClick = {
-                        gruposViewModel.openDialog(GroupState.Create)
+                        if (loginViewModel.userUiState.value.role == "Docente") {
+                            gruposViewModel.openDialog(GroupState.Create)
+                        } else {
+                            gruposViewModel.openDialog(GroupState.Join)
+                        }
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
@@ -273,12 +277,10 @@ fun MainApp(
 
             composable(route = MainApplication.Grupos.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
-                
+
                 val groupState by gruposViewModel.groupState.observeAsState()
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
                 val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
-
-                println("MainApp: Group id: ${gruposViewModel.groupId}")
 
                 LaunchedEffect(Unit) {
                     if (userUiState.role == "Docente") {
@@ -317,6 +319,15 @@ fun MainApp(
                                 gruposViewModel.updateGroupName(
                                     id = gruposViewModel.groupId,
                                     newName = gruposViewModel.userInput.trim(),
+                                )
+                            }
+                        }
+
+                        if (userUiState.role == "Estudiante") {
+                            if (groupState is GroupState.Join) {
+                                gruposViewModel.joinGroup(
+                                    accessCode = gruposViewModel.userInput.trim().uppercase(),
+                                    idEstudiante = userId,
                                 )
                             }
                         }
