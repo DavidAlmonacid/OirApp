@@ -281,19 +281,20 @@ fun MainApp(
                 val groupState by gruposViewModel.groupState.observeAsState()
                 val showDialog by gruposViewModel.showDialog.observeAsState(false)
                 val teacherGroups by gruposViewModel.teacherGroups.collectAsState()
+                val studentGroups by gruposViewModel.studentGroups.collectAsState()
 
                 LaunchedEffect(Unit) {
                     if (userUiState.role == "Docente") {
                         gruposViewModel.getCreatedGroups(userUiState.id)
                     } else {
-                        //gruposViewModel.getJoinedGroups()
+                        gruposViewModel.getJoinedGroups(userUiState.id)
                     }
                 }
 
                 GruposScreen(
                     userUiState = userUiState,
                     groupState = groupState,
-                    groups = if (userUiState.role == "Docente") teacherGroups else emptyList(),
+                    groups = if (userUiState.role == "Docente") teacherGroups else studentGroups,
                     userInput = gruposViewModel.userInput,
                     onUserInputChanged = { gruposViewModel.updateUserInput(it) },
                     errorMessage = gruposViewModel.errorMessage,

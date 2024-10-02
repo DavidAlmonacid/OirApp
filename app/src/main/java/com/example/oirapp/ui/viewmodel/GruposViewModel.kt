@@ -13,6 +13,7 @@ import com.example.oirapp.ui.state.GroupState
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,9 @@ class GruposViewModel : BaseViewModel() {
 
     private val _teacherGroups = MutableStateFlow<List<Group>>(emptyList())
     val teacherGroups: StateFlow<List<Group>> = _teacherGroups
+
+    private val _studentGroups = MutableStateFlow<List<Group>>(emptyList())
+    val studentGroups: StateFlow<List<Group>> = _studentGroups
 
     var userInput by mutableStateOf("")
         private set
@@ -144,6 +148,26 @@ class GruposViewModel : BaseViewModel() {
                 getCreatedGroups(idDocente)
             } catch (e: Exception) {
                 println("GruposViewModel.deleteGroup: Error: ${e.message}")
+            }
+        }
+    }
+
+    private fun getStudentGroupCodes(): List<String> {
+        return _studentGroups.value.map { it.code }
+    }
+
+    fun getJoinedGroups(idEstudiante: String) {
+        viewModelScope.launch {
+            try {
+                val fetchedGroups = withContext(Dispatchers.IO) {
+                    supabaseClient.postgrest.rpc("get_joined_groups", buildJsonObject {
+                        put("p_id_estudiante", idEstudiante)
+                    }).decodeList<Group>()
+                }
+
+                _studentGroups.value = fetchedGroups
+            } catch (e: Exception) {
+                println("GruposViewModel.getJoinedGroups: Error: ${e.message}")
             }
         }
     }
