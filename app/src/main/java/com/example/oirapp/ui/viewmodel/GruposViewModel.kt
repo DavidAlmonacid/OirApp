@@ -84,13 +84,11 @@ class GruposViewModel : BaseViewModel() {
     fun createGroup(groupName: String, idDocente: String) {
         if (groupName.isEmpty()) {
             errorMessage = "Ingrese el nombre del grupo."
-            this.setShowDialog(true)
             return
         }
 
         if (groupName in getTeacherGroupNames()) {
             errorMessage = "El nombre del grupo ya existe."
-            this.setShowDialog(true)
             return
         }
 
