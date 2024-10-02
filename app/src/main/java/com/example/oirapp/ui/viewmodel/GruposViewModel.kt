@@ -173,6 +173,16 @@ class GruposViewModel : BaseViewModel() {
     }
 
     fun joinGroup(accessCode: String, idEstudiante: String) {
+        if (accessCode.isEmpty()) {
+            errorMessage = "Ingrese el código de acceso."
+            return
+        }
+
+        if (accessCode in getStudentGroupCodes()) {
+            errorMessage = "Ya estás en este grupo."
+            return
+        }
+
         viewModelScope.launch {
             try {
                 val group = withContext(Dispatchers.IO) {
@@ -184,7 +194,7 @@ class GruposViewModel : BaseViewModel() {
                 }
 
                 if (group == null) {
-                    errorMessage = "Código de acceso incorrecto."
+                    errorMessage = "Código de acceso inválido."
                     return@launch
                 }
 
@@ -196,6 +206,10 @@ class GruposViewModel : BaseViewModel() {
                         put("id_grupo", group.id)
                     })
                 }
+
+                this@GruposViewModel.setShowDialog(false)
+
+                resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.joinGroup: Error: ${e.message}")
             }
