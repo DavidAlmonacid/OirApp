@@ -60,12 +60,13 @@ class GruposViewModel : BaseViewModel() {
         return _teacherGroups.value.map { it.name }
     }
 
-    fun getCreatedGroups() {
+    fun getCreatedGroups(idDocente: String) {
         viewModelScope.launch {
             try {
                 val fetchedGroups = withContext(Dispatchers.IO) {
                     supabaseClient.from("grupos").select {
                         order(column = "id_grupo", order = Order.ASCENDING)
+                        filter { eq("id_docente", idDocente) }
                     }.decodeList<Group>()
                 }
 
@@ -103,7 +104,7 @@ class GruposViewModel : BaseViewModel() {
 
                 this@GruposViewModel.setShowDialog(false)
 
-                getCreatedGroups()
+                getCreatedGroups(idDocente)
                 resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.createGroup: Error: ${e.message}")
@@ -111,20 +112,20 @@ class GruposViewModel : BaseViewModel() {
         }
     }
 
-    fun updateGroupName(id: Int, newName: String) {
+    fun updateGroupName(groupId: Int, newName: String, idDocente: String) {
         viewModelScope.launch {
             try {
                 supabaseClient.from("grupos").update({
                     set("nombre_grupo", newName)
                 }) {
                     filter {
-                        eq("id_grupo", id)
+                        eq("id_grupo", groupId)
                     }
                 }
 
                 this@GruposViewModel.setShowDialog(false)
 
-                getCreatedGroups()
+                getCreatedGroups(idDocente)
                 resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.editGroup: Error: ${e.message}")
@@ -132,15 +133,15 @@ class GruposViewModel : BaseViewModel() {
         }
     }
 
-    fun deleteGroup(id: Int) {
+    fun deleteGroup(groupId: Int, idDocente: String) {
         viewModelScope.launch {
             try {
                 supabaseClient.from("grupos").delete {
                     filter {
-                        eq("id_grupo", id)
+                        eq("id_grupo", groupId)
                     }
                 }
-                getCreatedGroups()
+                getCreatedGroups(idDocente)
             } catch (e: Exception) {
                 println("GruposViewModel.deleteGroup: Error: ${e.message}")
             }

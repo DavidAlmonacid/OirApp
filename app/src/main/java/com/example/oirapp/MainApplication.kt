@@ -284,7 +284,7 @@ fun MainApp(
 
                 LaunchedEffect(Unit) {
                     if (userUiState.role == "Docente") {
-                        gruposViewModel.getCreatedGroups()
+                        gruposViewModel.getCreatedGroups(userUiState.id)
                     } else {
                         //gruposViewModel.getJoinedGroups()
                     }
@@ -317,8 +317,9 @@ fun MainApp(
 
                             if (groupState is GroupState.Edit) {
                                 gruposViewModel.updateGroupName(
-                                    id = gruposViewModel.groupId,
+                                    groupId = gruposViewModel.groupId,
                                     newName = gruposViewModel.userInput.trim(),
+                                    idDocente = userId,
                                 )
                             }
                         }
@@ -338,7 +339,7 @@ fun MainApp(
                         gruposViewModel.updateUserInput(groupName)
                     },
                     onDeleteGroup = { groupId ->
-                        gruposViewModel.deleteGroup(groupId)
+                        gruposViewModel.deleteGroup(groupId, userUiState.id)
                     },
                 )
             }
