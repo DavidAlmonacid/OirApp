@@ -164,6 +164,8 @@ fun MainApp(
                             gruposViewModel.openDialog(GroupState.Join)
                         }
                     },
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 }
