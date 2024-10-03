@@ -1,7 +1,6 @@
 package com.example.oirapp.ui.components
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -37,37 +34,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-
-@Composable
-fun PrimaryButton(
-    onClick: () -> Unit,
-    @StringRes textId: Int,
-    modifier: Modifier = Modifier,
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondaryContainer),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Text(
-            text = stringResource(textId),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-        )
-    }
-}
-//@DarkLightPreviews
-//@Composable
-//private fun PrimaryButtonPreview() {
-//    MyApplicationTheme {
-//        PrimaryButton(onClick = {}, textId = R.string.iniciar_sesion)
-//    }
-//}
+import com.example.oirapp.ui.preview.CustomPreview
+import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.ui.theme.bodyFontFamily
 
 @Composable
 fun CustomTextField(
@@ -84,7 +53,13 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = stringResource(labelId), fontWeight = FontWeight.Medium) },
+        label = {
+            Text(
+                text = stringResource(labelId),
+                fontWeight = FontWeight.Medium,
+                fontFamily = bodyFontFamily,
+            )
+        },
         shape = MaterialTheme.shapes.medium,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
@@ -97,13 +72,14 @@ fun CustomTextField(
             .alpha(if (value.isEmpty()) 0.6f else 1f),
     )
 }
-//@CustomPreview
-//@Composable
-//private fun CustomTextFieldPreview() {
-//    MyApplicationTheme {
-//        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
-//    }
-//}
+
+@CustomPreview
+@Composable
+private fun CustomTextFieldPreview() {
+    MyApplicationTheme {
+        CustomTextField(value = "", onValueChange = {}, labelId = R.string.email)
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,7 +120,7 @@ fun SelectRoleDropdown(
                         onOptionSelected(context.resources.getString(option))
                         expanded = false
                     },
-                    text = { Text(text = stringResource(option), fontSize = 16.sp) },
+                    text = { Text(text = stringResource(option), style = MaterialTheme.typography.bodyLarge) },
                 )
             }
         }
@@ -182,13 +158,13 @@ fun UserInfo(
         Column {
             Text(
                 text = userName,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 4.dp),
             )
 
             Text(
                 text = userRole,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.alpha(0.8f),
             )
         }
