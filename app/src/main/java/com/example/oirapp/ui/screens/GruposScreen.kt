@@ -96,10 +96,6 @@ fun GruposScreen(
                     .alpha(0.2f),
             )
 
-            /*
-             * TODO: El estudiante puede unirse a un grupo con un código y este será mostrado en una lista
-             */
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 contentPadding = PaddingValues(vertical = 20.dp),
