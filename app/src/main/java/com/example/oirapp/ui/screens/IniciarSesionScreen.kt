@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
-import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.CustomTextField
+import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.theme.MyApplicationTheme
@@ -80,9 +80,7 @@ fun IniciarSesionScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done,
                 ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onLoginButtonClicked() }
-                ),
+                keyboardActions = KeyboardActions(onDone = { onLoginButtonClicked() }),
             )
 
             PrimaryButton(
