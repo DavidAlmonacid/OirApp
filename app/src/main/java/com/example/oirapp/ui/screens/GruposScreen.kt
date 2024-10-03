@@ -51,8 +51,11 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.UserInfo
+import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
+import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.ui.theme.bodyFontFamilyMono
 import com.example.oirapp.utils.removeUppercaseAccents
 
 @Composable
@@ -162,7 +165,7 @@ private fun GroupCard(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(64.dp)
+                        .size(60.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
@@ -178,19 +181,26 @@ private fun GroupCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = groupName,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.W500,
+                        style = MaterialTheme.typography.titleMedium,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth(),
                     )
 
                     if (role == "Docente") {
-                        Text(
-                            text = "Código: $groupCode",
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 8.dp),
-                        )
+                        ) {
+                            Text(text = stringResource(R.string.codigo))
+                            Text(
+                                text = groupCode,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = bodyFontFamilyMono,
+                                letterSpacing = 1.sp,
+                            )
+                        }
                     }
                 }
 
@@ -240,19 +250,21 @@ private fun GroupCard(
     }
 }
 
-//@DarkLightPreviews
-//@Composable
-//private fun GroupCardDocentePreview() {
-//    MyApplicationTheme {
-//        GroupCard(
-//            onClick = {},
-//            groupName = "Grupo de Matemáticas",
-//            groupCode = "ABC123",
-//            role = "Docente",
-//            openDialog = {},
-//        )
-//    }
-//}
+@DarkLightPreviews
+@Composable
+private fun GroupCardDocentePreview() {
+    MyApplicationTheme {
+        GroupCard(
+            onClick = {},
+            groupName = "Grupo de Matemáticas",
+            groupCode = "A0BOC1",
+            role = "Docente",
+            openDialog = {},
+            groupId = 1,
+            onDeleteGroup = {},
+        )
+    }
+}
 
 @Composable
 private fun GroupInputDialog(
