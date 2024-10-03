@@ -71,7 +71,7 @@ fun MenuItem(
         Text(
             text = stringResource(textId),
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.W500,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.fillMaxWidth(),
         )
     }
