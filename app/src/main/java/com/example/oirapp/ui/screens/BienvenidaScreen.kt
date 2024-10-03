@@ -70,7 +70,6 @@ fun BienvenidaScreen(onStartButtonClicked: () -> Unit, modifier: Modifier = Modi
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.End,
-                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .widthIn(max = 120.dp)
