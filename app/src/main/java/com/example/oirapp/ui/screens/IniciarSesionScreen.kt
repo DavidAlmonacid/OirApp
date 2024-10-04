@@ -91,7 +91,6 @@ fun IniciarSesionScreen(
 
             Text(
                 text = stringResource(R.string.no_account_register),
-                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .padding(top = 28.dp)
                     .clickable(onClick = onRegisterTextClicked),
