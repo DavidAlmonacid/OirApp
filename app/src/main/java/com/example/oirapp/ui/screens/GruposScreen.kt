@@ -196,7 +196,7 @@ private fun GroupCard(
                             Text(
                                 text = groupCode,
                                 style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.SemiBold,
+                                fontWeight = FontWeight.Medium,
                                 fontFamily = bodyFontFamilyMono,
                                 letterSpacing = 1.sp,
                             )
