@@ -1,7 +1,6 @@
 package com.example.oirapp.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -16,53 +15,34 @@ val bodyFontFamily = FontFamily(
 )
 
 val bodyFontFamilyMono = FontFamily(
-    Font(R.font.ubuntu_sans_mono_regular, FontWeight.Normal),
+    Font(R.font.ubuntu_sans_mono_medium, FontWeight.Medium),
 )
 
+val baseline = Typography()
+
 val Typography = Typography(
-    displayMedium = TextStyle(
+    displayMedium = baseline.displayMedium.copy(
         fontWeight = FontWeight.Bold,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
-        letterSpacing = 0.sp,
         fontFamily = bodyFontFamily,
     ),
 
-    titleLarge = TextStyle(
+    titleLarge = baseline.titleLarge.copy(
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp,
         fontFamily = bodyFontFamily,
     ),
-    titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
+    titleMedium = baseline.titleMedium.copy(
         fontSize = 18.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp,
         fontFamily = bodyFontFamily,
     ),
 
-    bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-        fontFamily = bodyFontFamily,
-    ),
-    bodyMedium = TextStyle(
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp,
         fontFamily = bodyFontFamily,
     ),
 
-    labelMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-        fontFamily = bodyFontFamily,
-    )
+    labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )
