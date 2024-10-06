@@ -92,9 +92,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Google fonts library
-    implementation(libs.androidx.ui.text.google.fonts)
-
     // Image libraries
     implementation(libs.imagepicker)
 
@@ -102,8 +99,8 @@ dependencies {
     implementation(platform(libs.supabase.bom))
     implementation(libs.gotrue.kt)
     implementation(libs.postgrest.kt)
-    //implementation(libs.realtime.kt)
+    implementation(libs.realtime.kt)
 
     // Ktor library
-    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.cio)
 }

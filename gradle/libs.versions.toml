@@ -7,17 +7,16 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
-ktorClientAndroid = "2.3.12"
+ktorClient = "2.3.12"
 material = "1.12.0"
 activity = "1.9.2"
 activityCompose = "1.9.2"
 constraintlayout = "2.1.4"
 lifecycleViewmodelKtx = "2.8.6"
 lifecycleRuntimeKtx = "2.8.6"
-composeBom = "2024.09.02"
-navigationCompose = "2.8.1"
-runtimeLivedata = "1.7.2"
-uiTextGoogleFonts = "1.7.2"
+composeBom = "2024.09.03"
+navigationCompose = "2.8.2"
+runtimeLivedata = "1.7.3"
 supabase = "2.6.1"
 
 [libraries]
@@ -30,7 +29,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClient" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
@@ -44,11 +43,10 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
-androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
 gotrue-kt = { module = "io.github.jan-tennert.supabase:gotrue-kt" }
 postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
-#realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
+realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
