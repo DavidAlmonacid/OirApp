@@ -72,6 +72,7 @@ fun GruposScreen(
     errorMessage: String,
     openEditDialog: (Int, String) -> Unit,
     onDeleteGroup: (Int) -> Unit,
+    onGroupCardCLick: (String, Int) -> Unit,
 ) {
 
     /*
@@ -108,7 +109,7 @@ fun GruposScreen(
                     key = { group -> group.id },
                 ) { group ->
                     GroupCard(
-                        onClick = {},
+                        onClick = { onGroupCardCLick(group.name, group.id) },
                         groupName = group.name,
                         groupCode = group.code,
                         role = userUiState.role,
