@@ -1,6 +1,5 @@
 package com.example.oirapp
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -34,13 +33,16 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.screens.BienvenidaScreen
+import com.example.oirapp.ui.screens.ChatScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
@@ -48,6 +50,7 @@ import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.state.UserUiState
+import com.example.oirapp.ui.viewmodel.ChatViewModel
 import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
@@ -55,17 +58,19 @@ import com.example.oirapp.ui.viewmodel.RegisterViewModel
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.serialization.json.jsonPrimitive
 
-enum class MainApplication(@StringRes val title: Int? = null) {
+enum class MainApplication(var title: String? = null) {
     Bienvenida,
-    IniciarSesion(title = R.string.iniciar_sesion),
-    CrearCuenta(title = R.string.crear_cuenta),
-    Grupos(title = R.string.grupos),
+    IniciarSesion(title = "Iniciar sesión"),
+    CrearCuenta(title = "Crear cuenta"),
+    Grupos(title = "Grupos"),
+    Chat(title = ""),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
     currentScreen: MainApplication,
+    navigationViewModel: NavigationViewModel,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     onMenuButtonClick: () -> Unit,
@@ -73,8 +78,10 @@ fun MainAppBar(
 ) {
     TopAppBar(
         title = {
+            val title by navigationViewModel.title.observeAsState(currentScreen.title ?: "")
+
             Text(
-                text = stringResource(currentScreen.title!!),
+                text = title,
                 fontWeight = FontWeight.Bold,
             )
         },
@@ -115,6 +122,7 @@ fun MainApp(
     registerViewModel: RegisterViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
     gruposViewModel: GruposViewModel = viewModel(),
+    chatViewModel: ChatViewModel = viewModel(),
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
     var showMenuCard by remember { mutableStateOf(false) }
@@ -148,6 +156,7 @@ fun MainApp(
             if (currentScreen != MainApplication.Bienvenida) {
                 MainAppBar(
                     currentScreen = currentScreen,
+                    navigationViewModel = navigationViewModel,
                     canNavigateBack = false,
                     navigateUp = {},
                     onMenuButtonClick = { showMenuCard = true },
@@ -344,7 +353,38 @@ fun MainApp(
                     onDeleteGroup = { groupId ->
                         gruposViewModel.deleteGroup(groupId, userUiState.id)
                     },
+                    onGroupCardCLick = { groupName, groupId ->
+                        navController.navigate("${MainApplication.Chat.name}/$groupName/$groupId")
+                        navigationViewModel.updateCurrentScreen(MainApplication.Chat)
+                        navigationViewModel.updateTitle(groupName)
+                    },
                 )
+            }
+
+            composable(
+                route = "${MainApplication.Chat.name}/{groupName}/{groupId}",
+                arguments = listOf(
+                    navArgument("groupName") { type = NavType.StringType },
+                    navArgument("groupId") { type = NavType.StringType },
+                ),
+            ) { backStackEntry ->
+                val groupName = backStackEntry.arguments?.getString("groupName") ?: ""
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                val channelName = "messages_${groupName.replace(" ", "_").lowercase()}_$groupId"
+
+                LaunchedEffect(Unit) {
+                    println("MainApp: Channel name: $channelName")
+                    chatViewModel.subscribeToChannel(channelName)
+                }
+
+                DisposableEffect(Unit) {
+                    onDispose {
+                        navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+                        navigationViewModel.updateTitle("Grupos")
+                    }
+                }
+
+                ChatScreen()
             }
         }
     }
