@@ -35,6 +35,9 @@
     <string name="codigo_acceso">Código de acceso</string>
     <string name="codigo">"Código: "</string>
 
+    <!-- Pantalla de Chat -->
+    <string name="message">Mensaje</string>
+
     <!-- Textos compartidos -->
     <string name="logo_description">Logo principal</string>
     <string name="editar">Editar</string>
