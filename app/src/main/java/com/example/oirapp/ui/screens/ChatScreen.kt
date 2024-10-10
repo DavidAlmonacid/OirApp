@@ -7,12 +7,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,43 +28,93 @@ import com.example.oirapp.R
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier) {
+fun ChatScreen(
+    modifier: Modifier = Modifier,
+    userMessage: String,
+    onUserMessageChanged: (String) -> Unit,
+    onSendMessage: (String) -> Unit,
+) {
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+            modifier = Modifier.fillMaxSize(),
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-            ) {
-                items(36) {
-                    Text("Item ${it.inc()}")
-                }
-            }
+            ChatMessages(modifier = Modifier.weight(1f))
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    placeholder = { Text(stringResource(R.string.message)) },
-                )
-            }
+            ChatMessageComposer(
+                userMessage = userMessage,
+                onUserMessageChanged = onUserMessageChanged,
+                onSendMessage = onSendMessage,
+            )
         }
     }
 }
 
-@Preview
+@Composable
+private fun ChatMessages(modifier: Modifier = Modifier) {
+    LazyColumn(
+        contentPadding = PaddingValues(vertical = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+    ) {
+        items(36) {
+            Text("Item ${it.inc()}")
+        }
+    }
+}
+
+@Composable
+private fun ChatMessageComposer(
+    modifier: Modifier = Modifier,
+    userMessage: String,
+    onUserMessageChanged: (String) -> Unit,
+    onSendMessage: (String) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+            .padding(horizontal = 8.dp),
+    ) {
+        OutlinedTextField(
+            value = userMessage,
+            onValueChange = { newValue -> onUserMessageChanged(newValue) },
+            placeholder = { Text(stringResource(R.string.message)) },
+            shape = MaterialTheme.shapes.extraLarge,
+            maxLines = 6,
+            modifier = Modifier.weight(1f),
+        )
+
+        IconButton(
+            onClick = { onSendMessage(userMessage) },
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            modifier = Modifier.size(56.dp),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = null,
+            )
+        }
+    }
+}
+
+@Preview(apiLevel = 28)
 @Composable
 private fun ChatScreenPreview() {
     MyApplicationTheme {
-        ChatScreen()
+        ChatScreen(
+            userMessage = "",
+            onUserMessageChanged = {},
+            onSendMessage = {},
+        )
     }
 }

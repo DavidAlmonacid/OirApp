@@ -372,6 +372,8 @@ fun MainApp(
                 val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                 val channelName = "messages_${groupName.replace(" ", "_").lowercase()}_$groupId"
 
+                //val messages by chatViewModel.messages.collectAsState() // TODO: Implement messages
+
                 LaunchedEffect(Unit) {
                     println("MainApp: Channel name: $channelName")
                     chatViewModel.subscribeToChannel(channelName)
@@ -384,7 +386,13 @@ fun MainApp(
                     }
                 }
 
-                ChatScreen()
+                ChatScreen(
+                    userMessage = chatViewModel.userMessage,
+                    onUserMessageChanged = { chatViewModel.updateUserMessage(it) },
+                    onSendMessage = { message ->
+                        chatViewModel.insertMessage(message)
+                    },
+                )
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.example.oirapp.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
@@ -23,12 +26,26 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ChatViewModel  : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
 
-    private val table = supabaseClient.postgrest["grupos"]
+    var userMessage by mutableStateOf("")
+        private set
+
+    fun updateUserMessage(message: String) {
+        userMessage = message
+    }
+
+    fun resetData() {
+        userMessage = ""
+    }
+
+    private val table = supabaseClient.postgrest["mensajes"]
 
     fun subscribeToChannel(channelName: String) {
         viewModelScope.launch {
@@ -82,8 +99,13 @@ class ChatViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    val currentDate = dateFormat.format(Date(System.currentTimeMillis()))
+
                     table.insert(buildJsonObject {
                         put("mensaje", message)
+                        put("fecha_envio", currentDate)
+                        //put("id_grupo", ) // TODO: Add group id
                     })
                 }
             } catch (e: Exception) {
