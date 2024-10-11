@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
@@ -25,11 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
+import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
 fun ChatScreen(
     modifier: Modifier = Modifier,
+    messages: List<Message>,
     userMessage: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
@@ -42,7 +45,10 @@ fun ChatScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize(),
         ) {
-            ChatMessages(modifier = Modifier.weight(1f))
+            ChatMessages(
+                messages = messages,
+                modifier = Modifier.weight(1f),
+            )
 
             ChatMessageComposer(
                 userMessage = userMessage,
@@ -54,15 +60,21 @@ fun ChatScreen(
 }
 
 @Composable
-private fun ChatMessages(modifier: Modifier = Modifier) {
+private fun ChatMessages(
+    modifier: Modifier = Modifier,
+    messages: List<Message>,
+) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 16.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
     ) {
-        items(36) {
-            Text("Item ${it.inc()}")
+        items(
+            items = messages,
+            key = { message -> message.id },
+        ) { message ->
+            Text(text = message.message)
         }
     }
 }
@@ -112,6 +124,7 @@ private fun ChatMessageComposer(
 private fun ChatScreenPreview() {
     MyApplicationTheme {
         ChatScreen(
+            messages = emptyList(),
             userMessage = "",
             onUserMessageChanged = {},
             onSendMessage = {},
