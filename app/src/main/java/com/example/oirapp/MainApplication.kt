@@ -365,32 +365,39 @@ fun MainApp(
                 route = "${MainApplication.Chat.name}/{groupName}/{groupId}",
                 arguments = listOf(
                     navArgument("groupName") { type = NavType.StringType },
-                    navArgument("groupId") { type = NavType.StringType },
+                    navArgument("groupId") { type = NavType.IntType },
                 ),
             ) { backStackEntry ->
                 val groupName = backStackEntry.arguments?.getString("groupName") ?: ""
-                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                val groupId = backStackEntry.arguments?.getInt("groupId") ?: 0
                 val channelName = "messages_${groupName.replace(" ", "_").lowercase()}_$groupId"
 
-                //val messages by chatViewModel.messages.collectAsState() // TODO: Implement messages
+                val userUiState by loginViewModel.userUiState.collectAsState()
+                val messages by chatViewModel.messages.collectAsState()
 
                 LaunchedEffect(Unit) {
-                    println("MainApp: Channel name: $channelName")
-                    chatViewModel.subscribeToChannel(channelName)
+                    chatViewModel.subscribeToChannel(channelName, groupId)
+                    chatViewModel.getMessages(groupId)
                 }
 
                 DisposableEffect(Unit) {
                     onDispose {
+                        chatViewModel.removeChannel(channelName)
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                         navigationViewModel.updateTitle("Grupos")
                     }
                 }
 
                 ChatScreen(
+                    messages = messages,
                     userMessage = chatViewModel.userMessage,
                     onUserMessageChanged = { chatViewModel.updateUserMessage(it) },
                     onSendMessage = { message ->
-                        chatViewModel.insertMessage(message)
+                        chatViewModel.insertMessage(
+                            message = message,
+                            groupId = groupId,
+                            userId = userUiState.id,
+                        )
                     },
                 )
             }
