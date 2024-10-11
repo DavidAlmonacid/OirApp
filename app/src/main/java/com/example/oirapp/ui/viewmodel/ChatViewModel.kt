@@ -9,11 +9,12 @@ import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.realtime.HasOldRecord
-import io.github.jan.supabase.realtime.HasRecord
+import io.github.jan.supabase.postgrest.query.filter.FilterOperation
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -41,13 +42,13 @@ class ChatViewModel  : ViewModel() {
         userMessage = message
     }
 
-    fun resetData() {
+    private fun resetData() {
         userMessage = ""
     }
 
     private val table = supabaseClient.postgrest["mensajes"]
 
-    fun subscribeToChannel(channelName: String) {
+    fun subscribeToChannel(channelName: String, groupId: Int) {
         viewModelScope.launch {
             try {
                 val channel = supabaseClient.channel(channelName)
@@ -58,11 +59,8 @@ class ChatViewModel  : ViewModel() {
 
                 changes
                     .onEach {
-                        when (it) { //You can also check for <is PostgresAction.Insert>, etc.. manually
-                            //is PostgresAction.Insert -> getMessages()
-                            is HasRecord -> println(it.record)
-                            is HasOldRecord -> println(it.oldRecord)
-                            else -> println(it)
+                        if (it is PostgresAction.Insert) {
+                            getMessages(groupId)
                         }
                     }
                     .launchIn(this)
@@ -75,27 +73,22 @@ class ChatViewModel  : ViewModel() {
     }
 
     @OptIn(SupabaseExperimental::class)
-    fun getMessages() {
+    fun getMessages(groupId: Int) {
         viewModelScope.launch {
             try {
-                val flow: Flow<List<Message>> = table.selectAsFlow(Message::id)
+                val flow: Flow<List<Message>> = table.selectAsFlow(
+                    primaryKey = Message::id,
+                    filter = FilterOperation("id_grupo", FilterOperator.EQ, groupId),
+                )
 
-                flow.onEach {
-                    _messages.value = it
-                }.launchIn(this)
-
-//                flow.collect {
-//                    for (message in it) {
-//                        println(message)
-//                    }
-//                }
+                flow.collect { _messages.value = it }
             } catch (e: Exception) {
                 println("ChatViewModel.getMessages: Error: ${e.message}")
             }
         }
     }
 
-    fun insertMessage(message: String) {
+    fun insertMessage(message: String, groupId: Int, userId: String) {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -105,11 +98,27 @@ class ChatViewModel  : ViewModel() {
                     table.insert(buildJsonObject {
                         put("mensaje", message)
                         put("fecha_envio", currentDate)
-                        //put("id_grupo", ) // TODO: Add group id
+                        put("id_grupo", groupId)
+                        put("id_usuario", userId)
                     })
                 }
+
+                resetData()
             } catch (e: Exception) {
                 println("ChatViewModel.insertMessage: Error: ${e.message}")
+            }
+        }
+    }
+
+    fun removeChannel(channelName: String) {
+        viewModelScope.launch {
+            try {
+                _messages.value = emptyList()
+
+                val channel = supabaseClient.channel(channelName)
+                supabaseClient.realtime.removeChannel(channel)
+            } catch (e: Exception) {
+                println("ChatViewModel.removeChannel: Error: ${e.message}")
             }
         }
     }
