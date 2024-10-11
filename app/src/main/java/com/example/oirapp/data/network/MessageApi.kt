@@ -10,6 +10,5 @@ data class Message(
     @SerialName("mensaje") val message: String,
     @SerialName("id_usuario") val userId: String,
     @SerialName("fecha_envio") val sentAt: Instant,
-    val slug: String,
     @SerialName("id_grupo") val groupId: Int,
 )
