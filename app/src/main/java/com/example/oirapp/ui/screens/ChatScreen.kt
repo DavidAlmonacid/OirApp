@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +42,7 @@ import java.util.Locale
 fun ChatScreen(
     modifier: Modifier = Modifier,
     messages: List<Message>,
+    userId : String,
     userMessage: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
@@ -53,6 +57,7 @@ fun ChatScreen(
         ) {
             ChatMessages(
                 messages = messages,
+                userId = userId,
                 modifier = Modifier.weight(1f),
             )
 
@@ -69,9 +74,11 @@ fun ChatScreen(
 private fun ChatMessages(
     modifier: Modifier = Modifier,
     messages: List<Message>,
+    userId: String,
 ) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
@@ -80,7 +87,7 @@ private fun ChatMessages(
             items = messages,
             key = { message -> message.id },
         ) { message ->
-            ChatBubble(message = message, senderId = message.userId)
+            ChatBubble(message = message, senderId = message.userId, currentUserId = userId)
         }
     }
 }
@@ -89,14 +96,31 @@ private fun ChatMessages(
 private fun ChatBubble(
     message: Message,
     senderId: String,
-    currentUserId: String = "1",
+    currentUserId: String
 ) {
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
 
-    Column {
-        Text(text = message.message)
-        Text(text = formattedTime)
+    Column(
+        horizontalAlignment = if (senderId == currentUserId) Alignment.End else Alignment.Start,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .background(
+                    MaterialTheme.colorScheme.secondary, RoundedCornerShape(
+                        topStart = if (senderId == currentUserId) 16.dp else 0.dp,
+                        topEnd = if (senderId == currentUserId) 0.dp else 16.dp,
+                        bottomStart = 16.dp,
+                        bottomEnd = 16.dp,
+                    )
+                )
+        ) {
+            Text(text = message.message)
+            Text(text = formattedTime, style = MaterialTheme.typography.labelMedium)
+        }
     }
 }
 
@@ -149,6 +173,7 @@ private fun ChatScreenPreview() {
             userMessage = "",
             onUserMessageChanged = {},
             onSendMessage = {},
+            userId = "1",
         )
     }
 }

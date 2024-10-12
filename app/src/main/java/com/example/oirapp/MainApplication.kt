@@ -390,6 +390,7 @@ fun MainApp(
 
                 ChatScreen(
                     messages = messages,
+                    userId = userUiState.id,
                     userMessage = chatViewModel.userMessage,
                     onUserMessageChanged = { chatViewModel.updateUserMessage(it) },
                     onSendMessage = { message ->
