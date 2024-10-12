@@ -1,6 +1,7 @@
 package com.example.oirapp.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun ChatScreen(
@@ -74,8 +77,25 @@ private fun ChatMessages(
             items = messages,
             key = { message -> message.id },
         ) { message ->
-            Text(text = message.message)
+            ChatBubble(message = message, senderId = message.userId)
         }
+    }
+}
+
+@Composable
+private fun ChatBubble(
+    message: Message,
+    senderId: String,
+    currentUserId: String = "1",
+) {
+    Box {
+        Text(text = message.message)
+        Text(text = message.sentAt.toLocalDateTime(TimeZone.currentSystemDefault()).toString())
+    }
+    // TODO: Saber si se puede usar Box para el mensaje, de lo contrario, usar Column
+    Box {
+        Text(text = message.message)
+        Text(text = message.sentAt.toLocalDateTime(TimeZone.currentSystemDefault()).toString())
     }
 }
 
