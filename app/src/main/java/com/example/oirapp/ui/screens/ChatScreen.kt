@@ -38,7 +38,7 @@ import java.util.TimeZone
 fun ChatScreen(
     modifier: Modifier = Modifier,
     messages: List<Message>,
-    userId : String,
+    userId: String,
     userMessage: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
@@ -92,7 +92,7 @@ private fun ChatMessages(
 private fun ChatBubble(
     message: Message,
     senderId: String,
-    currentUserId: String
+    currentUserId: String,
 ) {
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     timeFormatter.timeZone = TimeZone.getTimeZone("America/Bogota")
@@ -100,23 +100,27 @@ private fun ChatBubble(
 
     Column(
         horizontalAlignment = if (senderId == currentUserId) Alignment.End else Alignment.Start,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .background(
-                    MaterialTheme.colorScheme.secondary, RoundedCornerShape(
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = RoundedCornerShape(
                         topStart = if (senderId == currentUserId) 16.dp else 0.dp,
                         topEnd = if (senderId == currentUserId) 0.dp else 16.dp,
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp,
-                    )
+                    ),
                 )
         ) {
             Text(text = message.message)
-            Text(text = formattedTime, style = MaterialTheme.typography.labelMedium)
+
+            Text(
+                text = formattedTime,
+                style = MaterialTheme.typography.labelMedium,
+            )
         }
     }
 }

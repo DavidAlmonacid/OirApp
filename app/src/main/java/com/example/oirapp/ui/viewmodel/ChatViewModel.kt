@@ -32,7 +32,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class ChatViewModel  : ViewModel() {
+class ChatViewModel : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
 
@@ -58,13 +58,11 @@ class ChatViewModel  : ViewModel() {
                     table = "mensajes"
                 }
 
-                changes
-                    .onEach {
+                changes.onEach {
                         if (it is PostgresAction.Insert) {
                             getMessages(groupId)
                         }
-                    }
-                    .launchIn(this)
+                    }.launchIn(this)
 
                 channel.subscribe()
             } catch (e: Exception) {
@@ -93,7 +91,8 @@ class ChatViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+                    val dateFormat =
+                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
                     dateFormat.timeZone = TimeZone.getTimeZone("America/Bogota")
                     val currentDate = dateFormat.format(Date(System.currentTimeMillis()))
 
