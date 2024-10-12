@@ -207,6 +207,7 @@ class GruposViewModel : BaseViewModel() {
 
                 this@GruposViewModel.setShowDialog(false)
 
+                getJoinedGroups(idEstudiante)
                 resetData()
             } catch (e: Exception) {
                 println("GruposViewModel.joinGroup: Error: ${e.message}")
