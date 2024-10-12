@@ -30,6 +30,7 @@ import kotlinx.serialization.json.put
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class ChatViewModel  : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
@@ -92,7 +93,8 @@ class ChatViewModel  : ViewModel() {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+                    dateFormat.timeZone = TimeZone.getTimeZone("America/Bogota")
                     val currentDate = dateFormat.format(Date(System.currentTimeMillis()))
 
                     table.insert(buildJsonObject {

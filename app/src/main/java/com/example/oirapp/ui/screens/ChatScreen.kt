@@ -2,7 +2,6 @@ package com.example.oirapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,18 +24,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun ChatScreen(
@@ -99,6 +95,7 @@ private fun ChatBubble(
     currentUserId: String
 ) {
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    timeFormatter.timeZone = TimeZone.getTimeZone("America/Bogota")
     val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
 
     Column(
