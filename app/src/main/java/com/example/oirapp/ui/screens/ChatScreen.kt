@@ -31,6 +31,9 @@ import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun ChatScreen(
@@ -88,14 +91,12 @@ private fun ChatBubble(
     senderId: String,
     currentUserId: String = "1",
 ) {
-    Box {
+    val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
+
+    Column {
         Text(text = message.message)
-        Text(text = message.sentAt.toLocalDateTime(TimeZone.currentSystemDefault()).toString())
-    }
-    // TODO: Saber si se puede usar Box para el mensaje, de lo contrario, usar Column
-    Box {
-        Text(text = message.message)
-        Text(text = message.sentAt.toLocalDateTime(TimeZone.currentSystemDefault()).toString())
+        Text(text = formattedTime)
     }
 }
 
