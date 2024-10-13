@@ -148,6 +148,7 @@ fun MainApp(
                 popUpTo(MainApplication.Bienvenida.name) { inclusive = true }
             }
             navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+            navigationViewModel.updateTitle("Grupos")
         }
     }
 
@@ -193,6 +194,7 @@ fun MainApp(
                             popUpTo(MainApplication.Bienvenida.name) { inclusive = true }
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateTitle("Iniciar sesión")
                     },
                 )
             }
@@ -219,6 +221,7 @@ fun MainApp(
                     onRegisterTextClicked = {
                         navController.navigate(MainApplication.CrearCuenta.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.CrearCuenta)
+                        navigationViewModel.updateTitle("Crear cuenta")
                     },
                     loginState = loginState,
                     showDialog = showDialog,
@@ -233,6 +236,7 @@ fun MainApp(
                             popUpTo(MainApplication.IniciarSesion.name) { inclusive = true }
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+                        navigationViewModel.updateTitle("Grupos")
                     }
                 }
             }
@@ -272,6 +276,7 @@ fun MainApp(
                                 popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
                             }
                             navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                            navigationViewModel.updateTitle("Iniciar sesión")
 
                             registerViewModel.resetData()
                         }
@@ -281,6 +286,7 @@ fun MainApp(
                 DisposableEffect(Unit) {
                     onDispose {
                         navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateTitle("Iniciar sesión")
                         registerViewModel.resetData()
                     }
                 }
@@ -391,13 +397,21 @@ fun MainApp(
                 ChatScreen(
                     messages = messages,
                     userId = userUiState.id,
+                    userRole = userUiState.role,
                     userMessage = chatViewModel.userMessage,
                     onUserMessageChanged = { chatViewModel.updateUserMessage(it) },
                     onSendMessage = { message ->
+                        if (message.isBlank()) {
+                            chatViewModel.updateUserMessage("")
+                            return@ChatScreen
+                        }
+
                         chatViewModel.insertMessage(
-                            message = message,
+                            message = message.trim(),
                             groupId = groupId,
                             userId = userUiState.id,
+                            userName = userUiState.name,
+                            userRole = userUiState.role,
                         )
                     },
                 )
@@ -428,6 +442,7 @@ fun MainApp(
                             popUpTo(MainApplication.Grupos.name) { inclusive = true }
                         }
                         navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateTitle("Iniciar sesión")
                     },
                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                     textId = R.string.cerrar_sesion,
