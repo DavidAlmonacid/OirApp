@@ -1,7 +1,7 @@
 package com.example.oirapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -25,11 +27,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import kotlinx.datetime.Instant
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -90,38 +94,94 @@ private fun ChatMessages(
 
 @Composable
 private fun ChatBubble(
+    modifier: Modifier = Modifier,
     message: Message,
     senderId: String,
     currentUserId: String,
 ) {
-    val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-    timeFormatter.timeZone = TimeZone.getTimeZone("America/Bogota")
-    val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
+    val isCurrentUser = senderId == currentUserId
 
-    Column(
-        horizontalAlignment = if (senderId == currentUserId) Alignment.End else Alignment.Start,
-        modifier = Modifier.fillMaxWidth(),
+    Box(
+        contentAlignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart,
+        modifier = modifier.fillMaxWidth(),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .background(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = RoundedCornerShape(
-                        topStart = if (senderId == currentUserId) 16.dp else 0.dp,
-                        topEnd = if (senderId == currentUserId) 0.dp else 16.dp,
-                        bottomStart = 16.dp,
-                        bottomEnd = 16.dp,
-                    ),
-                )
+        Card(
+            shape = RoundedCornerShape(
+                topStart = if (isCurrentUser) 18.dp else 0.dp,
+                topEnd = if (isCurrentUser) 0.dp else 18.dp,
+                bottomStart = 18.dp,
+                bottomEnd = 18.dp,
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = if (isCurrentUser) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                },
+                contentColor = if (isCurrentUser) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSecondary
+                },
+            ),
+            modifier = Modifier.fillMaxWidth(0.9f),
         ) {
-            Text(text = message.message)
+            Column(Modifier.padding(vertical = 10.dp, horizontal = 12.dp)) {
+                val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+                timeFormatter.timeZone = TimeZone.getTimeZone("America/Bogota")
+                val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
 
-            Text(
-                text = formattedTime,
-                style = MaterialTheme.typography.labelMedium,
-            )
+                Text(
+                    text = message.message,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Text(
+                    text = formattedTime,
+                    textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatBubbleUserPreview() {
+    MyApplicationTheme {
+        ChatBubble(
+            message = Message(
+                id = 1,
+                userId = "1",
+                message = "Hello, world!",
+                sentAt = Instant.fromEpochMilliseconds(1630000000000),
+                groupId = 1,
+            ),
+            senderId = "1",
+            currentUserId = "1",
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+        )
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatBubbleOtherPreview() {
+    MyApplicationTheme {
+        ChatBubble(
+            message = Message(
+                id = 1,
+                userId = "2",
+                message = "Hello, world!",
+                sentAt = Instant.fromEpochMilliseconds(1630000000000),
+                groupId = 1,
+            ),
+            senderId = "2",
+            currentUserId = "1",
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
+        )
     }
 }
 
