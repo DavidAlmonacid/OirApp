@@ -87,7 +87,13 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun insertMessage(message: String, groupId: Int, userId: String) {
+    fun insertMessage(
+        message: String,
+        groupId: Int,
+        userId: String,
+        userName: String,
+        userRole: String,
+    ) {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -101,6 +107,10 @@ class ChatViewModel : ViewModel() {
                         put("fecha_envio", currentDate)
                         put("id_grupo", groupId)
                         put("id_usuario", userId)
+                        put("sender_info", buildJsonObject {
+                            put("nombre", userName.split(" ")[0])
+                            put("rol", userRole)
+                        })
                     })
                 }
 
