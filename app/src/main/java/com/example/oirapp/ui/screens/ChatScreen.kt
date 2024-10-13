@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
@@ -26,14 +27,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
-import kotlinx.datetime.Instant
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -43,6 +45,7 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     messages: List<Message>,
     userId: String,
+    userRole: String,
     userMessage: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
@@ -63,6 +66,7 @@ fun ChatScreen(
 
             ChatMessageComposer(
                 userMessage = userMessage,
+                userRole = userRole,
                 onUserMessageChanged = onUserMessageChanged,
                 onSendMessage = onSendMessage,
             )
@@ -87,7 +91,11 @@ private fun ChatMessages(
             items = messages,
             key = { message -> message.id },
         ) { message ->
-            ChatBubble(message = message, senderId = message.userId, currentUserId = userId)
+            ChatBubble(
+                message = message,
+                senderId = message.userId,
+                currentUserId = userId,
+            )
         }
     }
 }
@@ -131,6 +139,14 @@ private fun ChatBubble(
                 timeFormatter.timeZone = TimeZone.getTimeZone("America/Bogota")
                 val formattedTime = timeFormatter.format(message.sentAt.toEpochMilliseconds())
 
+                if (!isCurrentUser) {
+                    Text(
+                        text = "${message.senderInfo.name} | ${message.senderInfo.role}",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(bottom = 4.dp),
+                    )
+                }
+
                 Text(
                     text = message.message,
                     modifier = Modifier.fillMaxWidth(),
@@ -147,50 +163,14 @@ private fun ChatBubble(
     }
 }
 
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatBubbleUserPreview() {
-    MyApplicationTheme {
-        ChatBubble(
-            message = Message(
-                id = 1,
-                userId = "1",
-                message = "Hello, world!",
-                sentAt = Instant.fromEpochMilliseconds(1630000000000),
-                groupId = 1,
-            ),
-            senderId = "1",
-            currentUserId = "1",
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        )
-    }
-}
-
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatBubbleOtherPreview() {
-    MyApplicationTheme {
-        ChatBubble(
-            message = Message(
-                id = 1,
-                userId = "2",
-                message = "Hello, world!",
-                sentAt = Instant.fromEpochMilliseconds(1630000000000),
-                groupId = 1,
-            ),
-            senderId = "2",
-            currentUserId = "1",
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        )
-    }
-}
-
 @Composable
 private fun ChatMessageComposer(
     modifier: Modifier = Modifier,
     userMessage: String,
+    userRole: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
+    isRecording: Boolean = false,
 ) {
     Row(
         verticalAlignment = Alignment.Bottom,
@@ -206,22 +186,123 @@ private fun ChatMessageComposer(
             placeholder = { Text(stringResource(R.string.message)) },
             shape = MaterialTheme.shapes.extraLarge,
             maxLines = 6,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.Sentences,
+            ),
             modifier = Modifier.weight(1f),
         )
 
         IconButton(
-            onClick = { onSendMessage(userMessage) },
+            onClick = {
+                if (userRole == "Estudiante") {
+                    onSendMessage(userMessage)
+                }
+
+                if (userRole == "Docente") {
+                    if (userMessage.isEmpty()) {
+                        if (isRecording) {
+                            // Stop recording
+                            println("ChatMessageComposer: Stop recording")
+                        } else {
+                            // Start recording
+                            println("ChatMessageComposer: Start recording")
+                        }
+                    } else {
+                        onSendMessage(userMessage)
+                    }
+                }
+            },
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
             modifier = Modifier.size(56.dp),
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = null,
-            )
+            if (userRole == "Estudiante") {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = null,
+                )
+            }
+
+            if (userRole == "Docente") {
+                if (userMessage.isEmpty()) {
+                    if (isRecording) {
+                        Icon(
+                            painter = painterResource(R.drawable.stop),
+                            contentDescription = null,
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.microphone),
+                            contentDescription = null,
+                        )
+                    }
+                } else {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = null,
+                    )
+                }
+            }
         }
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatMessageComposerDocentePreview() {
+    MyApplicationTheme {
+        ChatMessageComposer(
+            userMessage = "",
+            userRole = "Docente",
+            onUserMessageChanged = {},
+            onSendMessage = {},
+            modifier = Modifier.padding(top = 16.dp),
+        )
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatMessageComposerDocenteRecordingPreview() {
+    MyApplicationTheme {
+        ChatMessageComposer(
+            userMessage = "",
+            userRole = "Docente",
+            onUserMessageChanged = {},
+            onSendMessage = {},
+            isRecording = true,
+            modifier = Modifier.padding(top = 16.dp),
+        )
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatMessageComposerDocenteMessagePreview() {
+    MyApplicationTheme {
+        ChatMessageComposer(
+            userMessage = "This is a message",
+            userRole = "Docente",
+            onUserMessageChanged = {},
+            onSendMessage = {},
+            modifier = Modifier.padding(top = 16.dp),
+        )
+    }
+}
+
+@Preview(apiLevel = 28, showBackground = true)
+@Composable
+private fun ChatMessageComposerEstudiantePreview() {
+    MyApplicationTheme {
+        ChatMessageComposer(
+            userMessage = "",
+            userRole = "Estudiante",
+            onUserMessageChanged = {},
+            onSendMessage = {},
+            modifier = Modifier.padding(top = 16.dp),
+        )
     }
 }
 
@@ -235,6 +316,7 @@ private fun ChatScreenPreview() {
             onUserMessageChanged = {},
             onSendMessage = {},
             userId = "1",
+            userRole = "Docente",
         )
     }
 }
