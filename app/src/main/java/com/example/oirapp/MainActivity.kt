@@ -9,10 +9,9 @@ import com.example.oirapp.ui.theme.MyApplicationTheme
 import java.io.File
 
 class MainActivity : ComponentActivity() {
-    private val recorder by lazy {
-        AudioRecorderImpl(applicationContext)
-    }
+    private val recorder by lazy { AudioRecorderImpl(applicationContext) }
     private var audioFile: File? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

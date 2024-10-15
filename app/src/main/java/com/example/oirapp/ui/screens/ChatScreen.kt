@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.ui.theme.MyApplicationTheme
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -208,10 +207,11 @@ private fun ChatMessageComposer(
                         } else {
                             // Start recording
                             println("ChatMessageComposer: Start recording")
-                            File(cacheDir, "audio.mp3").also {
-                                recorder.start(it)
-                                audioFile = it
-                            }
+
+//                            File(cacheDir, "audio.m4a").also {
+//                                recorder.start(it)
+//                                audioFile = it
+//                            }
                         }
                     } else {
                         onSendMessage(userMessage)
