@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +29,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -69,12 +74,13 @@ enum class MainApplication(var title: String? = null) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
+    modifier: Modifier = Modifier,
     currentScreen: MainApplication,
     navigationViewModel: NavigationViewModel,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     onMenuButtonClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
         title = {
@@ -90,6 +96,7 @@ fun MainAppBar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
         ),
         navigationIcon = {
             if (canNavigateBack) {
@@ -111,10 +118,12 @@ fun MainAppBar(
                 }
             }
         },
-        modifier = modifier,
+        scrollBehavior = scrollBehavior,
+        modifier = modifier.shadow(elevation = 4.dp),
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
     navController: NavHostController = rememberNavController(),
@@ -126,6 +135,7 @@ fun MainApp(
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
     var showMenuCard by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(Unit) {
         val user = supabaseClient.auth.currentSessionOrNull()?.user
@@ -161,6 +171,7 @@ fun MainApp(
                     canNavigateBack = false,
                     navigateUp = {},
                     onMenuButtonClick = { showMenuCard = true },
+                    scrollBehavior = scrollBehavior,
                 )
             }
         },
@@ -181,6 +192,7 @@ fun MainApp(
                 }
             }
         },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { innerPadding ->
         NavHost(
             navController = navController,

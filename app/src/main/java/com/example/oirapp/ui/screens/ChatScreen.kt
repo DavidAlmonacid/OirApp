@@ -50,7 +50,6 @@ fun ChatScreen(
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
 ) {
-
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
@@ -83,7 +82,7 @@ private fun ChatMessages(
 ) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
@@ -112,12 +111,14 @@ private fun ChatBubble(
 
     Box(
         contentAlignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
     ) {
         Card(
             shape = RoundedCornerShape(
-                topStart = if (isCurrentUser) 18.dp else 0.dp,
-                topEnd = if (isCurrentUser) 0.dp else 18.dp,
+                topStart = if (isCurrentUser) 18.dp else 4.dp,
+                topEnd = if (isCurrentUser) 4.dp else 18.dp,
                 bottomStart = 18.dp,
                 bottomEnd = 18.dp,
             ),
