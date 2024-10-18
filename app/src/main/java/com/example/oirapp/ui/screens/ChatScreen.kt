@@ -25,17 +25,24 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import com.example.oirapp.MainActivity
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
-import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.record.AudioRecorderImpl
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -172,8 +179,13 @@ private fun ChatMessageComposer(
     userRole: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
-    isRecording: Boolean = false,
 ) {
+    val context = LocalContext.current
+    val recorder by lazy { AudioRecorderImpl(context.applicationContext) }
+    var audioFile: File? = null
+
+    var isRecording by rememberSaveable { mutableStateOf(false) }
+
     Row(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -203,16 +215,25 @@ private fun ChatMessageComposer(
                 if (userRole == "Docente") {
                     if (userMessage.isEmpty()) {
                         if (isRecording) {
-                            // Stop recording
                             println("ChatMessageComposer: Stop recording")
+
+                            isRecording = false
+                            recorder.stopRecording()
                         } else {
-                            // Start recording
                             println("ChatMessageComposer: Start recording")
 
-//                            File(cacheDir, "audio.m4a").also {
-//                                recorder.start(it)
-//                                audioFile = it
-//                            }
+                            ActivityCompat.requestPermissions(
+                                context as MainActivity,
+                                arrayOf(android.Manifest.permission.RECORD_AUDIO),
+                                0,
+                            )
+
+                            isRecording = true
+
+                            File(context.cacheDir, "voz-docente.m4a").also {
+                                recorder.startRecording(it)
+                                audioFile = it
+                            }
                         }
                     } else {
                         onSendMessage(userMessage)
@@ -253,77 +274,5 @@ private fun ChatMessageComposer(
                 }
             }
         }
-    }
-}
-
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatMessageComposerDocentePreview() {
-    MyApplicationTheme {
-        ChatMessageComposer(
-            userMessage = "",
-            userRole = "Docente",
-            onUserMessageChanged = {},
-            onSendMessage = {},
-            modifier = Modifier.padding(top = 16.dp),
-        )
-    }
-}
-
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatMessageComposerDocenteRecordingPreview() {
-    MyApplicationTheme {
-        ChatMessageComposer(
-            userMessage = "",
-            userRole = "Docente",
-            onUserMessageChanged = {},
-            onSendMessage = {},
-            isRecording = true,
-            modifier = Modifier.padding(top = 16.dp),
-        )
-    }
-}
-
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatMessageComposerDocenteMessagePreview() {
-    MyApplicationTheme {
-        ChatMessageComposer(
-            userMessage = "This is a message",
-            userRole = "Docente",
-            onUserMessageChanged = {},
-            onSendMessage = {},
-            modifier = Modifier.padding(top = 16.dp),
-        )
-    }
-}
-
-@Preview(apiLevel = 28, showBackground = true)
-@Composable
-private fun ChatMessageComposerEstudiantePreview() {
-    MyApplicationTheme {
-        ChatMessageComposer(
-            userMessage = "",
-            userRole = "Estudiante",
-            onUserMessageChanged = {},
-            onSendMessage = {},
-            modifier = Modifier.padding(top = 16.dp),
-        )
-    }
-}
-
-@Preview(apiLevel = 28)
-@Composable
-private fun ChatScreenPreview() {
-    MyApplicationTheme {
-        ChatScreen(
-            messages = emptyList(),
-            userMessage = "",
-            onUserMessageChanged = {},
-            onSendMessage = {},
-            userId = "1",
-            userRole = "Docente",
-        )
     }
 }

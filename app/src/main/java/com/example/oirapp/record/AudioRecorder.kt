@@ -8,8 +8,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 interface AudioRecorder {
-    fun start(outputFile: File)
-    fun stop()
+    fun startRecording(outputFile: File)
+    fun stopRecording()
 }
 
 class AudioRecorderImpl(private val context: Context) : AudioRecorder {
@@ -24,7 +24,7 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
         }
     }
 
-    override fun start(outputFile: File) {
+    override fun startRecording(outputFile: File) {
         createRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -45,7 +45,7 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
         }
     }
 
-    override fun stop() {
+    override fun stopRecording() {
         recorder?.apply {
             stop()
             reset()
