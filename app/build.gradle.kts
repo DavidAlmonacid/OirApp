@@ -100,6 +100,7 @@ dependencies {
     implementation(libs.gotrue.kt)
     implementation(libs.postgrest.kt)
     implementation(libs.realtime.kt)
+    implementation(libs.storage.kt)
 
     // Ktor library
     implementation(libs.ktor.client.cio)
