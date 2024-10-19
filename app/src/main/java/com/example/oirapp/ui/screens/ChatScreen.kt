@@ -56,6 +56,7 @@ fun ChatScreen(
     userMessage: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
+    onStopRecording: (File) -> Unit,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -76,6 +77,7 @@ fun ChatScreen(
                 userRole = userRole,
                 onUserMessageChanged = onUserMessageChanged,
                 onSendMessage = onSendMessage,
+                onStopRecording = onStopRecording,
             )
         }
     }
@@ -179,6 +181,7 @@ private fun ChatMessageComposer(
     userRole: String,
     onUserMessageChanged: (String) -> Unit,
     onSendMessage: (String) -> Unit,
+    onStopRecording: (File) -> Unit,
 ) {
     val context = LocalContext.current
     val recorder by lazy { AudioRecorderImpl(context.applicationContext) }
@@ -219,6 +222,7 @@ private fun ChatMessageComposer(
 
                             isRecording = false
                             recorder.stopRecording()
+                            onStopRecording(audioFile!!)
                         } else {
                             println("ChatMessageComposer: Start recording")
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.filter.FilterOperation
@@ -16,6 +17,10 @@ import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.storage.FileObject
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
+import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,12 +45,23 @@ class ChatViewModel : ViewModel() {
     var userMessage by mutableStateOf("")
         private set
 
+    var channelName by mutableStateOf("")
+        private set
+
     fun updateUserMessage(message: String) {
         userMessage = message
     }
 
-    private fun resetData() {
+    fun updateChannelName(name: String) {
+        channelName = name
+    }
+
+    private fun resetMessage() {
         userMessage = ""
+    }
+
+    fun resetChannelName() {
+        channelName = ""
     }
 
     private val table = supabaseClient.postgrest["mensajes"]
@@ -114,7 +131,7 @@ class ChatViewModel : ViewModel() {
                     })
                 }
 
-                resetData()
+                resetMessage()
             } catch (e: Exception) {
                 println("ChatViewModel.insertMessage: Error: ${e.message}")
             }
@@ -131,6 +148,35 @@ class ChatViewModel : ViewModel() {
             } catch (e: Exception) {
                 println("ChatViewModel.removeChannel: Error: ${e.message}")
             }
+        }
+    }
+
+    fun uploadAudioFile(audioFile: File) {
+        viewModelScope.launch {
+            try {
+                val bucketApi = supabaseClient.storage.from("audios")
+
+                val bucketFiles = bucketApi.list()
+                val consecutive = getConsecutive(bucketFiles).toString()
+                val path = "${consecutive.padStart(3, '0')}_${channelName.removeAccents()}.m4a"
+
+                bucketApi.upload(path = path, file = audioFile) {
+                    contentType = ContentType.Audio.MP4
+                    upsert = false
+                }
+            } catch (e: Exception) {
+                println("ChatViewModel.uploadAudioFile: Error: ${e.message}")
+            }
+        }
+    }
+
+    private fun getConsecutive(list: List<FileObject>): Int {
+        val lastObject = list.lastOrNull()
+
+        return if (lastObject != null) {
+            lastObject.name.slice(0..2).toInt() + 1
+        } else {
+            1
         }
     }
 }

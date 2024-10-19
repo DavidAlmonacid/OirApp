@@ -3,8 +3,9 @@ package com.example.oirapp.data.network
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import com.example.oirapp.BuildConfig
-import io.github.jan.supabase.gotrue.Auth
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.storage.Storage
 
 object SupabaseClient {
     val supabaseClient = createSupabaseClient(
@@ -14,5 +15,6 @@ object SupabaseClient {
         install(Auth)
         install(Postgrest)
         install(Realtime)
+        install(Storage)
     }
 }

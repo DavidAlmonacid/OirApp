@@ -60,7 +60,7 @@ import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
-import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.auth.auth
 import kotlinx.serialization.json.jsonPrimitive
 
 enum class MainApplication(var title: String? = null) {
@@ -388,21 +388,25 @@ fun MainApp(
             ) { backStackEntry ->
                 val groupName = backStackEntry.arguments?.getString("groupName") ?: ""
                 val groupId = backStackEntry.arguments?.getInt("groupId") ?: 0
-                val channelName = "messages_${groupName.replace(" ", "_").lowercase()}_$groupId"
 
                 val userUiState by loginViewModel.userUiState.collectAsState()
                 val messages by chatViewModel.messages.collectAsState()
 
+                chatViewModel.updateChannelName(
+                    name = "${groupName.replace(" ", "-").lowercase()}-$groupId",
+                )
+
                 LaunchedEffect(Unit) {
-                    chatViewModel.subscribeToChannel(channelName, groupId)
+                    chatViewModel.subscribeToChannel(chatViewModel.channelName, groupId)
                     chatViewModel.getMessages(groupId)
                 }
 
                 DisposableEffect(Unit) {
                     onDispose {
-                        chatViewModel.removeChannel(channelName)
+                        chatViewModel.removeChannel(chatViewModel.channelName)
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                         navigationViewModel.updateTitle("Grupos")
+                        chatViewModel.resetChannelName()
                     }
                 }
 
@@ -426,6 +430,7 @@ fun MainApp(
                             userRole = userUiState.role,
                         )
                     },
+                    onStopRecording = { chatViewModel.uploadAudioFile(it) },
                 )
             }
         }

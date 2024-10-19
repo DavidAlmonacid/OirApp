@@ -56,7 +56,7 @@ import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.ui.theme.bodyFontFamilyMono
-import com.example.oirapp.utils.removeUppercaseAccents
+import com.example.oirapp.utils.removeAccents
 
 @Composable
 fun GruposScreen(
@@ -173,7 +173,7 @@ private fun GroupCard(
                         ),
                 ) {
                     Text(
-                        text = groupName.take(3).uppercase().removeUppercaseAccents(),
+                        text = groupName.take(3).uppercase().removeAccents(),
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Medium,
                     )
