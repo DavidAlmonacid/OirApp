@@ -218,14 +218,10 @@ private fun ChatMessageComposer(
                 if (userRole == "Docente") {
                     if (userMessage.isEmpty()) {
                         if (isRecording) {
-                            println("ChatMessageComposer: Stop recording")
-
                             isRecording = false
                             recorder.stopRecording()
                             onStopRecording(audioFile!!)
                         } else {
-                            println("ChatMessageComposer: Start recording")
-
                             ActivityCompat.requestPermissions(
                                 context as MainActivity,
                                 arrayOf(android.Manifest.permission.RECORD_AUDIO),

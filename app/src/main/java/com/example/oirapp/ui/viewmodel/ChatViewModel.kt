@@ -172,11 +172,6 @@ class ChatViewModel : ViewModel() {
 
     private fun getConsecutive(list: List<FileObject>): Int {
         val lastObject = list.lastOrNull()
-
-        return if (lastObject != null) {
-            lastObject.name.slice(0..2).toInt() + 1
-        } else {
-            1
-        }
+        return lastObject?.name?.take(3)?.toInt()?.inc() ?: 1
     }
 }
