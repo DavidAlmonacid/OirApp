@@ -43,4 +43,5 @@
     <string name="editar">Editar</string>
     <string name="eliminar">Eliminar</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="update">Actualizar</string>
 </resources>
