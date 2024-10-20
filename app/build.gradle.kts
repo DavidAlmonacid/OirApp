@@ -94,6 +94,7 @@ dependencies {
 
     // Image libraries
     implementation(libs.imagepicker)
+    implementation ("io.coil-kt:coil-compose:1.3.2")
 
     //Supabase libraries
     implementation(platform(libs.supabase.bom))
