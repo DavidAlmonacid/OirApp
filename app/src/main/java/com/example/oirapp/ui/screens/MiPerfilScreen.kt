@@ -31,8 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
@@ -43,7 +42,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun MiPerfilScreen(
     modifier: Modifier = Modifier,
@@ -65,11 +63,12 @@ fun MiPerfilScreen(
 
     selectedImageUri?.let { uri ->
         Image(
-            painter = rememberImagePainter(uri),
+            painter = rememberAsyncImagePainter(uri),
             contentDescription = "Imagen de perfil",
             modifier = Modifier.size(128.dp),
         )
     }
+
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
