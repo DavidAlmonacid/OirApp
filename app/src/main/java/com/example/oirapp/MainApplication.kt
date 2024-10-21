@@ -430,7 +430,11 @@ fun MainApp(
                             userRole = userUiState.role,
                         )
                     },
-                    onStopRecording = { chatViewModel.uploadAudioFile(it) },
+                    onStopRecording = {
+                        chatViewModel.uploadAudioFile(it)
+                        val message = chatViewModel.getAudioMessage()
+                        println("Audio message: $message")
+                    },
                 )
             }
         }

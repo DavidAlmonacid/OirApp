@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.data.network.client
 import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
@@ -20,6 +21,8 @@ import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.storage.FileObject
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +51,9 @@ class ChatViewModel : ViewModel() {
     var channelName by mutableStateOf("")
         private set
 
+    var fileName by mutableStateOf("")
+        private set
+
     fun updateUserMessage(message: String) {
         userMessage = message
     }
@@ -64,6 +70,10 @@ class ChatViewModel : ViewModel() {
         channelName = ""
     }
 
+    fun resetFileName() {
+        fileName = ""
+    }
+
     private val table = supabaseClient.postgrest["mensajes"]
 
     fun subscribeToChannel(channelName: String, groupId: Int) {
@@ -76,10 +86,10 @@ class ChatViewModel : ViewModel() {
                 }
 
                 changes.onEach {
-                        if (it is PostgresAction.Insert) {
-                            getMessages(groupId)
-                        }
-                    }.launchIn(this)
+                    if (it is PostgresAction.Insert) {
+                        getMessages(groupId)
+                    }
+                }.launchIn(this)
 
                 channel.subscribe()
             } catch (e: Exception) {
@@ -155,12 +165,12 @@ class ChatViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val bucketApi = supabaseClient.storage.from("audios")
-
                 val bucketFiles = bucketApi.list()
                 val consecutive = getConsecutive(bucketFiles).toString()
-                val path = "${consecutive.padStart(3, '0')}_${channelName.removeAccents()}.m4a"
 
-                bucketApi.upload(path = path, file = audioFile) {
+                fileName = "${consecutive.padStart(3, '0')}_${channelName.removeAccents()}.m4a"
+
+                bucketApi.upload(path = fileName, file = audioFile) {
                     contentType = ContentType.Audio.MP4
                     upsert = false
                 }
@@ -168,6 +178,20 @@ class ChatViewModel : ViewModel() {
                 println("ChatViewModel.uploadAudioFile: Error: ${e.message}")
             }
         }
+    }
+
+    fun getAudioMessage(): HttpResponse? {
+        var response: HttpResponse? = null
+
+        viewModelScope.launch {
+            try {
+                response = client.get("http://localhost:8000/api/audio/$fileName")
+            } catch (e: Exception) {
+                println("ChatViewModel.getAudioMessage: Error: ${e.message}")
+            }
+        }
+
+        return response
     }
 
     private fun getConsecutive(list: List<FileObject>): Int {
