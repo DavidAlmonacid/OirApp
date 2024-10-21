@@ -13,8 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
@@ -35,8 +43,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun MiPerfilScreen(
+    modifier: Modifier = Modifier,
     userEmail: String,
     onUserEmailChanged: (String) -> Unit,
     userPassword: String,
@@ -46,7 +56,6 @@ fun MiPerfilScreen(
     userRole: String,
     onUserRoleChanged: (String) -> Unit,
     onUpdateButtonClicked: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -58,7 +67,7 @@ fun MiPerfilScreen(
         Image(
             painter = rememberImagePainter(uri),
             contentDescription = "Imagen de perfil",
-            modifier = Modifier.size(128.dp)
+            modifier = Modifier.size(128.dp),
         )
     }
     Surface(
@@ -78,7 +87,7 @@ fun MiPerfilScreen(
                 contentDescription = null, // No es necesario describir la imagen de usuario
                 modifier = Modifier
                     .size(100.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
             )
 
             // Campo de Correo
@@ -88,8 +97,8 @@ fun MiPerfilScreen(
                 labelId = R.string.email,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                )
+                    imeAction = ImeAction.Next,
+                ),
             )
 
             // Campo de Contraseña
@@ -100,8 +109,8 @@ fun MiPerfilScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                )
+                    imeAction = ImeAction.Next,
+                ),
             )
 
             // Campo de Nombre y Apellido
@@ -111,8 +120,8 @@ fun MiPerfilScreen(
                 labelId = R.string.name,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+                    imeAction = ImeAction.Next,
+                ),
             )
 
             // Campo de Rol
@@ -122,16 +131,16 @@ fun MiPerfilScreen(
                 labelId = R.string.select_role,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Done,
                 ),
-                keyboardActions = KeyboardActions(onDone = { onUpdateButtonClicked() })
+                keyboardActions = KeyboardActions(onDone = { onUpdateButtonClicked() }),
             )
 
             // Botón Actualizar
             PrimaryButton(
                 onClick = onUpdateButtonClicked,
                 textId = R.string.update,
-                modifier = Modifier.padding(top = 28.dp)
+                modifier = Modifier.padding(top = 28.dp),
             )
         }
     }
@@ -150,7 +159,7 @@ fun ActualizarInfoScreenPreview() {
             onUserNameChanged = {},
             userRole = "",
             onUserRoleChanged = {},
-            onUpdateButtonClicked = {}
+            onUpdateButtonClicked = {},
         )
     }
 }
@@ -205,6 +214,7 @@ fun ProfileImagePicker(
         Button(onClick = { openCamera() }) {
             Text(text = "Tomar foto")
         }
+
         Button(onClick = { openGallery() }) {
             Text(text = "Seleccionar desde galería")
         }
@@ -217,6 +227,6 @@ fun createImageFile(context: Context): File {
     return File.createTempFile(
         "JPEG_${timestamp}_",
         ".jpg",
-        storageDir
+        storageDir,
     )
 }
