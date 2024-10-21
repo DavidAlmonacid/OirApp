@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.realtime.kt)
     implementation(libs.storage.kt)
 
-    // Ktor library
+    // Ktor libraries
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
 }
