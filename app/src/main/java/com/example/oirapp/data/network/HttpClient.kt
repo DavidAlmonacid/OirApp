@@ -1,6 +1,6 @@
 package com.example.oirapp.data.network
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
 
-val client = HttpClient(CIO)
+val client = HttpClient(OkHttp)
