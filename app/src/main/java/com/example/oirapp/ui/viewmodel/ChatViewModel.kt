@@ -160,6 +160,10 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
+    
+    fun startRecording() {}
+
+    fun stopRecording() {}
 
     fun uploadAudioFile(audioFile: File) {
         viewModelScope.launch {
@@ -185,7 +189,9 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                response = client.get("http://localhost:8000/api/audio/$fileName")
+                //response = client.get("http://localhost:8000/api/audio/$fileName")
+                response = client.get("https://pokeapi.co/api/v2/pokemon/ditto")
+                println("ChatViewModel.getAudioMessage: Response: $response")
             } catch (e: Exception) {
                 println("ChatViewModel.getAudioMessage: Error: ${e.message}")
             }
