@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -87,7 +87,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Image libraries
-    implementation(libs.imagepicker)
+    //implementation(libs.imagepicker)
     implementation ("io.coil-kt:coil-compose:2.6.0")
 
     //Supabase libraries
@@ -99,5 +99,5 @@ dependencies {
 
     // Ktor libraries
     implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.okhttp)
 }
