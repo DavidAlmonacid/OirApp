@@ -219,9 +219,8 @@ private fun ChatMessageComposer(
                     if (userMessage.isEmpty()) {
                         if (isRecording) {
                             isRecording = false
-                            recorder.stopRecording()
 
-                            //onStopRecording(audioFile!!)
+                            recorder.stopRecording()
                             audioFile?.let { onStopRecording(it) }
                         } else {
                             ActivityCompat.requestPermissions(
