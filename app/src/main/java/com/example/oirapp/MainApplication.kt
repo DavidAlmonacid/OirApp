@@ -137,8 +137,10 @@ fun MainApp(
     var showMenuCard by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
+    val user = supabaseClient.auth.currentSessionOrNull()?.user
+
     LaunchedEffect(Unit) {
-        val user = supabaseClient.auth.currentSessionOrNull()?.user
+        //val user = supabaseClient.auth.currentSessionOrNull()?.user
 
         if (user != null) {
             val userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!
