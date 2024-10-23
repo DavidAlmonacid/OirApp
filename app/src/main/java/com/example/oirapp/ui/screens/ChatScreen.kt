@@ -220,7 +220,9 @@ private fun ChatMessageComposer(
                         if (isRecording) {
                             isRecording = false
                             recorder.stopRecording()
-                            onStopRecording(audioFile!!)
+
+                            //onStopRecording(audioFile!!)
+                            audioFile?.let { onStopRecording(it) }
                         } else {
                             ActivityCompat.requestPermissions(
                                 context as MainActivity,
@@ -230,7 +232,7 @@ private fun ChatMessageComposer(
 
                             isRecording = true
 
-                            File(context.cacheDir, "voz-docente.m4a").also {
+                            File(context.cacheDir, "audio.m4a").also {
                                 recorder.startRecording(it)
                                 audioFile = it
                             }

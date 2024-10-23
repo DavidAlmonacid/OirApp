@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.data.network.client
+import com.example.oirapp.data.network.TranscriptApi
 import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
@@ -21,8 +21,6 @@ import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.storage.FileObject
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -36,14 +34,24 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+sealed interface TranscriptUiState {
+    data class Success(val transcript: String) : TranscriptUiState
+    object Error : TranscriptUiState
+    object Loading : TranscriptUiState
+}
+
 class ChatViewModel : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()
+
+    private val _transcriptUiState = MutableStateFlow<TranscriptUiState>(TranscriptUiState.Loading)
+    val transcriptUiState: StateFlow<TranscriptUiState> = _transcriptUiState.asStateFlow()
 
     var userMessage by mutableStateOf("")
         private set
@@ -160,13 +168,9 @@ class ChatViewModel : ViewModel() {
             }
         }
     }
-    
-    fun startRecording() {}
 
-    fun stopRecording() {}
-
-    fun uploadAudioFile(audioFile: File) {
-        viewModelScope.launch {
+    fun uploadAudioFile(audioFile: File, onComplete: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val bucketApi = supabaseClient.storage.from("audios")
                 val bucketFiles = bucketApi.list()
@@ -178,26 +182,25 @@ class ChatViewModel : ViewModel() {
                     contentType = ContentType.Audio.MP4
                     upsert = false
                 }
+
+                withContext(Dispatchers.Main) {
+                    onComplete() // Ejecutar onComplete en el hilo principal
+                }
             } catch (e: Exception) {
                 println("ChatViewModel.uploadAudioFile: Error: ${e.message}")
             }
         }
     }
 
-    fun getAudioMessage(): HttpResponse? {
-        var response: HttpResponse? = null
-
-        viewModelScope.launch {
-            try {
-                //response = client.get("http://localhost:8000/api/audio/$fileName")
-                response = client.get("https://pokeapi.co/api/v2/pokemon/ditto")
-                println("ChatViewModel.getAudioMessage: Response: $response")
-            } catch (e: Exception) {
-                println("ChatViewModel.getAudioMessage: Error: ${e.message}")
+    fun getAudioTranscript() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _transcriptUiState.value = try {
+                val result = TranscriptApi.retrofitService.getTranscriptMessage()
+                TranscriptUiState.Success(result)
+            } catch (e: IOException) {
+                TranscriptUiState.Error
             }
         }
-
-        return response
     }
 
     private fun getConsecutive(list: List<FileObject>): Int {

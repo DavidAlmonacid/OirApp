@@ -35,11 +35,10 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
 
             try {
                 prepare()
+                start()
             } catch (e: IOException) {
                 println("AudioRecorderImpl.start, prepare() failed")
             }
-
-            start()
 
             recorder = this
         }
@@ -47,11 +46,16 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
 
     override fun stopRecording() {
         recorder?.apply {
-            stop()
-            reset()
-            release()
+            try {
+                stop()
+            } catch (e: RuntimeException) {
+                println("AudioRecorderImpl.stopRecording: Error: ${e.message}")
+            } finally {
+                reset()
+                release()
+                recorder = null
+            }
         }
 
-        recorder = null
     }
 }

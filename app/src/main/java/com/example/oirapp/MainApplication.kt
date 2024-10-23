@@ -60,6 +60,7 @@ import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
+import com.example.oirapp.ui.viewmodel.TranscriptUiState
 import io.github.jan.supabase.auth.auth
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -394,6 +395,8 @@ fun MainApp(
                 val userUiState by loginViewModel.userUiState.collectAsState()
                 val messages by chatViewModel.messages.collectAsState()
 
+                val transcriptUiState by chatViewModel.transcriptUiState.collectAsState()
+
                 chatViewModel.updateChannelName(
                     name = "${groupName.replace(" ", "-").lowercase()}-$groupId",
                 )
@@ -401,6 +404,12 @@ fun MainApp(
                 LaunchedEffect(Unit) {
                     chatViewModel.subscribeToChannel(chatViewModel.channelName, groupId)
                     chatViewModel.getMessages(groupId)
+                }
+
+                LaunchedEffect(transcriptUiState) {
+                    if (transcriptUiState is TranscriptUiState.Success) {
+                        println("Transcript: ${(transcriptUiState as TranscriptUiState.Success).transcript}")
+                    }
                 }
 
                 DisposableEffect(Unit) {
@@ -432,10 +441,10 @@ fun MainApp(
                             userRole = userUiState.role,
                         )
                     },
-                    onStopRecording = {
-                        chatViewModel.uploadAudioFile(it)
-                        val message = chatViewModel.getAudioMessage()
-                        println("Audio message: $message")
+                    onStopRecording = { audioFile ->
+                        chatViewModel.uploadAudioFile(audioFile) {
+                            chatViewModel.getAudioTranscript()
+                        }
                     },
                 )
             }

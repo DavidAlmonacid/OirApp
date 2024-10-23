@@ -100,4 +100,13 @@ dependencies {
     // Ktor libraries
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    // Retrofit with Scalar Converter
+    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }
