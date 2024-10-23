@@ -51,6 +51,7 @@ import com.example.oirapp.ui.screens.ChatScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
+import com.example.oirapp.ui.screens.MiPerfilScreen
 import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.RegisterState
@@ -69,6 +70,7 @@ enum class MainApplication(var title: String? = null) {
     CrearCuenta(title = "Crear cuenta"),
     Grupos(title = "Grupos"),
     Chat(title = ""),
+    MiPerfil(title = "Mi perfil"),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -439,8 +441,25 @@ fun MainApp(
                     },
                 )
             }
-        }
+            composable(route = MainApplication.MiPerfil.name) {
+                //val userUiState by loginViewModel.userUiState.collectAsState()
+user?.let {
+    MiPerfilScreen(
+        userEmail = user.email!!,
+        onUserEmailChanged = {},
+        userPassword = "******",
+        onUserPasswordChanged = {},
+        userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!,
+        onUserNameChanged = {},
+        userRole = user.userMetadata?.get("rol")?.jsonPrimitive?.content!!,
+        onUserRoleChanged = {},
+        onUpdateButtonClicked = {}
+    )
+}
+
+            }
     }
+}
 
     if (showMenuCard) {
         Popup(
@@ -450,7 +469,10 @@ fun MainApp(
         ) {
             MenuCard {
                 MenuItem(
-                    onClick = { /* TODO('Go to profile screen') */ },
+                    onClick = { navController.navigate(MainApplication.MiPerfil.name)
+                        showMenuCard = false
+                        navigationViewModel.updateCurrentScreen(MainApplication.MiPerfil)
+                        navigationViewModel.updateTitle("Mi Perfil") },
                     icon = Icons.Default.AccountCircle,
                     textId = R.string.mi_cuenta,
                 )
