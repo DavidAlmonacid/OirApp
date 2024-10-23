@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.data.network.TranscriptApi
+import com.example.oirapp.data.network.client
 import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
@@ -21,6 +21,8 @@ import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.storage.FileObject
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
+import io.ktor.client.call.body
+import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
@@ -42,8 +45,15 @@ import java.util.TimeZone
 
 sealed interface TranscriptUiState {
     data class Success(val transcript: String) : TranscriptUiState
-    object Error : TranscriptUiState
-    object Loading : TranscriptUiState
+    data class Error(val message: String) : TranscriptUiState
+    data object Loading : TranscriptUiState
+}
+
+sealed interface UploadState {
+    data object Idle : UploadState
+    data object Uploading : UploadState
+    data class Success(val fileName: String) : UploadState
+    data class Error(val message: String) : UploadState
 }
 
 class ChatViewModel : ViewModel() {
@@ -53,14 +63,16 @@ class ChatViewModel : ViewModel() {
     private val _transcriptUiState = MutableStateFlow<TranscriptUiState>(TranscriptUiState.Loading)
     val transcriptUiState: StateFlow<TranscriptUiState> = _transcriptUiState.asStateFlow()
 
+    private val _uploadState = MutableStateFlow<UploadState>(UploadState.Idle)
+    val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()
+
     var userMessage by mutableStateOf("")
         private set
 
     var channelName by mutableStateOf("")
         private set
 
-    var fileName by mutableStateOf("")
-        private set
+    private var fileName by mutableStateOf("")
 
     fun updateUserMessage(message: String) {
         userMessage = message
@@ -169,8 +181,10 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun uploadAudioFile(audioFile: File, onComplete: () -> Unit) {
+    fun uploadAudioFile(audioFile: File) {
         viewModelScope.launch(Dispatchers.IO) {
+            _uploadState.value = UploadState.Uploading
+
             try {
                 val bucketApi = supabaseClient.storage.from("audios")
                 val bucketFiles = bucketApi.list()
@@ -183,22 +197,31 @@ class ChatViewModel : ViewModel() {
                     upsert = false
                 }
 
-                withContext(Dispatchers.Main) {
-                    onComplete() // Ejecutar onComplete en el hilo principal
-                }
+                _uploadState.value = UploadState.Success(fileName)
             } catch (e: Exception) {
                 println("ChatViewModel.uploadAudioFile: Error: ${e.message}")
+                _uploadState.value = UploadState.Error(e.message ?: "Unknown error")
             }
         }
     }
 
-    fun getAudioTranscript() {
-        viewModelScope.launch(Dispatchers.Main) {
+    suspend fun getAudioTranscript(fileName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             _transcriptUiState.value = try {
-                val result = TranscriptApi.retrofitService.getTranscriptMessage()
-                TranscriptUiState.Success(result)
+                val response = client.get(
+                    urlString = "https://transcripcion-voz-a-texto-asr.onrender.com/api/audio/$fileName"
+                )
+
+                if (response.status.value == 200) {
+                    val transcript = response.body<TranscriptResponse>()
+                    TranscriptUiState.Success(transcript.message)
+                } else {
+                    TranscriptUiState.Error(
+                        "Error al obtener la transcripción del audio: ${response.status}"
+                    )
+                }
             } catch (e: IOException) {
-                TranscriptUiState.Error
+                TranscriptUiState.Error("Error al comunicarse con el servidor: ${e.message}")
             }
         }
     }
@@ -208,3 +231,8 @@ class ChatViewModel : ViewModel() {
         return lastObject?.name?.take(3)?.toInt()?.inc() ?: 1
     }
 }
+
+@Serializable
+data class TranscriptResponse(
+    val message: String,
+)
