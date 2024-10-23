@@ -140,10 +140,8 @@ fun MainApp(
     var showMenuCard by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    val user = supabaseClient.auth.currentSessionOrNull()?.user
-
     LaunchedEffect(Unit) {
-        //val user = supabaseClient.auth.currentSessionOrNull()?.user
+        val user = supabaseClient.auth.currentSessionOrNull()?.user
 
         if (user != null) {
             val userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!
@@ -155,6 +153,7 @@ fun MainApp(
                     id = user.id,
                     name = userName,
                     role = userRole,
+                    email = user.email!!,
                     imageUrl = userImageUrl,
                 )
             )
@@ -450,25 +449,32 @@ fun MainApp(
                     },
                 )
             }
-            composable(route = MainApplication.MiPerfil.name) {
-                //val userUiState by loginViewModel.userUiState.collectAsState()
-user?.let {
-    MiPerfilScreen(
-        userEmail = user.email!!,
-        onUserEmailChanged = {},
-        userPassword = "******",
-        onUserPasswordChanged = {},
-        userName = user.userMetadata?.get("nombre")?.jsonPrimitive?.content!!,
-        onUserNameChanged = {},
-        userRole = user.userMetadata?.get("rol")?.jsonPrimitive?.content!!,
-        onUserRoleChanged = {},
-        onUpdateButtonClicked = {}
-    )
-}
 
+            composable(route = MainApplication.MiPerfil.name) {
+                val userUiState by loginViewModel.userUiState.collectAsState()
+
+                DisposableEffect(Unit) {
+                    onDispose {
+                        navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
+                        navigationViewModel.updateTitle("Grupos")
+                    }
+                }
+
+                MiPerfilScreen(
+                    imageUrl = userUiState.imageUrl,
+                    userEmail = userUiState.email,
+                    onUserEmailChanged = {},
+                    userPassword = "******",
+                    onUserPasswordChanged = {},
+                    userName = userUiState.name,
+                    onUserNameChanged = {},
+                    userRole = userUiState.role,
+                    onUserRoleChanged = {},
+                    onUpdateButtonClicked = {},
+                )
             }
+        }
     }
-}
 
     if (showMenuCard) {
         Popup(
@@ -478,10 +484,13 @@ user?.let {
         ) {
             MenuCard {
                 MenuItem(
-                    onClick = { navController.navigate(MainApplication.MiPerfil.name)
+                    onClick = {
                         showMenuCard = false
+
+                        navController.navigate(MainApplication.MiPerfil.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.MiPerfil)
-                        navigationViewModel.updateTitle("Mi Perfil") },
+                        navigationViewModel.updateTitle("Mi Perfil")
+                    },
                     icon = Icons.Default.AccountCircle,
                     textId = R.string.mi_cuenta,
                 )

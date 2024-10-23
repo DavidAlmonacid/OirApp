@@ -79,6 +79,7 @@ class LoginViewModel : BaseViewModel() {
                         id = user.id,
                         name = userName,
                         role = userRole,
+                        email = userEmail,
                         imageUrl = userImageUrl,
                     )
                 }

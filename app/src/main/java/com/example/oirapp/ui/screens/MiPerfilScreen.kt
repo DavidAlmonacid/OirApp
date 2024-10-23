@@ -35,8 +35,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
-import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.theme.MyApplicationTheme
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -45,6 +43,7 @@ import java.util.Locale
 @Composable
 fun MiPerfilScreen(
     modifier: Modifier = Modifier,
+    imageUrl: String?,
     userEmail: String,
     onUserEmailChanged: (String) -> Unit,
     userPassword: String,
@@ -142,24 +141,6 @@ fun MiPerfilScreen(
                 modifier = Modifier.padding(top = 28.dp),
             )
         }
-    }
-}
-
-@DarkLightScreenPreviews
-@Composable
-fun ActualizarInfoScreenPreview() {
-    MyApplicationTheme {
-        MiPerfilScreen(
-            userEmail = "",
-            onUserEmailChanged = {},
-            userPassword = "",
-            onUserPasswordChanged = {},
-            userName = "",
-            onUserNameChanged = {},
-            userRole = "",
-            onUserRoleChanged = {},
-            onUpdateButtonClicked = {},
-        )
     }
 }
 
