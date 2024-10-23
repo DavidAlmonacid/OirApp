@@ -13,7 +13,6 @@ interface AudioRecorder {
 }
 
 class AudioRecorderImpl(private val context: Context) : AudioRecorder {
-
     private var recorder: MediaRecorder? = null
 
     private fun createRecorder(): MediaRecorder {
@@ -37,7 +36,7 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
                 prepare()
                 start()
             } catch (e: IOException) {
-                println("AudioRecorderImpl.start, prepare() failed")
+                println("AudioRecorderImpl.start: Error: ${e.message}")
             }
 
             recorder = this
@@ -48,14 +47,12 @@ class AudioRecorderImpl(private val context: Context) : AudioRecorder {
         recorder?.apply {
             try {
                 stop()
-            } catch (e: RuntimeException) {
+            } catch (e: Exception) {
                 println("AudioRecorderImpl.stopRecording: Error: ${e.message}")
             } finally {
-                reset()
                 release()
                 recorder = null
             }
         }
-
     }
 }
