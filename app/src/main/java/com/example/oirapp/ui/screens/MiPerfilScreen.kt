@@ -7,13 +7,19 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,12 +35,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
+import com.example.oirapp.data.network.SupabaseClient
+import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
+import com.example.oirapp.ui.theme.MyApplicationTheme
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,17 +68,62 @@ fun MiPerfilScreen(
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    ProfileImagePicker(onImagePicked = { uri ->
-        selectedImageUri = uri
-    })
+    val context = LocalContext.current
+    // URI donde se almacenará la foto tomada con la cámara
+    var photoUri by remember { mutableStateOf<Uri?>(null) }
 
-    selectedImageUri?.let { uri ->
-        Image(
-            painter = rememberAsyncImagePainter(uri),
-            contentDescription = "Imagen de perfil",
-            modifier = Modifier.size(128.dp),
-        )
+    // ActivityResultLauncher para tomar una foto con la cámara
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            photoUri?.let { uri ->
+                selectedImageUri = uri
+                //uploadImageToSupabase(context, uri)
+            }
+        }
     }
+
+    // ActivityResultLauncher para seleccionar una imagen de la galería
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            //uploadImageToSupabase(context, it)
+        }
+    }
+
+
+    // Función para abrir la cámara
+    fun openCamera() {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            createImageFile(context) // Función que crea un archivo temporal
+        )
+        photoUri = uri
+        takePictureLauncher.launch(uri)
+    }
+
+    // Función para abrir la galería
+    fun openGallery() {
+        pickImageLauncher.launch("image/*")
+    }
+
+    /
+
+//    ProfileImagePicker(onImagePicked = { uri ->
+//        selectedImageUri = uri
+//    })
+
+//    selectedImageUri?.let { uri ->
+//        Image(
+//            painter = rememberAsyncImagePainter(uri),
+//            contentDescription = "Imagen de perfil",
+//            modifier = Modifier.size(128.dp),
+//        )
+//    }
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -79,14 +136,35 @@ fun MiPerfilScreen(
                 .padding(horizontal = 24.dp)
                 .padding(top = 32.dp),
         ) {
-            // Imagen de usuario
-            Image(
-                painter = painterResource(R.drawable.user_placeholder),
-                contentDescription = null, // No es necesario describir la imagen de usuario
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(bottom = 16.dp),
-            )
+//            // Imagen de usuario
+//            Image(
+//                painter = painterResource(R.drawable.user_placeholder),
+//                contentDescription = null, // No es necesario describir la imagen de usuario
+//                modifier = Modifier
+//                    .size(100.dp)
+//                    .padding(bottom = 16.dp),
+//            )
+            // Imagen de usuario con botón de edición
+            Box(contentAlignment = Alignment.BottomEnd) {
+                selectedImageUri?.let { uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Imagen de perfil",
+                        modifier = Modifier.size(128.dp),
+                    )
+                } ?: Image(
+                    painter = painterResource(R.drawable.user_placeholder),
+                    contentDescription = null,
+                    modifier = Modifier.size(128.dp),
+                )
+
+                IconButton(onClick = { openImagePicker(openCamera, openGallery) }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar imagen de perfil",
+                    )
+                }
+            }
 
             // Campo de Correo
             CustomTextField(
@@ -144,6 +222,47 @@ fun MiPerfilScreen(
     }
 }
 
+// Función para abrir el selector de imagen
+@Composable
+fun openImagePicker(openCamera: () -> Unit, openGallery: () -> Unit) {
+    // Mostrar un diálogo para que el usuario elija entre abrir la cámara o la galería
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text("Seleccionar imagen") },
+        text = { Text("Elige una opción para seleccionar la imagen de perfil") },
+        confirmButton = {
+            Button(onClick = { openCamera() }) {
+                Text("Tomar foto")
+            }
+        },
+        dismissButton = {
+            Button(onClick = { openGallery() }) {
+                Text("Seleccionar desde galería")
+            }
+        }
+    )
+}
+
+@Preview
+@Composable
+private fun MiPerfilScreenPreview(){
+    MyApplicationTheme {
+        MiPerfilScreen(
+            imageUrl = null,
+            userEmail = "",
+            onUserEmailChanged = {},
+            userPassword = "",
+            onUserPasswordChanged = {},
+            userName = "",
+            onUserNameChanged = {},
+            userRole = "",
+            onUserRoleChanged = {},
+            onUpdateButtonClicked = {},
+        )
+    }
+    
+}
+
 @Composable
 fun ProfileImagePicker(
     onImagePicked: (Uri) -> Unit,
@@ -189,6 +308,13 @@ fun ProfileImagePicker(
         pickImageLauncher.launch("image/*")
     }
 
+    // Función para abrir el selector de imagen
+    fun openImagePicker() {
+        // Aquí puedes mostrar un diálogo para que el usuario elija entre abrir la cámara o la galería
+        // Por simplicidad, aquí se abre directamente la galería
+        openGallery()
+    }
+
     // Botones para las opciones
     Column {
         Button(onClick = { openCamera() }) {
@@ -209,4 +335,25 @@ fun createImageFile(context: Context): File {
         ".jpg",
         storageDir,
     )
+}
+
+
+suspend fun uploadImageToSupabase(context: Context, uri: Uri, userName: String, imageFile: File) {
+    val bucket = supabaseClient.storage.from("profile_images")
+    val inputStream = context.contentResolver.openInputStream(uri)
+    val fileName = "profile_pictures/${userName}.jpg"
+
+   /* inputStream?.let {
+        supabaseClient.storage.from("your-bucket").upload(fileName, it)
+            .thenAccept { response ->
+                if (response.error == null) {
+                    // Handle successful upload
+                } else {
+                    // Handle error
+                }
+            }
+    } */
+    bucket.upload(fileName, imageFile){
+        upsert = true
+    }
 }
