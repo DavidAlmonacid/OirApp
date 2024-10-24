@@ -111,8 +111,6 @@ fun MiPerfilScreen(
         pickImageLauncher.launch("image/*")
     }
 
-    /
-
 //    ProfileImagePicker(onImagePicked = { uri ->
 //        selectedImageUri = uri
 //    })
@@ -243,6 +241,37 @@ fun openImagePicker(openCamera: () -> Unit, openGallery: () -> Unit) {
     )
 }
 
+fun createImageFile(context: Context): File {
+    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    return File.createTempFile(
+        "JPEG_${timestamp}_",
+        ".jpg",
+        storageDir,
+    )
+}
+
+
+suspend fun uploadImageToSupabase(context: Context, uri: Uri) {
+    val supabaseClient = SupabaseClient.create("https://your-project.supabase.co", "your-anon-key")
+    val inputStream = context.contentResolver.openInputStream(uri)
+    val fileName = "profile_pictures/${System.currentTimeMillis()}.jpg"
+
+    inputStream?.let {
+         supabaseClient.storage.from("your-bucket").upload(fileName, it)
+             .thenAccept { response ->
+                 if (response.error == null) {
+                     // Handle successful upload
+                 } else {
+                     // Handle error
+                 }
+             }
+     }
+    /*bucket.upload(fileName, imageFile){
+        upsert = true
+    }*/
+}
+
 @Preview
 @Composable
 private fun MiPerfilScreenPreview(){
@@ -327,33 +356,3 @@ fun ProfileImagePicker(
     }
 }
 
-fun createImageFile(context: Context): File {
-    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    return File.createTempFile(
-        "JPEG_${timestamp}_",
-        ".jpg",
-        storageDir,
-    )
-}
-
-
-suspend fun uploadImageToSupabase(context: Context, uri: Uri, userName: String, imageFile: File) {
-    val bucket = supabaseClient.storage.from("profile_images")
-    val inputStream = context.contentResolver.openInputStream(uri)
-    val fileName = "profile_pictures/${userName}.jpg"
-
-   /* inputStream?.let {
-        supabaseClient.storage.from("your-bucket").upload(fileName, it)
-            .thenAccept { response ->
-                if (response.error == null) {
-                    // Handle successful upload
-                } else {
-                    // Handle error
-                }
-            }
-    } */
-    bucket.upload(fileName, imageFile){
-        upsert = true
-    }
-}
