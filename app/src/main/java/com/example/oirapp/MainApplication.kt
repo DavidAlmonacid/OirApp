@@ -443,7 +443,15 @@ fun MainApp(
 
                 LaunchedEffect(transcriptUiState) {
                     if (transcriptUiState is TranscriptUiState.Success) {
-                        println("Transcript: ${(transcriptUiState as TranscriptUiState.Success).transcript}")
+                        val message = (transcriptUiState as TranscriptUiState.Success).transcript
+
+                        chatViewModel.insertMessage(
+                            message = message.trim(),
+                            groupId = groupId,
+                            userId = userUiState.id,
+                            userName = userUiState.name,
+                            userRole = userUiState.role,
+                        )
                     }
 
                     if (transcriptUiState is TranscriptUiState.Error) {
