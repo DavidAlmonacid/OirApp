@@ -1,11 +1,12 @@
 [versions]
 agp = "8.5.0"
-#imagepicker = "2.1"
 kotlin = "2.0.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinxCoroutinesAndroid = "1.9.0"
+kotlinxCoroutinesCore = "1.9.0"
 ktorClient = "3.0.0"
 activityCompose = "1.9.3"
 lifecycleViewmodelKtx = "2.8.6"
@@ -35,8 +36,6 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 # Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
-# Image Picker
-#imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 # Supabase
 supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
 auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
@@ -46,6 +45,9 @@ storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt" }
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClient" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClient" }
+# Coroutines
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

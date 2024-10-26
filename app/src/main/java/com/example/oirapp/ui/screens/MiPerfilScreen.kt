@@ -1,9 +1,9 @@
 package com.example.oirapp.ui.screens
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,9 +41,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
@@ -74,9 +71,73 @@ fun MiPerfilScreen(
     onUserRoleChanged: (String) -> Unit,
     onUpdateButtonClicked: () -> Unit,
 ) {
-    val selectedImageUri = rememberSaveable { mutableStateOf<Uri?>(null) }
-    val photoUri = rememberSaveable { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var selectedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var photoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+
     var showSelectionPicker by rememberSaveable { mutableStateOf(false) }
+
+    // Image picker from Gallery
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        selectedImageUri = it
+    }
+
+    fun openGallery() {
+        pickImageLauncher.launch("image/*")
+    }
+
+    val storagePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openGallery()
+        } else {
+            Toast.makeText(context,"Permiso de almacenamiento denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun requestPermissionsAndOpenGallery() {
+        storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    // Image picker from Camera
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            photoUri?.let { uri ->
+                selectedImageUri = uri
+            }
+        }
+    }
+
+    fun openCamera() {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            createImageFile(context),
+        )
+        photoUri = uri
+        takePictureLauncher.launch(uri)
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Toast.makeText(context,"Permiso de la cámara denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun requestPermissionsAndOpenCamera() {
+        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+    }
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -90,7 +151,7 @@ fun MiPerfilScreen(
                 .padding(top = 32.dp),
         ) {
             Box(contentAlignment = Alignment.BottomEnd) {
-                selectedImageUri.value?.let { uri ->
+                selectedImageUri?.let { uri ->
                     Image(
                         painter = rememberAsyncImagePainter(uri),
                         contentDescription = "Imagen de perfil",
@@ -166,109 +227,105 @@ fun MiPerfilScreen(
     }
 
     if (showSelectionPicker) {
-        Popup(
-            onDismissRequest = { showSelectionPicker = false },
-        ) {
-            SelectionPicker(
-                userName = userName,
-                photoUri = photoUri,
-                selectedImageUri = selectedImageUri,
-            )
-        }
+        SelectionPicker(
+            onOpenCamera = { requestPermissionsAndOpenCamera() },
+            onOpenGallery = { requestPermissionsAndOpenGallery() },
+            //userName = userName,
+        )
     }
 }
 
 @Composable
 fun SelectionPicker(
     modifier: Modifier = Modifier,
-    userName: String,
-    photoUri: MutableState<Uri?>,
-    selectedImageUri: MutableState<Uri?>,
+    onOpenCamera: () -> Unit,
+    onOpenGallery: () -> Unit,
+    //userName: String,
 ) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+//    val scope = rememberCoroutineScope()
+//    val context = LocalContext.current
 
-    val takePictureLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            photoUri.value?.let { uri ->
-                selectedImageUri.value = uri
+//    val takePictureLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.TakePicturePreview()
+//    ) { success ->
+//        if (success) {
+//            photoUri.value?.let { uri ->
+//                selectedImageUri.value = uri
+//
+//                scope.launch {
+//                    uploadImageToSupabase(
+//                        userName = userName,
+//                        imageFile = File(
+//                            uri.path ?: error("No se pudo obtener la ruta de la imagen")
+//                        ),
+//                    )
+//                }
+//            }
+//        }
+//    }
 
-                scope.launch {
-                    uploadImageToSupabase(
-                        userName = userName,
-                        imageFile = File(
-                            uri.path ?: error("No se pudo obtener la ruta de la imagen")
-                        ),
-                    )
-                }
-            }
-        }
-    }
+//    val pickImageLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent()
+//    ) { uri: Uri? ->
+//        try {
+//            uri?.let {
+//                selectedImageUri.value = it
+//
+//                scope.launch {
+//                    uploadImageToSupabase(
+//                        userName = userName,
+//                        imageFile = File(
+//                            it.path ?: error("No se pudo obtener la ruta de la imagen")
+//                        ),
+//                    )
+//                }
+//            }
+//        } catch (e: IllegalStateException) {
+//            println("SelectionPicker.pickImageLauncher: IllegalStateException: ${e.message}")
+//        }
+//    }
 
-    val pickImageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        try {
-            uri?.let {
-                selectedImageUri.value = it
+//    fun openCamera() {
+//        val uri = FileProvider.getUriForFile(
+//            context,
+//            "${context.packageName}.fileprovider",
+//            createImageFile(context),
+//        )
+//        photoUri.value = uri
+//        takePictureLauncher.launch(uri)
+//    }
 
-                scope.launch {
-                    uploadImageToSupabase(
-                        userName = userName,
-                        imageFile = File(
-                            it.path ?: error("No se pudo obtener la ruta de la imagen")
-                        ),
-                    )
-                }
-            }
-        } catch (e: IllegalStateException) {
-            println("SelectionPicker.pickImageLauncher: IllegalStateException: ${e.message}")
-        }
-    }
+//    fun openGallery() {
+//        pickImageLauncher.launch("image/*")
+//    }
 
-    fun openCamera() {
-        val uri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            createImageFile(context),
-        )
-        photoUri.value = uri
-        takePictureLauncher.launch(uri)
-    }
+//    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.RequestPermission()
+//    ) { isGranted ->
+//        if (isGranted) {
+//            openCamera()
+//        } else {
+//            // Handle permission denial
+//        }
+//    }
 
-    fun openGallery() {
-        pickImageLauncher.launch("image/*")
-    }
+//    val storagePermissionLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.RequestPermission()
+//    ) { isGranted ->
+//        if (isGranted) {
+//            openGallery()
+//        } else {
+//            // Handle permission denial
+//        }
+//    }
 
-    val cameraPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            openCamera()
-        } else {
-            // Handle permission denial
-        }
-    }
+//    fun requestPermissionsAndOpenCamera() {
+//        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+//    }
 
-    val storagePermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            openGallery()
-        } else {
-            // Handle permission denial
-        }
-    }
-
-    fun requestPermissionsAndOpenCamera() {
-        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-    }
-
-    fun requestPermissionsAndOpenGallery() {
-        storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
+//    fun requestPermissionsAndOpenGallery() {
+//        storagePermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+//    }
 
     Surface(
         color = Color.Black.copy(alpha = 0.5f),
@@ -288,7 +345,7 @@ fun SelectionPicker(
                         Button(
                             onClick = {
                                 println("SelectionPicker: openCamera")
-                                requestPermissionsAndOpenCamera()
+                                onOpenCamera()
                             },
                         ) {
                             Text("Tomar foto")
@@ -297,7 +354,7 @@ fun SelectionPicker(
                         Button(
                             onClick = {
                                 println("SelectionPicker: openGallery")
-                                requestPermissionsAndOpenGallery()
+                                onOpenGallery()
                             },
                         ) {
                             Text("Galería")
@@ -320,11 +377,15 @@ fun createImageFile(context: Context): File {
 }
 
 suspend fun uploadImageToSupabase(userName: String, imageFile: File) {
-    val bucket = supabaseClient.storage.from("profile_images")
-    val fileName = "${userName}.jpg"
+    try {
+        val bucket = supabaseClient.storage.from("profile_images")
+        val fileName = "${userName}.jpg"
 
-    bucket.upload(fileName, imageFile) {
-        upsert = true
+        bucket.upload(fileName, imageFile) {
+            upsert = true
+        }
+    } catch (e: Exception) {
+        println("uploadImageToSupabase: Error: ${e.message}")
     }
 }
 
