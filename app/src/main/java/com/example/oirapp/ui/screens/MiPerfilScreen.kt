@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.screens
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -8,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,24 +17,30 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
@@ -42,6 +50,8 @@ import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable
@@ -59,13 +69,26 @@ fun MiPerfilScreen(
     onUpdateButtonClicked: () -> Unit,
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     var selectedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var bitmapImage by rememberSaveable { mutableStateOf<Bitmap?>(null) }
     var imageFile by rememberSaveable { mutableStateOf<File?>(null) }
-    //var photoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
-    //var showSelectionPicker by rememberSaveable { mutableStateOf(false) }
+    var showSelectionPicker by rememberSaveable { mutableStateOf(false) }
+
+    // Utiliza LaunchedEffect para subir la imagen cuando imageFile cambia
+    LaunchedEffect(imageFile) {
+        imageFile?.let { file ->
+            withContext(Dispatchers.IO) {
+                try {
+                    uploadImageToSupabase(userName, file)
+                    imageFile = null
+                } catch (e: Exception) {
+                    println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
+                }
+            }
+        }
+    }
 
     // Image picker from Gallery
     val pickImageLauncher = rememberLauncherForActivityResult(
@@ -73,34 +96,28 @@ fun MiPerfilScreen(
     ) { uri ->
         uri?.let {
             selectedImageUri = it
+            bitmapImage = null
 
-            File(context.cacheDir, "image.jpg").also { file ->
-                imageFile = file
+            // Guarda el archivo en el caché
+            imageFile = File(context.cacheDir, "image.jpg").apply {
+                // Aquí asegúrate de que la imagen de `selectedImageUri` sea copiada a este archivo
+                // usando, por ejemplo, un flujo de entrada y salida.
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
             }
             println("MiPerfilScreen: imageFile: $imageFile")
             println("MiPerfilScreen: imageFile absolute path: ${imageFile?.absolutePath}")
-
-//            scope.launch {
-//                println("MiPerfilScreen: Subiendo imagen a Supabase")
-//
-//                try {
-//                    uploadImageToSupabase(userName, imageFile!!)
-//                } catch (e: Exception) {
-//                    println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
-//                }
-//            }
         } ?: Toast.makeText(context, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
-    }
-
-    fun openGallery() {
-        pickImageLauncher.launch("image/*")
     }
 
     val storagePermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            openGallery()
+            pickImageLauncher.launch("image/*")
         } else {
             Toast.makeText(context, "Permiso de almacenamiento denegado", Toast.LENGTH_SHORT).show()
         }
@@ -111,39 +128,42 @@ fun MiPerfilScreen(
     }
 
     // Image picker from Camera
-//    val takePictureLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.TakePicture()
-//    ) { success ->
-//        if (success) {
-//            photoUri?.let { uri ->
-//                selectedImageUri = uri
-//            }
-//        }
-//    }
-//
-//    fun openCamera() {
-//        val uri = FileProvider.getUriForFile(
-//            context,
-//            "${context.packageName}.fileprovider",
-//            createImageFile(context),
-//        )
-//        photoUri = uri
-//        takePictureLauncher.launch(uri)
-//    }
-//
-//    val cameraPermissionLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.RequestPermission()
-//    ) { isGranted ->
-//        if (isGranted) {
-//            openCamera()
-//        } else {
-//            Toast.makeText(context,"Permiso de la cámara denegado", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-//
-//    fun requestPermissionsAndOpenCamera() {
-//        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-//    }
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap ->
+        bitmap?.let {
+            bitmapImage = bitmap
+            selectedImageUri = null
+
+            // Crea el archivo y guarda el bitmap en él
+            imageFile = File(context.cacheDir, "image.jpg").apply {
+                outputStream().use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+            }
+            println("MiPerfilScreen: imageFile: $imageFile")
+            println("MiPerfilScreen: imageFile absolute path: ${imageFile?.absolutePath}")
+
+            // Asigna el URI del archivo creado a selectedImageUri para su uso
+            selectedImageUri = FileProvider.getUriForFile(
+                context, "${context.packageName}.fileprovider", imageFile!!
+            )
+        } ?: Toast.makeText(context, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            takePictureLauncher.launch(null)
+        } else {
+            Toast.makeText(context, "Permiso de la cámara denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun requestPermissionsAndOpenCamera() {
+        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+    }
 
     Surface(
         color = MaterialTheme.colorScheme.background,
@@ -169,7 +189,7 @@ fun MiPerfilScreen(
                     modifier = Modifier.size(128.dp),
                 )
 
-                IconButton(onClick = { requestPermissionsAndOpenGallery() }) {
+                IconButton(onClick = { showSelectionPicker = true }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Editar imagen de perfil",
@@ -232,66 +252,61 @@ fun MiPerfilScreen(
         }
     }
 
-//    if (showSelectionPicker) {
-//        SelectionPicker(
-//            onOpenCamera = { requestPermissionsAndOpenCamera() },
-//            onOpenGallery = { requestPermissionsAndOpenGallery() },
-//        )
-//    }
+    if (showSelectionPicker) {
+        SelectionPicker(
+            onCloseSelectionPicker = { showSelectionPicker = false },
+            onOpenCamera = { requestPermissionsAndOpenCamera() },
+            onOpenGallery = { requestPermissionsAndOpenGallery() },
+        )
+    }
 }
 
-//@Composable
-//fun SelectionPicker(
-//    modifier: Modifier = Modifier,
-//    onOpenCamera: () -> Unit,
-//    onOpenGallery: () -> Unit,
-//) {
-//    Surface(
-//        color = Color.Black.copy(alpha = 0.5f),
-//        modifier = modifier.fillMaxSize(),
-//    ) {
-//        Box(contentAlignment = Alignment.Center) {
-//            Card(
-//                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-//            ) {
-//                Column(modifier = Modifier.padding(32.dp)) {
-//                    Row(
-//                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                        modifier = modifier,
-//                    ) {
-//                        Button(
-//                            onClick = {
-//                                println("SelectionPicker: openCamera")
-//                                onOpenCamera()
-//                            },
-//                        ) {
-//                            Text("Tomar foto")
-//                        }
-//
-//                        Button(
-//                            onClick = {
-//                                println("SelectionPicker: openGallery")
-//                                onOpenGallery()
-//                            },
-//                        ) {
-//                            Text("Galería")
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+@Composable
+fun SelectionPicker(
+    modifier: Modifier = Modifier,
+    onCloseSelectionPicker: () -> Unit,
+    onOpenCamera: () -> Unit,
+    onOpenGallery: () -> Unit,
+) {
+    Surface(
+        onClick = onCloseSelectionPicker,
+        color = Color.Black.copy(alpha = 0.5f),
+        modifier = modifier.fillMaxSize(),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(32.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = modifier,
+                    ) {
+                        Button(
+                            onClick = {
+                                println("SelectionPicker: openCamera")
+                                onOpenCamera()
+                                onCloseSelectionPicker()
+                            },
+                        ) {
+                            Text("Tomar foto")
+                        }
 
-//fun createImageFile(context: Context): File {
-//    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-//    val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//    return File.createTempFile(
-//        "JPEG_${timestamp}_",
-//        ".jpg",
-//        storageDir,
-//    )
-//}
+                        Button(
+                            onClick = {
+                                println("SelectionPicker: openGallery")
+                                onOpenGallery()
+                                onCloseSelectionPicker()
+                            },
+                        ) {
+                            Text("Galería")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 suspend fun uploadImageToSupabase(userName: String, imageFile: File) {
     try {
