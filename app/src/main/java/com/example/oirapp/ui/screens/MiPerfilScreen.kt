@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -64,8 +63,6 @@ fun MiPerfilScreen(
     onUserPasswordChanged: (String) -> Unit,
     userName: String,
     onUserNameChanged: (String) -> Unit,
-    userRole: String,
-    onUserRoleChanged: (String) -> Unit,
     onUpdateButtonClicked: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -231,18 +228,6 @@ fun MiPerfilScreen(
                 ),
             )
 
-            // Campo de Rol
-            CustomTextField(
-                value = userRole,
-                onValueChange = onUserRoleChanged,
-                labelId = R.string.select_role,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done,
-                ),
-                keyboardActions = KeyboardActions(onDone = { onUpdateButtonClicked() }),
-            )
-
             // Botón Actualizar
             PrimaryButton(
                 onClick = onUpdateButtonClicked,
@@ -333,8 +318,6 @@ private fun MiPerfilScreenPreview() {
             onUserPasswordChanged = {},
             userName = "",
             onUserNameChanged = {},
-            userRole = "",
-            onUserRoleChanged = {},
             onUpdateButtonClicked = {},
         )
     }
