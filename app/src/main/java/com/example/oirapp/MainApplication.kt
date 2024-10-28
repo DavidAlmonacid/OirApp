@@ -486,8 +486,6 @@ fun MainApp(
                     onUserPasswordChanged = {},
                     userName = userUiState.name,
                     onUserNameChanged = {},
-                    userRole = userUiState.role,
-                    onUserRoleChanged = {},
                     onUpdateButtonClicked = {},
                 )
             }

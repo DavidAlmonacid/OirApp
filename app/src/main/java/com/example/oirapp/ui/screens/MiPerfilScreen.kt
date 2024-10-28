@@ -105,8 +105,6 @@ fun MiPerfilScreen(
                     }
                 }
             }
-            println("MiPerfilScreen: imageFile: $imageFile")
-            println("MiPerfilScreen: imageFile absolute path: ${imageFile?.absolutePath}")
         } ?: Toast.makeText(context, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
     }
 
@@ -130,7 +128,6 @@ fun MiPerfilScreen(
     ) { bitmap ->
         bitmap?.let {
             bitmapImage = bitmap
-            selectedImageUri = null
 
             // Crea el archivo y guarda el bitmap en él
             imageFile = File(context.cacheDir, "image.jpg").apply {
@@ -138,12 +135,12 @@ fun MiPerfilScreen(
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 }
             }
-            println("MiPerfilScreen: imageFile: $imageFile")
-            println("MiPerfilScreen: imageFile absolute path: ${imageFile?.absolutePath}")
 
             // Asigna el URI del archivo creado a selectedImageUri para su uso
             selectedImageUri = FileProvider.getUriForFile(
-                context, "${context.packageName}.fileprovider", imageFile!!
+                context,
+                "${context.packageName}.fileprovider",
+                imageFile!!,
             )
         } ?: Toast.makeText(context, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
     }
@@ -269,7 +266,6 @@ fun SelectionPicker(
                     ) {
                         Button(
                             onClick = {
-                                println("SelectionPicker: openCamera")
                                 onOpenCamera()
                                 onCloseSelectionPicker()
                             },
@@ -279,7 +275,6 @@ fun SelectionPicker(
 
                         Button(
                             onClick = {
-                                println("SelectionPicker: openGallery")
                                 onOpenGallery()
                                 onCloseSelectionPicker()
                             },
