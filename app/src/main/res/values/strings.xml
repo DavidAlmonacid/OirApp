@@ -44,4 +44,6 @@
     <string name="eliminar">Eliminar</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="update">Actualizar</string>
+    <string name="imagen_de_perfil">Imagen de perfil</string>
+    <string name="editar_imagen_de_perfil">Editar imagen de perfil</string>
 </resources>

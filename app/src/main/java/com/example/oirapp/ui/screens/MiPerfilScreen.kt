@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,9 +33,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -45,7 +50,7 @@ import com.example.oirapp.R
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
-import com.example.oirapp.ui.preview.CustomPreview
+import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
@@ -130,7 +135,7 @@ fun MiPerfilScreen(
             bitmapImage = bitmap
 
             // Crea el archivo y guarda el bitmap en él
-            imageFile = File(context.cacheDir, "image.jpg").apply {
+            imageFile = File(context.cacheDir, "image_${System.currentTimeMillis()}.jpg").apply {
                 outputStream().use { outputStream ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 }
@@ -174,19 +179,33 @@ fun MiPerfilScreen(
                 selectedImageUri?.let { uri ->
                     Image(
                         painter = rememberAsyncImagePainter(uri),
-                        contentDescription = "Imagen de perfil",
-                        modifier = Modifier.size(128.dp),
+                        contentDescription = stringResource(R.string.imagen_de_perfil),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(116.dp)
+                            .clip(MaterialTheme.shapes.large),
                     )
                 } ?: Image(
                     painter = painterResource(R.drawable.user_placeholder),
                     contentDescription = null,
-                    modifier = Modifier.size(128.dp),
+                    modifier = Modifier
+                        .size(116.dp)
+                        .clip(MaterialTheme.shapes.large),
                 )
 
-                IconButton(onClick = { showSelectionPicker = true }) {
+                IconButton(
+                    onClick = { showSelectionPicker = true },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    ),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .alpha(0.88f),
+                ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar imagen de perfil",
+                        contentDescription = stringResource(R.string.editar_imagen_de_perfil),
                     )
                 }
             }
@@ -301,7 +320,7 @@ suspend fun uploadImageToSupabase(userName: String, imageFile: File) {
     }
 }
 
-@CustomPreview
+@DarkLightScreenPreviews
 @Composable
 private fun MiPerfilScreenPreview() {
     MyApplicationTheme {
