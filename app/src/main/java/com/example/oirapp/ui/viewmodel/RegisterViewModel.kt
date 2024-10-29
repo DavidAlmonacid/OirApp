@@ -12,6 +12,7 @@ import com.example.oirapp.ui.state.RegisterState
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -90,6 +91,7 @@ class RegisterViewModel : BaseViewModel() {
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private suspend fun signUpNewUser(
         userEmail: String,
         userPassword: String,
@@ -102,7 +104,7 @@ class RegisterViewModel : BaseViewModel() {
             data = buildJsonObject {
                 put("nombre", userName)
                 put("rol", userRole)
-                put("imagen_url", "")
+                put("imagen_url", null)
             }
         }
     }
