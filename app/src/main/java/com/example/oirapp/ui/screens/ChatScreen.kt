@@ -242,16 +242,8 @@ private fun ChatMessageComposer(
                 }
             },
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = if (isRecording) {
-                    MaterialTheme.colorScheme.error
-                } else {
-                    MaterialTheme.colorScheme.primary
-                },
-                contentColor = if (isRecording) {
-                    MaterialTheme.colorScheme.onError
-                } else {
-                    MaterialTheme.colorScheme.onPrimary
-                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
             modifier = Modifier.size(56.dp),
         ) {
