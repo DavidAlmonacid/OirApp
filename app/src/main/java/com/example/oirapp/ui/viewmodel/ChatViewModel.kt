@@ -72,8 +72,6 @@ class ChatViewModel : ViewModel() {
     var channelName by mutableStateOf("")
         private set
 
-    private var fileName by mutableStateOf("")
-
     fun updateUserMessage(message: String) {
         userMessage = message
     }
@@ -181,6 +179,8 @@ class ChatViewModel : ViewModel() {
         }
     }
 
+    private var fileName = ""
+
     fun uploadAudioFile(audioFile: File) {
         viewModelScope.launch(Dispatchers.IO) {
             _uploadState.value = UploadState.Uploading
@@ -205,23 +205,37 @@ class ChatViewModel : ViewModel() {
         }
     }
 
+    private var attempts = 0
+
     suspend fun getAudioTranscript(fileName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _transcriptUiState.value = try {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
                 val response = client.get(
                     urlString = "https://transcripcion-voz-a-texto-asr.onrender.com/api/audio/$fileName"
                 )
 
+                attempts++
+                println("ChatViewModel.getAudioTranscript: Attempts: $attempts")
+
                 if (response.status.value == 200) {
                     val transcript = response.body<TranscriptResponse>()
-                    TranscriptUiState.Success(transcript.message)
+                    _transcriptUiState.value = TranscriptUiState.Success(transcript.message)
+
+                    attempts = 0
                 } else {
-                    TranscriptUiState.Error(
+                    _transcriptUiState.value = TranscriptUiState.Error(
                         "Error al obtener la transcripción del audio: ${response.status}"
                     )
                 }
             } catch (e: IOException) {
-                TranscriptUiState.Error("Error al comunicarse con el servidor: ${e.message}")
+                if (e.message?.startsWith("Socket timeout has expired") == true && attempts <= 3) {
+                    getAudioTranscript(fileName)
+                    return@launch
+                }
+
+                _transcriptUiState.value = TranscriptUiState.Error(
+                    "Error al comunicarse con el servidor: ${e.message}"
+                )
             }
         }
     }
