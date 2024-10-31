@@ -205,37 +205,23 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    private var attempts = 0
-
     suspend fun getAudioTranscript(fileName: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            try {
+            _transcriptUiState.value = try {
                 val response = client.get(
                     urlString = "https://transcripcion-voz-a-texto-asr.onrender.com/api/audio/$fileName"
                 )
 
-                attempts++
-                println("ChatViewModel.getAudioTranscript: Attempts: $attempts")
-
                 if (response.status.value == 200) {
                     val transcript = response.body<TranscriptResponse>()
-                    _transcriptUiState.value = TranscriptUiState.Success(transcript.message)
-
-                    attempts = 0
+                    TranscriptUiState.Success(transcript.message)
                 } else {
-                    _transcriptUiState.value = TranscriptUiState.Error(
+                    TranscriptUiState.Error(
                         "Error al obtener la transcripción del audio: ${response.status}"
                     )
                 }
             } catch (e: IOException) {
-                if (e.message?.startsWith("Socket timeout has expired") == true && attempts <= 3) {
-                    getAudioTranscript(fileName)
-                    return@launch
-                }
-
-                _transcriptUiState.value = TranscriptUiState.Error(
-                    "Error al comunicarse con el servidor: ${e.message}"
-                )
+                TranscriptUiState.Error("Error al comunicarse con el servidor: ${e.message}")
             }
         }
     }
