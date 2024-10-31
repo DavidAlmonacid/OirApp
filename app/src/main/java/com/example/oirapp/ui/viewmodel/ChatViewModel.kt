@@ -80,6 +80,14 @@ class ChatViewModel : ViewModel() {
         channelName = name
     }
 
+    fun resetTranscriptUiState() {
+        _transcriptUiState.value = TranscriptUiState.Loading
+    }
+
+    fun resetUploadState() {
+        _uploadState.value = UploadState.Idle
+    }
+
     private fun resetMessage() {
         userMessage = ""
     }
@@ -207,6 +215,9 @@ class ChatViewModel : ViewModel() {
 
     suspend fun getAudioTranscript(fileName: String) {
         viewModelScope.launch(Dispatchers.Main) {
+            _transcriptUiState.value = TranscriptUiState.Loading
+            _uploadState.value = UploadState.Idle
+
             _transcriptUiState.value = try {
                 val response = client.get(
                     urlString = "https://transcripcion-voz-a-texto-asr.onrender.com/api/audio/$fileName"

@@ -414,6 +414,8 @@ fun MainApp(
                         chatViewModel.removeChannel(chatViewModel.channelName)
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                         navigationViewModel.updateTitle("Grupos")
+                        chatViewModel.resetTranscriptUiState()
+                        chatViewModel.resetUploadState()
                         chatViewModel.resetChannelName()
                     }
                 }
