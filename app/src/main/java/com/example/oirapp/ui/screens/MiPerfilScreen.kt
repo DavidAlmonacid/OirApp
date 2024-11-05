@@ -52,10 +52,13 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
+import io.ktor.http.encodeURLPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.put
 import java.io.File
 
 @Composable
@@ -179,6 +182,15 @@ fun MiPerfilScreen(
                 selectedImageUri?.let { uri ->
                     Image(
                         painter = rememberAsyncImagePainter(uri),
+                        contentDescription = stringResource(R.string.imagen_de_perfil),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(116.dp)
+                            .clip(MaterialTheme.shapes.large),
+                    )
+                } ?: imageUrl?.let { url ->
+                    Image(
+                        painter = rememberAsyncImagePainter(url),
                         contentDescription = stringResource(R.string.imagen_de_perfil),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -309,11 +321,25 @@ fun SelectionPicker(
 
 suspend fun uploadImageToSupabase(userName: String, imageFile: File) {
     try {
-        val bucket = supabaseClient.storage.from("profile_images")
+        val bucketId = "profile_images"
+
+        // Sube la imagen a Supabase Storage
+        val bucket = supabaseClient.storage.from(bucketId)
         val fileName = "${userName}.jpg"
 
         bucket.upload(fileName, imageFile) {
             upsert = true
+        }
+
+        // Obtiene la URL de la imagen subida
+        val imageUrl = supabaseClient.storage.from(bucketId).publicUrl(fileName).encodeURLPath()
+        println("uploadImageToSupabase: Image URL: $imageUrl")
+
+        // Actualiza la URL de la imagen en la base de datos de Supabase
+        supabaseClient.auth.updateUser {
+            data {
+                put("imagen_url", imageUrl)
+            }
         }
     } catch (e: Exception) {
         println("uploadImageToSupabase: Error: ${e.message}")

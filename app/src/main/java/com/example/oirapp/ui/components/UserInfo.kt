@@ -14,20 +14,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.oirapp.R
 import com.example.oirapp.ui.preview.DarkLightPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
 fun UserInfo(
+    modifier: Modifier = Modifier,
+    userImageUrl: String? = null,
     userName: String,
     userRole: String,
-    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
-        Image(
+        userImageUrl?.let { url ->
+            Image(
+                painter = rememberAsyncImagePainter(url),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(57.dp)
+                    .clip(MaterialTheme.shapes.small),
+            )
+        } ?: Image(
             painter = painterResource(R.drawable.user_placeholder),
             contentDescription = null,
             modifier = Modifier

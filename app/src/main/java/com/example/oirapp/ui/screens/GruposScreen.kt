@@ -74,13 +74,6 @@ fun GruposScreen(
     onDeleteGroup: (Int) -> Unit,
     onGroupCardCLick: (String, Int) -> Unit,
 ) {
-
-    /*
-     * TODO: Poder agregar una imagen desde un URL proveniente de Supabase
-     */
-
-    println("userImageUrl: ${userUiState.imageUrl}")
-
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize(),
@@ -90,7 +83,11 @@ fun GruposScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 20.dp),
         ) {
-            UserInfo(userName = userUiState.name, userRole = userUiState.role)
+            UserInfo(
+                userName = userUiState.name,
+                userRole = userUiState.role,
+                userImageUrl = userUiState.imageUrl,
+            )
 
             HorizontalDivider(
                 thickness = 2.dp,
