@@ -85,7 +85,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Image libraries
-    implementation ("io.coil-kt:coil-compose:2.6.0")
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     //Supabase libraries
     implementation(platform(libs.supabase.bom))
