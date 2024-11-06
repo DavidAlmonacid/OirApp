@@ -59,6 +59,7 @@ import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.viewmodel.ChatViewModel
 import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
+import com.example.oirapp.ui.viewmodel.MiPerfilViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
 import com.example.oirapp.ui.viewmodel.TranscriptUiState
@@ -136,6 +137,7 @@ fun MainApp(
     loginViewModel: LoginViewModel = viewModel(),
     gruposViewModel: GruposViewModel = viewModel(),
     chatViewModel: ChatViewModel = viewModel(),
+    miPerfilViewModel: MiPerfilViewModel = viewModel(),
 ) {
     val currentScreen by navigationViewModel.currentScreen.observeAsState(MainApplication.Bienvenida)
     var showMenuCard by remember { mutableStateOf(false) }
@@ -482,6 +484,14 @@ fun MainApp(
 
                 MiPerfilScreen(
                     imageUrl = userUiState.imageUrl,
+                    onUpdateUserImage = { imageFile ->
+                        val userName = userUiState.name
+                        miPerfilViewModel.updateUserImage(userName, imageFile) { uploadedImageUrl ->
+                            loginViewModel.updateUserUiState(
+                                userUiState.copy(imageUrl = uploadedImageUrl)
+                            )
+                        }
+                    },
                     userEmail = userUiState.email,
                     onUserEmailChanged = {},
                     userPassword = "******",

@@ -15,11 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.oirapp.R
-import com.example.oirapp.ui.preview.DarkLightPreviews
+import com.example.oirapp.ui.preview.CustomPreview
 import com.example.oirapp.ui.theme.MyApplicationTheme
 
 @Composable
@@ -31,9 +35,11 @@ fun UserInfo(
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         userImageUrl?.let { url ->
-            Image(
-                painter = rememberAsyncImagePainter(url),
-                contentDescription = null,
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(url).crossfade(true)
+                    .build(),
+                contentDescription = stringResource(R.string.imagen_de_perfil),
+                placeholder = painterResource(R.drawable.user_placeholder),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(57.dp)
@@ -65,7 +71,7 @@ fun UserInfo(
     }
 }
 
-@DarkLightPreviews
+@CustomPreview
 @Composable
 private fun UserInfoPreview() {
     MyApplicationTheme {

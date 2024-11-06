@@ -45,26 +45,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.oirapp.R
-import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
-import io.ktor.http.encodeURLPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.put
 import java.io.File
 
 @Composable
 fun MiPerfilScreen(
     modifier: Modifier = Modifier,
     imageUrl: String?,
+    onUpdateUserImage: (File) -> Unit,
     userEmail: String,
     onUserEmailChanged: (String) -> Unit,
     userPassword: String,
@@ -86,7 +84,7 @@ fun MiPerfilScreen(
         imageFile?.let { file ->
             withContext(Dispatchers.IO) {
                 try {
-                    uploadImageToSupabase(userName, file)
+                    onUpdateUserImage(file)
                     imageFile = null
                 } catch (e: Exception) {
                     println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
@@ -189,9 +187,11 @@ fun MiPerfilScreen(
                             .clip(MaterialTheme.shapes.large),
                     )
                 } ?: imageUrl?.let { url ->
-                    Image(
-                        painter = rememberAsyncImagePainter(url),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).data(url).crossfade(true)
+                            .build(),
                         contentDescription = stringResource(R.string.imagen_de_perfil),
+                        placeholder = painterResource(R.drawable.user_placeholder),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(116.dp)
@@ -319,39 +319,13 @@ fun SelectionPicker(
     }
 }
 
-suspend fun uploadImageToSupabase(userName: String, imageFile: File) {
-    try {
-        val bucketId = "profile_images"
-
-        // Sube la imagen a Supabase Storage
-        val bucket = supabaseClient.storage.from(bucketId)
-        val fileName = "${userName}.jpg"
-
-        bucket.upload(fileName, imageFile) {
-            upsert = true
-        }
-
-        // Obtiene la URL de la imagen subida
-        val imageUrl = supabaseClient.storage.from(bucketId).publicUrl(fileName).encodeURLPath()
-        println("uploadImageToSupabase: Image URL: $imageUrl")
-
-        // Actualiza la URL de la imagen en la base de datos de Supabase
-        supabaseClient.auth.updateUser {
-            data {
-                put("imagen_url", imageUrl)
-            }
-        }
-    } catch (e: Exception) {
-        println("uploadImageToSupabase: Error: ${e.message}")
-    }
-}
-
 @DarkLightScreenPreviews
 @Composable
 private fun MiPerfilScreenPreview() {
     MyApplicationTheme {
         MiPerfilScreen(
             imageUrl = null,
+            onUpdateUserImage = {},
             userEmail = "",
             onUserEmailChanged = {},
             userPassword = "",
