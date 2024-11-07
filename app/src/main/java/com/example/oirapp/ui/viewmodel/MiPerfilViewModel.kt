@@ -12,6 +12,20 @@ import kotlinx.serialization.json.put
 import java.io.File
 
 class MiPerfilViewModel : ViewModel() {
+    fun changeUserName(newUserName: String) {
+        viewModelScope.launch {
+            try {
+                supabaseClient.auth.updateUser {
+                    data {
+                        put("nombre", newUserName)
+                    }
+                }
+            } catch (e: Exception) {
+                println("changeUserName: Error: ${e.message}")
+            }
+        }
+    }
+
     private var imageUrl = ""
 
     fun changeUserImage(
