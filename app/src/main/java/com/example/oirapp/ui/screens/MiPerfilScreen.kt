@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -51,7 +52,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
-import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
 import com.example.oirapp.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.Dispatchers
@@ -62,14 +62,14 @@ import java.io.File
 fun MiPerfilScreen(
     modifier: Modifier = Modifier,
     imageUrl: String?,
-    onUpdateUserImage: (File) -> Unit,
+    onUserImageChanged: (File) -> Unit,
     userEmail: String,
     onUserEmailChanged: (String) -> Unit,
     userPassword: String,
     onUserPasswordChanged: (String) -> Unit,
     userName: String,
-    onUserNameChanged: (String) -> Unit,
-    onUpdateButtonClicked: () -> Unit,
+    onUpdateUserName: (String) -> Unit,
+    onChangeUserName: (String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -84,7 +84,7 @@ fun MiPerfilScreen(
         imageFile?.let { file ->
             withContext(Dispatchers.IO) {
                 try {
-                    onUpdateUserImage(file)
+                    onUserImageChanged(file)
                     imageFile = null
                 } catch (e: Exception) {
                     println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
@@ -245,22 +245,10 @@ fun MiPerfilScreen(
                 ),
             )
 
-            // Campo de Nombre y Apellido
-            CustomTextField(
-                value = userName,
-                onValueChange = onUserNameChanged,
-                labelId = R.string.name,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next,
-                ),
-            )
-
-            // Botón Actualizar
-            PrimaryButton(
-                onClick = onUpdateButtonClicked,
-                textId = R.string.update,
-                modifier = Modifier.padding(top = 28.dp),
+            EditUserField(
+                field = userName,
+                onUpdateField = onUpdateUserName,
+                onSubmitField = onChangeUserName,
             )
         }
     }
@@ -319,20 +307,82 @@ fun SelectionPicker(
     }
 }
 
+@Composable
+private fun EditUserField(
+    modifier: Modifier = Modifier,
+    field: String,
+    onUpdateField: (String) -> Unit,
+    onSubmitField: (String) -> Unit,
+) {
+    var editField by rememberSaveable { mutableStateOf(false) }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        if (!editField) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = field)
+
+                IconButton(onClick = { editField = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.editar),
+                    )
+                }
+            }
+        } else {
+            CustomTextField(
+                value = field,
+                onValueChange = onUpdateField,
+                labelId = R.string.name,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+            ) {
+                Button(
+                    onClick = { editField = false },
+                    modifier = Modifier.padding(end = 8.dp),
+                ) {
+                    Text("Cancelar")
+                }
+
+                Button(
+                    onClick = {
+                        editField = false
+                        onSubmitField(field)
+                    },
+                ) {
+                    Text("Actualizar")
+                }
+            }
+        }
+    }
+}
+
 @DarkLightScreenPreviews
 @Composable
 private fun MiPerfilScreenPreview() {
     MyApplicationTheme {
         MiPerfilScreen(
             imageUrl = null,
-            onUpdateUserImage = {},
+            onUserImageChanged = {},
             userEmail = "",
             onUserEmailChanged = {},
             userPassword = "",
             onUserPasswordChanged = {},
             userName = "",
-            onUserNameChanged = {},
-            onUpdateButtonClicked = {},
+            onUpdateUserName = {},
+            onChangeUserName = {},
         )
     }
 }

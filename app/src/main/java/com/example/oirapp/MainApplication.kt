@@ -484,9 +484,9 @@ fun MainApp(
 
                 MiPerfilScreen(
                     imageUrl = userUiState.imageUrl,
-                    onUpdateUserImage = { imageFile ->
+                    onUserImageChanged = { imageFile ->
                         val userName = userUiState.name
-                        miPerfilViewModel.updateUserImage(userName, imageFile) { uploadedImageUrl ->
+                        miPerfilViewModel.changeUserImage(userName, imageFile) { uploadedImageUrl ->
                             loginViewModel.updateUserUiState(
                                 userUiState.copy(imageUrl = uploadedImageUrl)
                             )
@@ -497,8 +497,8 @@ fun MainApp(
                     userPassword = "******",
                     onUserPasswordChanged = {},
                     userName = userUiState.name,
-                    onUserNameChanged = {},
-                    onUpdateButtonClicked = {},
+                    onUpdateUserName = { loginViewModel.updateUserUiState(userUiState.copy(name = it)) },
+                    onChangeUserName = { miPerfilViewModel.changeUserName(it) },
                 )
             }
         }
