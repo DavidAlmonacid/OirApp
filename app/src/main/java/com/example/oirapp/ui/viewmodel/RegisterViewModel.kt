@@ -8,13 +8,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.ui.state.RegisterState
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+
+sealed interface RegisterState {
+    data object Success : RegisterState
+    data class Error(val message: String) : RegisterState
+}
 
 class RegisterViewModel : BaseViewModel() {
     private val _registerState = MutableLiveData<RegisterState>()
@@ -80,12 +84,16 @@ class RegisterViewModel : BaseViewModel() {
                     userName = userName,
                     userRole = userRole,
                 )
-                _registerState.value = RegisterState.Success("Se ha enviado un correo de verificación a $userEmail")
-                this@RegisterViewModel.setShowDialog(true)
+                _registerState.value = RegisterState.Success
             } catch (e: Exception) {
                 println("Error al crear la cuenta: ${e.message}")
 
-                _registerState.value = RegisterState.Error("Error al crear la cuenta, intente de nuevo.")
+                if (e.message?.contains("User already registered") == true) {
+                    _registerState.value = RegisterState.Error("Ya existe una cuenta con el correo $userEmail")
+                } else {
+                    _registerState.value = RegisterState.Error("Error al crear la cuenta, intente de nuevo.")
+                }
+
                 this@RegisterViewModel.setShowDialog(true)
             }
         }

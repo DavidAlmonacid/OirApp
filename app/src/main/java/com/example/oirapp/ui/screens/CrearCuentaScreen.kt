@@ -28,8 +28,8 @@ import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.SelectRoleDropdown
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.ui.viewmodel.RegisterState
 
 @Composable
 fun CrearCuentaScreen(
@@ -111,14 +111,12 @@ fun CrearCuentaScreen(
         }
     }
 
-    if (showDialog && registerState != null) {
+    if (showDialog && registerState is RegisterState.Error) {
         AlertDialog(
             onDismissRequest = { onDismissDialog() },
             title = {
                 Text(
-                    text = stringResource(
-                        if (registerState is RegisterState.Success) R.string.success else R.string.error
-                    ),
+                    text = stringResource(R.string.error),
                 )
             },
             text = { Text(text = registerState.message) },

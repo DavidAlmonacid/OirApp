@@ -54,13 +54,13 @@ import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.screens.MiPerfilScreen
 import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.LoginState
-import com.example.oirapp.ui.state.RegisterState
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.viewmodel.ChatViewModel
 import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.MiPerfilViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
+import com.example.oirapp.ui.viewmodel.RegisterState
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
 import com.example.oirapp.ui.viewmodel.TranscriptUiState
 import com.example.oirapp.ui.viewmodel.UploadState
@@ -287,20 +287,20 @@ fun MainApp(
                     },
                     registerState = registerState,
                     showDialog = showDialog,
-                    onDismissDialog = {
-                        registerViewModel.setShowDialog(false)
-
-                        if (registerState is RegisterState.Success) {
-                            navController.navigate(MainApplication.IniciarSesion.name) {
-                                popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
-                            }
-                            navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
-                            navigationViewModel.updateTitle("Iniciar sesión")
-
-                            registerViewModel.resetData()
-                        }
-                    },
+                    onDismissDialog = { registerViewModel.setShowDialog(false) },
                 )
+
+                LaunchedEffect(registerState) {
+                    if (registerState is RegisterState.Success) {
+                        navController.navigate(MainApplication.IniciarSesion.name) {
+                            popUpTo(MainApplication.CrearCuenta.name) { inclusive = true }
+                        }
+                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                        navigationViewModel.updateTitle("Iniciar sesión")
+
+                        registerViewModel.resetData()
+                    }
+                }
 
                 DisposableEffect(Unit) {
                     onDispose {
