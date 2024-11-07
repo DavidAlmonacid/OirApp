@@ -14,7 +14,11 @@ import java.io.File
 class MiPerfilViewModel : ViewModel() {
     private var imageUrl = ""
 
-    fun updateUserImage(userName: String, imageFile: File, onImageUploaded: (String) -> Unit) {
+    fun changeUserImage(
+        userName: String,
+        imageFile: File,
+        onImageUploaded: (String) -> Unit,
+    ) {
         viewModelScope.launch {
             try {
                 val bucketId = "profile_images"
@@ -28,7 +32,8 @@ class MiPerfilViewModel : ViewModel() {
                 }
 
                 // Obtiene la URL de la imagen subida
-                val uploadedImageUrl = supabaseClient.storage.from(bucketId).publicUrl(fileName).encodeURLPath()
+                val uploadedImageUrl =
+                    supabaseClient.storage.from(bucketId).publicUrl(fileName).encodeURLPath()
 
                 // Actualiza la URL de la imagen en la base de datos de Supabase
                 supabaseClient.auth.updateUser {
