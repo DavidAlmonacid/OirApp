@@ -64,12 +64,15 @@ fun MiPerfilScreen(
     imageUrl: String?,
     onUserImageChanged: (File) -> Unit,
     userEmail: String,
-    onUserEmailChanged: (String) -> Unit,
+    onUpdateUserEmail: (String) -> Unit,
+    onChangeUserEmail: (String) -> Unit,
+    resetUserEmail: () -> Unit,
     userPassword: String,
     onUserPasswordChanged: (String) -> Unit,
     userName: String,
     onUpdateUserName: (String) -> Unit,
     onChangeUserName: (String) -> Unit,
+    resetUserName: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -222,15 +225,11 @@ fun MiPerfilScreen(
                 }
             }
 
-            // Campo de Correo
-            CustomTextField(
-                value = userEmail,
-                onValueChange = onUserEmailChanged,
-                labelId = R.string.email,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                ),
+            EditUserField(
+                field = userEmail,
+                onUpdateField = onUpdateUserEmail,
+                onSubmitField = onChangeUserEmail,
+                resetField = resetUserEmail,
             )
 
             // Campo de Contraseña
@@ -249,6 +248,7 @@ fun MiPerfilScreen(
                 field = userName,
                 onUpdateField = onUpdateUserName,
                 onSubmitField = onChangeUserName,
+                resetField = resetUserName,
             )
         }
     }
@@ -313,6 +313,7 @@ private fun EditUserField(
     field: String,
     onUpdateField: (String) -> Unit,
     onSubmitField: (String) -> Unit,
+    resetField: () -> Unit,
 ) {
     var editField by rememberSaveable { mutableStateOf(false) }
 
@@ -350,7 +351,10 @@ private fun EditUserField(
                     .padding(top = 4.dp),
             ) {
                 Button(
-                    onClick = { editField = false },
+                    onClick = {
+                        editField = false
+                        resetField()
+                    },
                     modifier = Modifier.padding(end = 8.dp),
                 ) {
                     Text("Cancelar")
@@ -377,12 +381,15 @@ private fun MiPerfilScreenPreview() {
             imageUrl = null,
             onUserImageChanged = {},
             userEmail = "",
-            onUserEmailChanged = {},
+            onUpdateUserEmail = {},
+            onChangeUserEmail = {},
+            resetUserEmail = {},
             userPassword = "",
             onUserPasswordChanged = {},
             userName = "",
             onUpdateUserName = {},
             onChangeUserName = {},
+            resetUserName = {},
         )
     }
 }

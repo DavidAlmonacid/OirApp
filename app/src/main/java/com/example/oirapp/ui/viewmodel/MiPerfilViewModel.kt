@@ -11,7 +11,26 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.put
 import java.io.File
 
+sealed interface MiPerfilState {
+    data class Success(val message: String) : MiPerfilState
+    data class Error(val message: String) : MiPerfilState
+}
+
 class MiPerfilViewModel : ViewModel() {
+    fun changeUserEmail(newEmail: String) {
+        viewModelScope.launch {
+            try {
+                supabaseClient.auth.updateUser {
+                    email = newEmail
+                }
+
+                supabaseClient.auth.signOut()
+            } catch (e: Exception) {
+                println("changeUserEmail: Error: ${e.message}")
+            }
+        }
+    }
+
     fun changeUserName(newUserName: String) {
         viewModelScope.launch {
             try {

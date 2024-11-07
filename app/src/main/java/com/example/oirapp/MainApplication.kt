@@ -475,6 +475,8 @@ fun MainApp(
             composable(route = MainApplication.MiPerfil.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
 
+                val user = supabaseClient.auth.currentSessionOrNull()?.user
+
                 DisposableEffect(Unit) {
                     onDispose {
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
@@ -493,12 +495,23 @@ fun MainApp(
                         }
                     },
                     userEmail = userUiState.email,
-                    onUserEmailChanged = {},
+                    onUpdateUserEmail = { loginViewModel.updateUserUiState(userUiState.copy(email = it)) },
+                    onChangeUserEmail = { miPerfilViewModel.changeUserEmail(it) },
+                    resetUserEmail = {
+                        loginViewModel.updateUserUiState(
+                            userUiState.copy(email = user?.email!!)
+                        )
+                    },
                     userPassword = "******",
                     onUserPasswordChanged = {},
                     userName = userUiState.name,
                     onUpdateUserName = { loginViewModel.updateUserUiState(userUiState.copy(name = it)) },
                     onChangeUserName = { miPerfilViewModel.changeUserName(it) },
+                    resetUserName = {
+                        loginViewModel.updateUserUiState(
+                            userUiState.copy(name = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content!!)
+                        )
+                    },
                 )
             }
         }
