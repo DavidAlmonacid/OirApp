@@ -114,6 +114,11 @@ class GruposViewModel : BaseViewModel() {
     }
 
     fun updateGroupName(groupId: Int, newName: String, idDocente: String) {
+        if (newName.isEmpty()) {
+            errorMessage = "Ingrese un nombre válido."
+            return
+        }
+
         viewModelScope.launch {
             try {
                 supabaseClient.from("grupos").update({
