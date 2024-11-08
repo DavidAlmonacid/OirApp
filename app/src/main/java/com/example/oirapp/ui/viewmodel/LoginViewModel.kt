@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.UserUiState
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
@@ -17,6 +16,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonPrimitive
+
+sealed interface LoginState {
+    data object Idle : LoginState
+    data class Success(val message: String) : LoginState
+    data class Error(val message: String) : LoginState
+}
 
 class LoginViewModel : BaseViewModel() {
     private val _loginState = MutableLiveData<LoginState>()

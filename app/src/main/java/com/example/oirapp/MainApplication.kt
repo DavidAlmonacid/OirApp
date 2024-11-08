@@ -53,13 +53,14 @@ import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.screens.MiPerfilScreen
 import com.example.oirapp.ui.state.GroupState
-import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.viewmodel.ChatViewModel
 import com.example.oirapp.ui.viewmodel.GruposViewModel
+import com.example.oirapp.ui.viewmodel.LoginState
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.MiPerfilViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
+import com.example.oirapp.ui.viewmodel.ProfileState
 import com.example.oirapp.ui.viewmodel.RegisterState
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
 import com.example.oirapp.ui.viewmodel.TranscriptUiState
@@ -474,7 +475,8 @@ fun MainApp(
 
             composable(route = MainApplication.MiPerfil.name) {
                 val userUiState by loginViewModel.userUiState.collectAsState()
-
+                val profileState by miPerfilViewModel.profileState.collectAsState()
+                val showDialog by miPerfilViewModel.showDialog.observeAsState(false)
                 val user = supabaseClient.auth.currentSessionOrNull()?.user
 
                 DisposableEffect(Unit) {
@@ -512,6 +514,22 @@ fun MainApp(
                             userUiState.copy(name = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content!!)
                         )
                     },
+                    showDialog = showDialog,
+                    onDismissDialog = {
+                        miPerfilViewModel.setShowDialog(false)
+
+                        if (profileState is ProfileState.Success) {
+                            loginViewModel.signOut()
+
+                            navController.navigate(MainApplication.IniciarSesion.name) {
+                                popUpTo(MainApplication.MiPerfil.name) { inclusive = true }
+                                popUpTo(MainApplication.Grupos.name) { inclusive = true }
+                            }
+                            navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                            navigationViewModel.updateTitle("Iniciar sesión")
+                        }
+                    },
+                    profileState = profileState,
                 )
             }
         }

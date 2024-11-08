@@ -28,8 +28,8 @@ import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.PrimaryButton
 import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.state.LoginState
 import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.ui.viewmodel.LoginState
 
 @Composable
 fun IniciarSesionScreen(

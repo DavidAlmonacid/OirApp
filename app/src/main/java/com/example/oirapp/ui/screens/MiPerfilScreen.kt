@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +27,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil3.compose.AsyncImage
@@ -52,8 +53,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
-import com.example.oirapp.ui.preview.DarkLightScreenPreviews
-import com.example.oirapp.ui.theme.MyApplicationTheme
+import com.example.oirapp.ui.viewmodel.ProfileState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -73,6 +73,9 @@ fun MiPerfilScreen(
     onUpdateUserName: (String) -> Unit,
     onChangeUserName: (String) -> Unit,
     resetUserName: () -> Unit,
+    showDialog: Boolean,
+    onDismissDialog: () -> Unit,
+    profileState: ProfileState?,
 ) {
     val context = LocalContext.current
 
@@ -232,16 +235,11 @@ fun MiPerfilScreen(
                 resetField = resetUserEmail,
             )
 
-            // Campo de Contraseña
-            CustomTextField(
-                value = userPassword,
-                onValueChange = onUserPasswordChanged,
-                labelId = R.string.password,
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next,
-                ),
+            EditUserField(
+                field = userPassword,
+                onUpdateField = onUserPasswordChanged,
+                onSubmitField = {},
+                resetField = { onUserPasswordChanged("") },
             )
 
             EditUserField(
@@ -249,6 +247,32 @@ fun MiPerfilScreen(
                 onUpdateField = onUpdateUserName,
                 onSubmitField = onChangeUserName,
                 resetField = resetUserName,
+            )
+        }
+
+        if (showDialog && profileState != null && profileState !is ProfileState.Idle) {
+            AlertDialog(
+                onDismissRequest = { onDismissDialog() },
+                title = {
+                    Text(
+                        text = stringResource(
+                            if (profileState is ProfileState.Success) R.string.success else R.string.error
+                        ),
+                    )
+                },
+                text = {
+                    when (profileState) {
+                        is ProfileState.Success -> Text(text = profileState.message)
+                        is ProfileState.Error -> Text(text = profileState.message)
+                        else -> Text(text = "")
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { onDismissDialog() }) {
+                        Text(text = stringResource(R.string.accept))
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -370,26 +394,5 @@ private fun EditUserField(
                 }
             }
         }
-    }
-}
-
-@DarkLightScreenPreviews
-@Composable
-private fun MiPerfilScreenPreview() {
-    MyApplicationTheme {
-        MiPerfilScreen(
-            imageUrl = null,
-            onUserImageChanged = {},
-            userEmail = "",
-            onUpdateUserEmail = {},
-            onChangeUserEmail = {},
-            resetUserEmail = {},
-            userPassword = "",
-            onUserPasswordChanged = {},
-            userName = "",
-            onUpdateUserName = {},
-            onChangeUserName = {},
-            resetUserName = {},
-        )
     }
 }
