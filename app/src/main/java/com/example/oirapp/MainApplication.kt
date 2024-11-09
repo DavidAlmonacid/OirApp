@@ -477,9 +477,10 @@ fun MainApp(
                 val userUiState by loginViewModel.userUiState.collectAsState()
                 val profileState by miPerfilViewModel.profileState.collectAsState()
                 val showDialog by miPerfilViewModel.showDialog.observeAsState(false)
-                val user = supabaseClient.auth.currentSessionOrNull()?.user
+                //val user = supabaseClient.auth.currentSessionOrNull()?.user
 
                 LaunchedEffect(Unit) {
+                    miPerfilViewModel.updateUserInputEmail(userUiState.email)
                     miPerfilViewModel.updateUserInputName(userUiState.name)
                 }
 
@@ -491,6 +492,7 @@ fun MainApp(
                 }
 
                 MiPerfilScreen(
+                    // User Image
                     imageUrl = userUiState.imageUrl,
                     onUserImageChanged = { imageFile ->
                         val userName = userUiState.name
@@ -500,20 +502,20 @@ fun MainApp(
                             )
                         }
                     },
-                    userEmail = userUiState.email,
-                    onUpdateUserEmail = { loginViewModel.updateUserUiState(userUiState.copy(email = it)) },
+                    // Email
+                    userEmail = miPerfilViewModel.userInputEmail,
+                    onUpdateUserEmail = { miPerfilViewModel.updateUserInputEmail(it) },
                     onChangeUserEmail = { miPerfilViewModel.changeUserEmail(it) },
-                    resetUserEmail = {
-                        loginViewModel.updateUserUiState(
-                            userUiState.copy(email = user?.email!!)
-                        )
-                    },
-                    userPassword = "******",
+                    resetUserEmail = { miPerfilViewModel.updateUserInputEmail(userUiState.email) },
+                    // Password
+                    userPassword = "********",
                     onUserPasswordChanged = {},
+                    // User Name
                     userName = miPerfilViewModel.userInputName,
                     onUpdateUserName = { miPerfilViewModel.updateUserInputName(it) },
                     onChangeUserName = { miPerfilViewModel.changeUserName(it) },
                     resetUserName = { miPerfilViewModel.updateUserInputName(userUiState.name) },
+                    // Profile State
                     showDialog = showDialog,
                     onDismissDialog = {
                         miPerfilViewModel.setShowDialog(false)

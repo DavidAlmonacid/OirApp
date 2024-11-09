@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -229,6 +230,7 @@ fun MiPerfilScreen(
             }
 
             EditUserField(
+                labelId = R.string.email,
                 field = userEmail,
                 onUpdateField = onUpdateUserEmail,
                 onSubmitField = onChangeUserEmail,
@@ -236,6 +238,7 @@ fun MiPerfilScreen(
             )
 
             EditUserField(
+                labelId = R.string.password,
                 field = userPassword,
                 onUpdateField = onUserPasswordChanged,
                 onSubmitField = {},
@@ -243,6 +246,7 @@ fun MiPerfilScreen(
             )
 
             EditUserField(
+                labelId = R.string.name,
                 field = userName,
                 onUpdateField = onUpdateUserName,
                 onSubmitField = onChangeUserName,
@@ -334,6 +338,7 @@ fun SelectionPicker(
 @Composable
 private fun EditUserField(
     modifier: Modifier = Modifier,
+    @StringRes labelId: Int,
     field: String,
     onUpdateField: (String) -> Unit,
     onSubmitField: (String) -> Unit,
@@ -361,7 +366,7 @@ private fun EditUserField(
             CustomTextField(
                 value = field,
                 onValueChange = onUpdateField,
-                labelId = R.string.name,
+                labelId = labelId,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,

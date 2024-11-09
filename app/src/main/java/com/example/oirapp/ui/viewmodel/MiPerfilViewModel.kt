@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.viewmodel
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -26,14 +27,35 @@ class MiPerfilViewModel : BaseViewModel() {
     private val _profileState = MutableStateFlow<ProfileState>(ProfileState.Idle)
     val profileState: StateFlow<ProfileState> = _profileState.asStateFlow()
 
+    var userInputEmail by mutableStateOf("")
+        private set
+
     var userInputName by mutableStateOf("")
         private set
+
+    fun updateUserInputEmail(inputEmail: String) {
+        userInputEmail = inputEmail
+    }
 
     fun updateUserInputName(inputName: String) {
         userInputName = inputName
     }
 
     fun changeUserEmail(newEmail: String) {
+        if (newEmail.isBlank()) {
+            userInputEmail = ""
+            _profileState.value = ProfileState.Error("El correo electrónico no puede estar vacío.")
+            this.setShowDialog(true)
+            return
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+            userInputEmail = ""
+            _profileState.value = ProfileState.Error("El correo electrónico no es válido.")
+            this.setShowDialog(true)
+            return
+        }
+
         viewModelScope.launch {
             try {
                 supabaseClient.auth.updateUser {
@@ -53,8 +75,9 @@ class MiPerfilViewModel : BaseViewModel() {
 
     fun changeUserName(newUserName: String) {
         if (newUserName.isBlank()) {
+            userInputName = ""
             _profileState.value = ProfileState.Error("El nombre de usuario no puede estar vacío.")
-            this@MiPerfilViewModel.setShowDialog(true)
+            this.setShowDialog(true)
             return
         }
 
