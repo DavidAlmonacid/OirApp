@@ -1,5 +1,8 @@
 package com.example.oirapp.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import io.github.jan.supabase.auth.auth
@@ -23,6 +26,13 @@ class MiPerfilViewModel : BaseViewModel() {
     private val _profileState = MutableStateFlow<ProfileState>(ProfileState.Idle)
     val profileState: StateFlow<ProfileState> = _profileState.asStateFlow()
 
+    var userInputName by mutableStateOf("")
+        private set
+
+    fun updateUserInputName(inputName: String) {
+        userInputName = inputName
+    }
+
     fun changeUserEmail(newEmail: String) {
         viewModelScope.launch {
             try {
@@ -42,6 +52,12 @@ class MiPerfilViewModel : BaseViewModel() {
     }
 
     fun changeUserName(newUserName: String) {
+        if (newUserName.isBlank()) {
+            _profileState.value = ProfileState.Error("El nombre de usuario no puede estar vacío.")
+            this@MiPerfilViewModel.setShowDialog(true)
+            return
+        }
+
         viewModelScope.launch {
             try {
                 supabaseClient.auth.updateUser {

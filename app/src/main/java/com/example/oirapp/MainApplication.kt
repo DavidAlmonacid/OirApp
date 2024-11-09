@@ -479,6 +479,10 @@ fun MainApp(
                 val showDialog by miPerfilViewModel.showDialog.observeAsState(false)
                 val user = supabaseClient.auth.currentSessionOrNull()?.user
 
+                LaunchedEffect(Unit) {
+                    miPerfilViewModel.updateUserInputName(userUiState.name)
+                }
+
                 DisposableEffect(Unit) {
                     onDispose {
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
@@ -506,14 +510,10 @@ fun MainApp(
                     },
                     userPassword = "******",
                     onUserPasswordChanged = {},
-                    userName = userUiState.name,
-                    onUpdateUserName = { loginViewModel.updateUserUiState(userUiState.copy(name = it)) },
+                    userName = miPerfilViewModel.userInputName,
+                    onUpdateUserName = { miPerfilViewModel.updateUserInputName(it) },
                     onChangeUserName = { miPerfilViewModel.changeUserName(it) },
-                    resetUserName = {
-                        loginViewModel.updateUserUiState(
-                            userUiState.copy(name = user?.userMetadata?.get("nombre")?.jsonPrimitive?.content!!)
-                        )
-                    },
+                    resetUserName = { miPerfilViewModel.updateUserInputName(userUiState.name) },
                     showDialog = showDialog,
                     onDismissDialog = {
                         miPerfilViewModel.setShowDialog(false)

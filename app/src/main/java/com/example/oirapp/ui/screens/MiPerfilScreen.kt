@@ -386,7 +386,9 @@ private fun EditUserField(
 
                 Button(
                     onClick = {
-                        editField = false
+                        if (field.isNotBlank()) {
+                            editField = false
+                        }
                         onSubmitField(field)
                     },
                 ) {
