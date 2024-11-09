@@ -477,11 +477,16 @@ fun MainApp(
                 val userUiState by loginViewModel.userUiState.collectAsState()
                 val profileState by miPerfilViewModel.profileState.collectAsState()
                 val showDialog by miPerfilViewModel.showDialog.observeAsState(false)
-                //val user = supabaseClient.auth.currentSessionOrNull()?.user
 
                 LaunchedEffect(Unit) {
                     miPerfilViewModel.updateUserInputEmail(userUiState.email)
                     miPerfilViewModel.updateUserInputName(userUiState.name)
+                }
+
+                LaunchedEffect(profileState) {
+                    if (profileState is ProfileState.Error) {
+                        miPerfilViewModel.updateUserInputEmail(userUiState.email)
+                    }
                 }
 
                 DisposableEffect(Unit) {
