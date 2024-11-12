@@ -176,8 +176,10 @@ fun MainApp(
                 MainAppBar(
                     currentScreen = currentScreen,
                     navigationViewModel = navigationViewModel,
-                    canNavigateBack = false,
-                    navigateUp = {},
+                    canNavigateBack = currentScreen == MainApplication.CrearCuenta ||
+                            currentScreen == MainApplication.Chat ||
+                            currentScreen == MainApplication.MiPerfil,
+                    navigateUp = { navController.popBackStack() },
                     onMenuButtonClick = { showMenuCard = true },
                     scrollBehavior = scrollBehavior,
                 )
