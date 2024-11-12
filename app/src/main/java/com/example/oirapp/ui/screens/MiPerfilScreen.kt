@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -45,7 +47,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil3.compose.AsyncImage
@@ -69,7 +74,9 @@ fun MiPerfilScreen(
     onChangeUserEmail: (String) -> Unit,
     resetUserEmail: () -> Unit,
     userPassword: String,
-    onUserPasswordChanged: (String) -> Unit,
+    onUpdateUserPassword: (String) -> Unit,
+    onChangeUserPassword: (String) -> Unit,
+    resetUserPassword: () -> Unit,
     userName: String,
     onUpdateUserName: (String) -> Unit,
     onChangeUserName: (String) -> Unit,
@@ -177,7 +184,7 @@ fun MiPerfilScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(horizontal = 24.dp)
@@ -229,6 +236,8 @@ fun MiPerfilScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(4.dp))
+
             EditUserField(
                 labelId = R.string.email,
                 field = userEmail,
@@ -240,9 +249,9 @@ fun MiPerfilScreen(
             EditUserField(
                 labelId = R.string.password,
                 field = userPassword,
-                onUpdateField = onUserPasswordChanged,
-                onSubmitField = {},
-                resetField = { onUserPasswordChanged("") },
+                onUpdateField = onUpdateUserPassword,
+                onSubmitField = onChangeUserPassword,
+                resetField = resetUserPassword,
             )
 
             EditUserField(
@@ -353,8 +362,7 @@ private fun EditUserField(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = field)
-
+                Text(text = if (labelId == R.string.password) "********" else field)
                 IconButton(onClick = { editField = true }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -367,8 +375,20 @@ private fun EditUserField(
                 value = field,
                 onValueChange = onUpdateField,
                 labelId = labelId,
+                visualTransformation = when (labelId) {
+                    R.string.password -> PasswordVisualTransformation()
+                    else -> VisualTransformation.None
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = when (labelId) {
+                        R.string.email -> KeyboardType.Email
+                        R.string.password -> KeyboardType.Password
+                        else -> KeyboardType.Text
+                    },
+                    capitalization = when (labelId) {
+                        R.string.name -> KeyboardCapitalization.Words
+                        else -> KeyboardCapitalization.None
+                    },
                     imeAction = ImeAction.Done,
                 ),
             )
