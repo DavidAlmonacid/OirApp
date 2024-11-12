@@ -518,7 +518,10 @@ fun MainApp(
                     // User Name
                     userName = miPerfilViewModel.userInputName,
                     onUpdateUserName = { miPerfilViewModel.updateUserInputName(it) },
-                    onChangeUserName = { miPerfilViewModel.changeUserName(it) },
+                    onChangeUserName = {
+                        miPerfilViewModel.changeUserName(it)
+                        loginViewModel.updateUserUiState(userUiState.copy(name = it))
+                    },
                     resetUserName = { miPerfilViewModel.updateUserInputName(userUiState.name) },
                     // Profile State
                     showDialog = showDialog,
