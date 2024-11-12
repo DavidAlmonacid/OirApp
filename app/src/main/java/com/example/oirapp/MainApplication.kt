@@ -513,8 +513,10 @@ fun MainApp(
                     onChangeUserEmail = { miPerfilViewModel.changeUserEmail(it) },
                     resetUserEmail = { miPerfilViewModel.updateUserInputEmail(userUiState.email) },
                     // Password
-                    userPassword = "********",
-                    onUserPasswordChanged = {},
+                    userPassword = miPerfilViewModel.userInputPassword,
+                    onUpdateUserPassword = { miPerfilViewModel.updateUserInputPassword(it) },
+                    onChangeUserPassword = { miPerfilViewModel.changeUserPassword(it) },
+                    resetUserPassword = { miPerfilViewModel.updateUserInputPassword("") },
                     // User Name
                     userName = miPerfilViewModel.userInputName,
                     onUpdateUserName = { miPerfilViewModel.updateUserInputName(it) },

@@ -30,11 +30,18 @@ class MiPerfilViewModel : BaseViewModel() {
     var userInputEmail by mutableStateOf("")
         private set
 
+    var userInputPassword by mutableStateOf("")
+        private set
+
     var userInputName by mutableStateOf("")
         private set
 
     fun updateUserInputEmail(inputEmail: String) {
         userInputEmail = inputEmail
+    }
+
+    fun updateUserInputPassword(inputPassword: String) {
+        userInputPassword = inputPassword
     }
 
     fun updateUserInputName(inputName: String) {
@@ -69,6 +76,52 @@ class MiPerfilViewModel : BaseViewModel() {
 
                 _profileState.value = ProfileState.Error("Error al cambiar el correo electrónico.")
                 this@MiPerfilViewModel.setShowDialog(true)
+            }
+        }
+    }
+
+    fun changeUserPassword(newPassword: String) {
+        if (newPassword.isBlank()) {
+            userInputPassword = ""
+            _profileState.value = ProfileState.Error("La contraseña no puede estar vacía.")
+            this.setShowDialog(true)
+            return
+        }
+
+        if (newPassword.length < 6) {
+            userInputPassword = ""
+            _profileState.value =
+                ProfileState.Error("La contraseña debe tener al menos 6 caracteres.")
+            this.setShowDialog(true)
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                supabaseClient.auth.updateUser {
+                    password = newPassword
+                }
+
+                _profileState.value = ProfileState.Success("Contraseña actualizada correctamente.")
+                this@MiPerfilViewModel.setShowDialog(true)
+            } catch (e: Exception) {
+                println("changeUserPassword: Error: ${e.message}")
+
+                when (e.message) {
+                    "New password should be different from the old password." -> {
+                        _profileState.value =
+                            ProfileState.Error("La nueva contraseña debe ser diferente a la anterior.")
+                    }
+
+                    else -> {
+                        _profileState.value =
+                            ProfileState.Error("Error al cambiar la contraseña, intente nuevamente.")
+                    }
+                }
+
+                this@MiPerfilViewModel.setShowDialog(true)
+            } finally {
+                userInputPassword = ""
             }
         }
     }
