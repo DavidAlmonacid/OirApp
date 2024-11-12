@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Group
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.ui.state.GroupState
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
@@ -20,6 +19,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+
+sealed interface GroupState {
+    data object Create : GroupState
+    data object Edit : GroupState
+    data object Join : GroupState
+    data object Delete : GroupState
+}
 
 class GruposViewModel : BaseViewModel() {
     private val _groupState = MutableLiveData<GroupState>()
@@ -147,6 +153,9 @@ class GruposViewModel : BaseViewModel() {
                         eq("id_grupo", groupId)
                     }
                 }
+
+                this@GruposViewModel.setShowDialog(false)
+
                 getCreatedGroups(idDocente)
             } catch (e: Exception) {
                 println("GruposViewModel.deleteGroup: Error: ${e.message}")

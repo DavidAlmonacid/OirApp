@@ -51,11 +51,9 @@ import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.UserInfo
-import com.example.oirapp.ui.preview.DarkLightPreviews
-import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
-import com.example.oirapp.ui.theme.MyApplicationTheme
 import com.example.oirapp.ui.theme.bodyFontFamilyMono
+import com.example.oirapp.ui.viewmodel.GroupState
 import com.example.oirapp.utils.removeAccents
 
 @Composable
@@ -71,7 +69,7 @@ fun GruposScreen(
     onConfirmDialog: (String) -> Unit,
     errorMessage: String,
     openEditDialog: (Int, String) -> Unit,
-    onDeleteGroup: (Int) -> Unit,
+    openDeleteDialog: (Int) -> Unit,
     onGroupCardCLick: (String, Int) -> Unit,
 ) {
     Surface(
@@ -110,22 +108,28 @@ fun GruposScreen(
                         groupName = group.name,
                         groupCode = group.code,
                         role = userUiState.role,
-                        openDialog = { openEditDialog(group.id, group.name) },
-                        onDeleteGroup = onDeleteGroup,
-                        groupId = group.id,
+                        openEditDialog = { openEditDialog(group.id, group.name) },
+                        openDeleteDialog = { openDeleteDialog(group.id) },
                     )
                 }
             }
 
-            if (showDialog) {
+            if (showDialog && groupState !is GroupState.Delete) {
                 GroupInputDialog(
                     groupState = groupState,
                     inputText = userInput,
                     onInputTextChange = { newValue -> onUserInputChanged(newValue) },
                     role = userUiState.role,
-                    onDismissRequest = onDismissDialog,
-                    onConfirm = { onConfirmDialog(userUiState.id) },
+                    onDismissDialog = onDismissDialog,
+                    onConfirmDialog = { onConfirmDialog(userUiState.id) },
                     errorMessage = errorMessage,
+                )
+            }
+
+            if (showDialog && groupState is GroupState.Delete && userUiState.role == "Docente") {
+                DeleteGroupDialog(
+                    onDismissDialog = onDismissDialog,
+                    onConfirmDialog = { onConfirmDialog(userUiState.id) },
                 )
             }
         }
@@ -139,9 +143,8 @@ private fun GroupCard(
     groupName: String,
     groupCode: String,
     role: String,
-    openDialog: () -> Unit,
-    groupId: Int,
-    onDeleteGroup: (Int) -> Unit,
+    openEditDialog: () -> Unit,
+    openDeleteDialog: () -> Unit,
 ) {
     var showMenuCard by remember { mutableStateOf(false) }
 
@@ -228,7 +231,7 @@ private fun GroupCard(
                 MenuCard {
                     MenuItem(
                         onClick = {
-                            openDialog()
+                            openEditDialog()
                             showMenuCard = false
                         },
                         icon = Icons.Default.Edit,
@@ -237,7 +240,8 @@ private fun GroupCard(
 
                     MenuItem(
                         onClick = {
-                            onDeleteGroup(groupId)
+                            openDeleteDialog()
+                            showMenuCard = false
                         },
                         icon = Icons.Default.Delete,
                         textId = R.string.eliminar,
@@ -248,34 +252,18 @@ private fun GroupCard(
     }
 }
 
-@DarkLightPreviews
-@Composable
-private fun GroupCardDocentePreview() {
-    MyApplicationTheme {
-        GroupCard(
-            onClick = {},
-            groupName = "Grupo de Matemáticas",
-            groupCode = "A0BOC1",
-            role = "Docente",
-            openDialog = {},
-            groupId = 1,
-            onDeleteGroup = {},
-        )
-    }
-}
-
 @Composable
 private fun GroupInputDialog(
     groupState: GroupState?,
     inputText: String,
     onInputTextChange: (String) -> Unit,
     role: String,
-    onDismissRequest: () -> Unit,
-    onConfirm: () -> Unit,
+    onDismissDialog: () -> Unit,
+    onConfirmDialog: () -> Unit,
     errorMessage: String,
 ) {
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = onDismissDialog,
         title = {
             Text(
                 text = "Ingrese el " + stringResource(
@@ -296,7 +284,7 @@ private fun GroupInputDialog(
                             KeyboardCapitalization.Words
                         },
                     ),
-                    keyboardActions = KeyboardActions(onDone = { onConfirm() }),
+                    keyboardActions = KeyboardActions(onDone = { onConfirmDialog() }),
                 )
 
                 if (errorMessage.isNotEmpty()) {
@@ -308,12 +296,12 @@ private fun GroupInputDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismissRequest) {
+            TextButton(onClick = onDismissDialog) {
                 Text(text = stringResource(R.string.cancel))
             }
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(onClick = onConfirmDialog) {
                 Text(
                     text = stringResource(
                         if (role == "Estudiante") {
@@ -327,6 +315,28 @@ private fun GroupInputDialog(
                         }
                     )
                 )
+            }
+        },
+    )
+}
+
+@Composable
+private fun DeleteGroupDialog(
+    onDismissDialog: () -> Unit,
+    onConfirmDialog: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissDialog,
+        title = { Text(text = stringResource(R.string.eliminar_grupo)) },
+        text = { Text(text = stringResource(R.string.confirmar_eliminacion_grupo)) },
+        dismissButton = {
+            TextButton(onClick = onDismissDialog) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirmDialog) {
+                Text(text = stringResource(R.string.eliminar))
             }
         },
     )

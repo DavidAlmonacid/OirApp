@@ -52,9 +52,9 @@ import com.example.oirapp.ui.screens.CrearCuentaScreen
 import com.example.oirapp.ui.screens.GruposScreen
 import com.example.oirapp.ui.screens.IniciarSesionScreen
 import com.example.oirapp.ui.screens.MiPerfilScreen
-import com.example.oirapp.ui.state.GroupState
 import com.example.oirapp.ui.state.UserUiState
 import com.example.oirapp.ui.viewmodel.ChatViewModel
+import com.example.oirapp.ui.viewmodel.GroupState
 import com.example.oirapp.ui.viewmodel.GruposViewModel
 import com.example.oirapp.ui.viewmodel.LoginState
 import com.example.oirapp.ui.viewmodel.LoginViewModel
@@ -360,6 +360,13 @@ fun MainApp(
                                     idDocente = userId,
                                 )
                             }
+
+                            if (groupState is GroupState.Delete) {
+                                gruposViewModel.deleteGroup(
+                                    groupId = gruposViewModel.groupId,
+                                    idDocente = userId,
+                                )
+                            }
                         }
 
                         if (userUiState.role == "Estudiante") {
@@ -376,8 +383,9 @@ fun MainApp(
                         gruposViewModel.updateGroupId(groupId)
                         gruposViewModel.updateUserInput(groupName)
                     },
-                    onDeleteGroup = { groupId ->
-                        gruposViewModel.deleteGroup(groupId, userUiState.id)
+                    openDeleteDialog = { groupId ->
+                        gruposViewModel.openDialog(GroupState.Delete)
+                        gruposViewModel.updateGroupId(groupId)
                     },
                     onGroupCardCLick = { groupName, groupId ->
                         navController.navigate("${MainApplication.Chat.name}/$groupName/$groupId")
