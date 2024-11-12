@@ -46,4 +46,6 @@
     <string name="update">Actualizar</string>
     <string name="imagen_de_perfil">Imagen de perfil</string>
     <string name="editar_imagen_de_perfil">Editar imagen de perfil</string>
+    <string name="eliminar_grupo">Eliminar grupo</string>
+    <string name="confirmar_eliminacion_grupo">¿Quieres continuar con la eliminación del grupo? Esta acción no puede ser revertida.</string>
 </resources>
