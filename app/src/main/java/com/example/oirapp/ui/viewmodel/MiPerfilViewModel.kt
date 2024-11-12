@@ -69,7 +69,8 @@ class MiPerfilViewModel : BaseViewModel() {
                     email = newEmail
                 }
 
-                _profileState.value = ProfileState.Success("Se ha enviado un correo de confirmación a $newEmail")
+                _profileState.value =
+                    ProfileState.Success("Se ha enviado un correo de confirmación a $newEmail")
                 this@MiPerfilViewModel.setShowDialog(true)
             } catch (e: Exception) {
                 println("changeUserEmail: Error: ${e.message}")
@@ -141,11 +142,13 @@ class MiPerfilViewModel : BaseViewModel() {
                         put("nombre", newUserName)
                     }
                 }
-                _profileState.value = ProfileState.Success("Nombre de usuario actualizado correctamente.")
+                _profileState.value =
+                    ProfileState.Success("Nombre de usuario actualizado correctamente.")
             } catch (e: Exception) {
                 println("changeUserName: Error: ${e.message}")
 
-                _profileState.value = ProfileState.Error("Error al cambiar el nombre de usuario, intente nuevamente.")
+                _profileState.value =
+                    ProfileState.Error("Error al cambiar el nombre de usuario, intente nuevamente.")
                 this@MiPerfilViewModel.setShowDialog(true)
             }
         }
@@ -185,11 +188,13 @@ class MiPerfilViewModel : BaseViewModel() {
                 imageUrl = uploadedImageUrl
                 onImageUploaded(uploadedImageUrl)
 
-                _profileState.value = ProfileState.Success("Imagen de perfil actualizada correctamente.")
+                _profileState.value =
+                    ProfileState.Success("Imagen de perfil actualizada correctamente.")
             } catch (e: Exception) {
                 println("uploadImageToSupabase: Error: ${e.message}")
 
-                _profileState.value = ProfileState.Error("Error al cambiar la imagen de perfil, intente nuevamente.")
+                _profileState.value =
+                    ProfileState.Error("Error al cambiar la imagen de perfil, intente nuevamente.")
                 this@MiPerfilViewModel.setShowDialog(true)
             }
         }
