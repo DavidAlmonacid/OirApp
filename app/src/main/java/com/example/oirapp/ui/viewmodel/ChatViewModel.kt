@@ -107,7 +107,7 @@ class ChatViewModel : ViewModel() {
 
     private val table = supabaseClient.postgrest["mensajes"]
 
-    fun subscribeToChannel(channelName: String, groupId: Int, userName: String) {
+    fun subscribeToChannel(channelName: String, groupId: Int, user: PresenceState) {
         viewModelScope.launch {
             try {
                 val channel = supabaseClient.channel(channelName)
@@ -127,15 +127,17 @@ class ChatViewModel : ViewModel() {
                 val presenceFlow = channel.presenceDataFlow<PresenceState>()
 
                 presenceFlow.onEach {
-                    for (presence in it) {
-                        println(presence.username)
-                    }
-
                     _connectedUsers.value = it
                 }.launchIn(this)
 
                 channel.subscribe(blockUntilSubscribed = true)
-                channel.track(PresenceState(username = userName))
+                channel.track(
+                    PresenceState(
+                        id = user.id,
+                        userName = user.userName,
+                        imageUrl = user.imageUrl,
+                    )
+                )
             } catch (e: Exception) {
                 println("ChatViewModel.subscribeToChannel: Error: ${e.message}")
             }
@@ -196,7 +198,7 @@ class ChatViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 _messages.value = emptyList()
-                _connectedUsers.value = _connectedUsers.value.filter { it.username != userName }
+                _connectedUsers.value = _connectedUsers.value.filter { it.userName != userName }
 
                 supabaseClient.realtime.removeAllChannels()
             } catch (e: Exception) {
@@ -267,4 +269,8 @@ data class TranscriptResponse(
 )
 
 @Serializable
-data class PresenceState(val username: String)
+data class PresenceState(
+    val id: String,
+    val imageUrl: String? = null,
+    val userName: String,
+)

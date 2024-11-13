@@ -26,13 +26,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -43,6 +47,7 @@ import androidx.navigation.navArgument
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.ui.components.MenuItem
 import com.example.oirapp.ui.components.MenuPopup
+import com.example.oirapp.ui.components.UsersList
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.ChatScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
@@ -57,6 +62,7 @@ import com.example.oirapp.ui.viewmodel.LoginState
 import com.example.oirapp.ui.viewmodel.LoginViewModel
 import com.example.oirapp.ui.viewmodel.MiPerfilViewModel
 import com.example.oirapp.ui.viewmodel.NavigationViewModel
+import com.example.oirapp.ui.viewmodel.PresenceState
 import com.example.oirapp.ui.viewmodel.ProfileState
 import com.example.oirapp.ui.viewmodel.RegisterState
 import com.example.oirapp.ui.viewmodel.RegisterViewModel
@@ -422,7 +428,11 @@ fun MainApp(
                     chatViewModel.subscribeToChannel(
                         channelName = chatViewModel.channelName,
                         groupId = groupId,
-                        userName = userUiState.name,
+                        user = PresenceState(
+                            id = userUiState.id,
+                            imageUrl = userUiState.imageUrl,
+                            userName = userUiState.name,
+                        ),
                     )
                     chatViewModel.getMessages(groupId)
                 }
@@ -594,14 +604,14 @@ fun MainApp(
         }
     }
 
+    var showUsersList by rememberSaveable { mutableStateOf(false) }
+
     if (showMenuCard && currentScreen == MainApplication.Chat) {
         MenuPopup(onDismissRequest = { showMenuCard = false }) {
             MenuItem(
                 onClick = {
                     showMenuCard = false
-
-                    val connectedUsers = chatViewModel.connectedUsers.value
-                    println("Connected users: $connectedUsers")              // <- Remove this line
+                    showUsersList = true
                 },
                 icon = Icons.Default.AccountCircle,
                 textId = R.string.ver_participantes,
@@ -612,6 +622,17 @@ fun MainApp(
                 icon = R.drawable.file,
                 textId = R.string.generar_informe,
             )
+        }
+    }
+
+    if (showUsersList) {
+        Popup(
+            alignment = Alignment.TopCenter,
+            offset = IntOffset(x = 0, y = 200),
+            onDismissRequest = { showUsersList = false },
+        ) {
+            val connectedUsers by chatViewModel.connectedUsers.collectAsState()
+            UsersList(users = connectedUsers)
         }
     }
 }
