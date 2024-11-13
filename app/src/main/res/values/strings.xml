@@ -50,4 +50,5 @@
     <string name="confirmar_eliminacion_grupo">¿Quieres continuar con la eliminación del grupo? Esta acción no puede ser revertida.</string>
     <string name="ver_participantes">Ver participantes</string>
     <string name="generar_informe">Generar informe</string>
+    <string name="usuarios_conectados">Usuarios conectados</string>
 </resources>
