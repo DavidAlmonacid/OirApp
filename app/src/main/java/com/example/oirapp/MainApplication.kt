@@ -123,6 +123,15 @@ fun MainAppBar(
                     )
                 }
             }
+
+            if (currentScreen == MainApplication.Chat) {
+                IconButton(onClick = onMenuButtonClick) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.open_menu),
+                    )
+                }
+            }
         },
         scrollBehavior = scrollBehavior,
         modifier = modifier.shadow(elevation = 4.dp),
@@ -180,7 +189,15 @@ fun MainApp(
                             currentScreen == MainApplication.Chat ||
                             currentScreen == MainApplication.MiPerfil,
                     navigateUp = { navController.popBackStack() },
-                    onMenuButtonClick = { showMenuCard = true },
+                    onMenuButtonClick = {
+                        if (currentScreen == MainApplication.Grupos) {
+                            showMenuCard = true
+                        }
+
+                        if (currentScreen == MainApplication.Chat) {
+                            showMenuCard = true
+                        }
+                    },
                     scrollBehavior = scrollBehavior,
                 )
             }
@@ -418,13 +435,13 @@ fun MainApp(
                 )
 
                 LaunchedEffect(Unit) {
-                    chatViewModel.subscribeToChannel(chatViewModel.channelName, groupId)
+                    chatViewModel.subscribeToChannel(chatViewModel.channelName, groupId, userUiState.name)
                     chatViewModel.getMessages(groupId)
                 }
 
                 DisposableEffect(Unit) {
                     onDispose {
-                        chatViewModel.removeChannel(chatViewModel.channelName)
+                        chatViewModel.removeChannel(userUiState.name)
                         navigationViewModel.updateCurrentScreen(MainApplication.Grupos)
                         navigationViewModel.updateTitle("Grupos")
                         chatViewModel.resetTranscriptUiState()
@@ -557,7 +574,7 @@ fun MainApp(
         }
     }
 
-    if (showMenuCard) {
+    if (showMenuCard && currentScreen == MainApplication.Grupos) {
         Popup(
             alignment = Alignment.TopEnd,
             offset = IntOffset(x = -48, y = 160),
@@ -590,6 +607,33 @@ fun MainApp(
                     },
                     icon = Icons.AutoMirrored.Filled.ExitToApp,
                     textId = R.string.cerrar_sesion,
+                )
+            }
+        }
+    }
+
+    if (showMenuCard && currentScreen == MainApplication.Chat ) {
+        Popup(
+            alignment = Alignment.TopEnd,
+            offset = IntOffset(x = -48, y = 160),
+            onDismissRequest = { showMenuCard = false },
+        ) {
+            MenuCard {
+                MenuItem(
+                    onClick = {
+                        showMenuCard = false
+
+                        val connectedUsers = chatViewModel.connectedUsers.value
+                        println("Connected users: $connectedUsers")
+                    },
+                    icon = Icons.Default.AccountCircle,
+                    textId = R.string.ver_participantes,
+                )
+
+                MenuItem(
+                    onClick = {},
+                    icon = R.drawable.file,
+                    textId = R.string.generar_informe,
                 )
             }
         }

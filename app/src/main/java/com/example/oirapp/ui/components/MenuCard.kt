@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -77,6 +78,30 @@ fun MenuItem(
     }
 }
 
+@Composable
+fun MenuItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    @DrawableRes icon: Int,
+    @StringRes textId: Int,
+) {
+    TextButton(
+        onClick = onClick,
+        shape = RectangleShape,
+        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+        modifier = modifier,
+    ) {
+        Icon(painter = painterResource(icon), contentDescription = null)
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = stringResource(textId),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
 @DarkLightPreviews
 @Composable
 private fun MenuCardPreview() {
@@ -84,7 +109,7 @@ private fun MenuCardPreview() {
         MenuCard {
             MenuItem(
                 onClick = {},
-                icon = Icons.Default.Edit,
+                icon = R.drawable.file,
                 textId = R.string.editar,
             )
 

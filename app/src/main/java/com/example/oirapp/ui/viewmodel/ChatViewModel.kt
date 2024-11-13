@@ -16,8 +16,10 @@ import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.presenceDataFlow
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
+import io.github.jan.supabase.realtime.track
 import io.github.jan.supabase.storage.FileObject
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
@@ -66,6 +68,9 @@ class ChatViewModel : ViewModel() {
     private val _uploadState = MutableStateFlow<UploadState>(UploadState.Idle)
     val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()
 
+    private val _connectedUsers = MutableStateFlow<List<PresenceState>>(emptyList())
+    val connectedUsers: StateFlow<List<PresenceState>> = _connectedUsers.asStateFlow()
+
     var userMessage by mutableStateOf("")
         private set
 
@@ -102,11 +107,12 @@ class ChatViewModel : ViewModel() {
 
     private val table = supabaseClient.postgrest["mensajes"]
 
-    fun subscribeToChannel(channelName: String, groupId: Int) {
+    fun subscribeToChannel(channelName: String, groupId: Int, userName: String) {
         viewModelScope.launch {
             try {
                 val channel = supabaseClient.channel(channelName)
 
+                // Getting the messages
                 val changes = channel.postgresChangeFlow<PostgresAction>(schema = "public") {
                     table = "mensajes"
                 }
@@ -117,7 +123,19 @@ class ChatViewModel : ViewModel() {
                     }
                 }.launchIn(this)
 
-                channel.subscribe()
+                // Getting the connected users
+                val presenceFlow = channel.presenceDataFlow<PresenceState>()
+
+                presenceFlow.onEach {
+                    for (presence in it) {
+                        println(presence.username)
+                    }
+
+                    _connectedUsers.value = it
+                }.launchIn(this)
+
+                channel.subscribe(blockUntilSubscribed = true)
+                channel.track(PresenceState(username = userName))
             } catch (e: Exception) {
                 println("ChatViewModel.subscribeToChannel: Error: ${e.message}")
             }
@@ -174,13 +192,13 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun removeChannel(channelName: String) {
+    fun removeChannel(userName: String) {
         viewModelScope.launch {
             try {
                 _messages.value = emptyList()
+                _connectedUsers.value = _connectedUsers.value.filter { it.username != userName }
 
-                val channel = supabaseClient.channel(channelName)
-                supabaseClient.realtime.removeChannel(channel)
+                supabaseClient.realtime.removeAllChannels()
             } catch (e: Exception) {
                 println("ChatViewModel.removeChannel: Error: ${e.message}")
             }
@@ -247,3 +265,6 @@ class ChatViewModel : ViewModel() {
 data class TranscriptResponse(
     val message: String,
 )
+
+@Serializable
+data class PresenceState(val username: String)

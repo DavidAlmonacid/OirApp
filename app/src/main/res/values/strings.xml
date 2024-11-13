@@ -48,4 +48,6 @@
     <string name="editar_imagen_de_perfil">Editar imagen de perfil</string>
     <string name="eliminar_grupo">Eliminar grupo</string>
     <string name="confirmar_eliminacion_grupo">¿Quieres continuar con la eliminación del grupo? Esta acción no puede ser revertida.</string>
+    <string name="ver_participantes">Ver participantes</string>
+    <string name="generar_informe">Generar informe</string>
 </resources>
