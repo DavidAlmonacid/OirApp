@@ -27,15 +27,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -44,8 +41,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
-import com.example.oirapp.ui.components.MenuCard
 import com.example.oirapp.ui.components.MenuItem
+import com.example.oirapp.ui.components.MenuPopup
 import com.example.oirapp.ui.screens.BienvenidaScreen
 import com.example.oirapp.ui.screens.ChatScreen
 import com.example.oirapp.ui.screens.CrearCuentaScreen
@@ -115,16 +112,7 @@ fun MainAppBar(
             }
         },
         actions = {
-            if (currentScreen == MainApplication.Grupos) {
-                IconButton(onClick = onMenuButtonClick) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = stringResource(R.string.open_menu),
-                    )
-                }
-            }
-
-            if (currentScreen == MainApplication.Chat) {
+            if (currentScreen == MainApplication.Grupos || currentScreen == MainApplication.Chat) {
                 IconButton(onClick = onMenuButtonClick) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
@@ -190,11 +178,7 @@ fun MainApp(
                             currentScreen == MainApplication.MiPerfil,
                     navigateUp = { navController.popBackStack() },
                     onMenuButtonClick = {
-                        if (currentScreen == MainApplication.Grupos) {
-                            showMenuCard = true
-                        }
-
-                        if (currentScreen == MainApplication.Chat) {
+                        if (currentScreen == MainApplication.Grupos || currentScreen == MainApplication.Chat) {
                             showMenuCard = true
                         }
                     },
@@ -435,7 +419,11 @@ fun MainApp(
                 )
 
                 LaunchedEffect(Unit) {
-                    chatViewModel.subscribeToChannel(chatViewModel.channelName, groupId, userUiState.name)
+                    chatViewModel.subscribeToChannel(
+                        channelName = chatViewModel.channelName,
+                        groupId = groupId,
+                        userName = userUiState.name,
+                    )
                     chatViewModel.getMessages(groupId)
                 }
 
@@ -575,67 +563,55 @@ fun MainApp(
     }
 
     if (showMenuCard && currentScreen == MainApplication.Grupos) {
-        Popup(
-            alignment = Alignment.TopEnd,
-            offset = IntOffset(x = -48, y = 160),
-            onDismissRequest = { showMenuCard = false },
-        ) {
-            MenuCard {
-                MenuItem(
-                    onClick = {
-                        showMenuCard = false
+        MenuPopup(onDismissRequest = { showMenuCard = false }) {
+            MenuItem(
+                onClick = {
+                    showMenuCard = false
 
-                        navController.navigate(MainApplication.MiPerfil.name)
-                        navigationViewModel.updateCurrentScreen(MainApplication.MiPerfil)
-                        navigationViewModel.updateTitle("Mi Perfil")
-                    },
-                    icon = Icons.Default.AccountCircle,
-                    textId = R.string.mi_cuenta,
-                )
+                    navController.navigate(MainApplication.MiPerfil.name)
+                    navigationViewModel.updateCurrentScreen(MainApplication.MiPerfil)
+                    navigationViewModel.updateTitle("Mi Perfil")
+                },
+                icon = Icons.Default.AccountCircle,
+                textId = R.string.mi_cuenta,
+            )
 
-                MenuItem(
-                    onClick = {
-                        loginViewModel.signOut()
+            MenuItem(
+                onClick = {
+                    loginViewModel.signOut()
 
-                        showMenuCard = false
+                    showMenuCard = false
 
-                        navController.navigate(MainApplication.IniciarSesion.name) {
-                            popUpTo(MainApplication.Grupos.name) { inclusive = true }
-                        }
-                        navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
-                        navigationViewModel.updateTitle("Iniciar sesión")
-                    },
-                    icon = Icons.AutoMirrored.Filled.ExitToApp,
-                    textId = R.string.cerrar_sesion,
-                )
-            }
+                    navController.navigate(MainApplication.IniciarSesion.name) {
+                        popUpTo(MainApplication.Grupos.name) { inclusive = true }
+                    }
+                    navigationViewModel.updateCurrentScreen(MainApplication.IniciarSesion)
+                    navigationViewModel.updateTitle("Iniciar sesión")
+                },
+                icon = Icons.AutoMirrored.Filled.ExitToApp,
+                textId = R.string.cerrar_sesion,
+            )
         }
     }
 
-    if (showMenuCard && currentScreen == MainApplication.Chat ) {
-        Popup(
-            alignment = Alignment.TopEnd,
-            offset = IntOffset(x = -48, y = 160),
-            onDismissRequest = { showMenuCard = false },
-        ) {
-            MenuCard {
-                MenuItem(
-                    onClick = {
-                        showMenuCard = false
+    if (showMenuCard && currentScreen == MainApplication.Chat) {
+        MenuPopup(onDismissRequest = { showMenuCard = false }) {
+            MenuItem(
+                onClick = {
+                    showMenuCard = false
 
-                        val connectedUsers = chatViewModel.connectedUsers.value
-                        println("Connected users: $connectedUsers")
-                    },
-                    icon = Icons.Default.AccountCircle,
-                    textId = R.string.ver_participantes,
-                )
+                    val connectedUsers = chatViewModel.connectedUsers.value
+                    println("Connected users: $connectedUsers")              // <- Remove this line
+                },
+                icon = Icons.Default.AccountCircle,
+                textId = R.string.ver_participantes,
+            )
 
-                MenuItem(
-                    onClick = {},
-                    icon = R.drawable.file,
-                    textId = R.string.generar_informe,
-                )
-            }
+            MenuItem(
+                onClick = {},
+                icon = R.drawable.file,
+                textId = R.string.generar_informe,
+            )
         }
     }
 }
