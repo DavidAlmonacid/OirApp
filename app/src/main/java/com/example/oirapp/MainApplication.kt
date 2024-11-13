@@ -618,7 +618,11 @@ fun MainApp(
             )
 
             MenuItem(
-                onClick = {},
+                onClick = {
+                    chatViewModel.getReport(
+                        //groupId = ,
+                    )
+                },
                 icon = R.drawable.file,
                 textId = R.string.generar_informe,
             )

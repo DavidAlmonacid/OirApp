@@ -25,7 +25,11 @@ import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,6 +144,27 @@ class ChatViewModel : ViewModel() {
                 )
             } catch (e: Exception) {
                 println("ChatViewModel.subscribeToChannel: Error: ${e.message}")
+            }
+        }
+    }
+
+    @Serializable
+    data class Customer(val id: Int, val firstName: String, val lastName: String)
+
+    fun getReport(
+        //groupId: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                val response: HttpResponse = client.post("https://a56f-186-155-163-77.ngrok-free.app/api/customer") {
+                    contentType(ContentType.Application.Json)
+                    setBody(Customer(3, "Jet", "Brains"))
+                }
+
+                val customer: Customer = response.body()!!
+                println("Customer: $customer")
+            } catch (e: Exception) {
+                println("ChatViewModel.getReport: Error: ${e.message}")
             }
         }
     }
