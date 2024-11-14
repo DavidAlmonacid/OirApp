@@ -2,6 +2,7 @@ package com.example.oirapp.ui.screens
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -214,6 +215,8 @@ private fun ChatMessageComposer(
             audioFile = File(context.cacheDir, "audio.m4a").also {
                 recorder.startRecording(it)
             }
+        } else {
+            Toast.makeText(context, "Permiso del micrófono denegado", Toast.LENGTH_SHORT).show()
         }
     }
 
