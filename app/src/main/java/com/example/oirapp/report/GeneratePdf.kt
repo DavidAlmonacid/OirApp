@@ -34,7 +34,7 @@ fun generatePdf(context: Context, messages: List<Message>, groupName: String) {
     pdfDocument.finishPage(myPage)
 
     val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    val file = File(downloadsDir, "reporte_$groupName.pdf")
+    val file = File(downloadsDir, "Reporte Grupo_$groupName.pdf")
 
     try {
         pdfDocument.writeTo(FileOutputStream(file))
