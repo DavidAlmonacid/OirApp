@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -9,8 +11,8 @@ android {
     namespace = "com.example.oirapp"
     compileSdk = 34
 
-    val supabaseUrl: String = com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_URL")
-    val supabaseKey: String = com.android.build.gradle.internal.cxx.configure.gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_KEY")
+    val supabaseUrl: String = gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_URL")
+    val supabaseKey: String = gradleLocalProperties(rootDir, providers).getProperty("SUPABASE_KEY")
 
     defaultConfig {
         applicationId = "com.example.oirapp"
