@@ -1,7 +1,9 @@
 [versions]
+#noinspection AndroidGradlePluginVersion
 agp = "8.5.0"
 coilCompose = "3.0.0"
 kotlin = "2.0.21"
+#noinspection GradleDependency
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,8 +14,8 @@ ktorClient = "3.0.1"
 activityCompose = "1.9.3"
 lifecycleViewmodelKtx = "2.8.7"
 lifecycleRuntimeKtx = "2.8.7"
-composeBom = "2024.10.01"
-navigationCompose = "2.8.3"
+composeBom = "2024.11.00"
+navigationCompose = "2.8.4"
 runtimeLivedata = "1.7.5"
 supabase = "3.0.2"
 
