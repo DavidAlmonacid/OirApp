@@ -1,5 +1,6 @@
 package com.example.oirapp.ui.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
 import com.example.oirapp.data.network.client
+import com.example.oirapp.report.generatePdf
 import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.postgrest.postgrest
@@ -148,24 +150,10 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    @Serializable
-    data class Customer(val id: Int, val firstName: String, val lastName: String)
-
-    fun getReport(
-        //groupId: Int
-    ) {
+    fun generateChatReport(context: Context, groupName: String) {
         viewModelScope.launch {
-            try {
-                val response: HttpResponse = client.post("https://a56f-186-155-163-77.ngrok-free.app/api/customer") {
-                    contentType(ContentType.Application.Json)
-                    setBody(Customer(3, "Jet", "Brains"))
-                }
-
-                val customer: Customer = response.body()!!
-                println("Customer: $customer")
-            } catch (e: Exception) {
-                println("ChatViewModel.getReport: Error: ${e.message}")
-            }
+            val messages = messages.value
+            generatePdf(context, messages, groupName)
         }
     }
 

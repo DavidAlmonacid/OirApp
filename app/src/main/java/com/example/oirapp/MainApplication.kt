@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -617,10 +618,14 @@ fun MainApp(
                 textId = R.string.ver_participantes,
             )
 
+            val context = LocalContext.current
+            val groupName = navigationViewModel.title.value!!
+
             MenuItem(
                 onClick = {
-                    chatViewModel.getReport(
-                        //groupId = ,
+                    chatViewModel.generateChatReport(
+                        context = context,
+                        groupName = groupName,
                     )
                 },
                 icon = R.drawable.file,
