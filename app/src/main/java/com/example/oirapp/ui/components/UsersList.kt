@@ -56,7 +56,10 @@ fun UsersList(
             modifier = Modifier.padding(top = 20.dp, bottom = 8.dp, start = 20.dp),
         )
 
-        LazyColumn(modifier = Modifier.padding(20.dp)) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(20.dp),
+        ) {
             items(
                 items = users,
                 key = { user -> user.id },
