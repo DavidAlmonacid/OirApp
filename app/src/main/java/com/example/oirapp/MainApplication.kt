@@ -2,6 +2,8 @@ package com.example.oirapp
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -76,7 +78,6 @@ import com.example.oirapp.ui.viewmodel.TranscriptUiState
 import com.example.oirapp.ui.viewmodel.UploadState
 import io.github.jan.supabase.auth.auth
 import kotlinx.serialization.json.jsonPrimitive
-import java.io.File
 
 enum class MainApplication(var title: String? = null) {
     Bienvenida,
@@ -626,53 +627,52 @@ fun MainApp(
 
             val context = LocalContext.current
             val groupName = navigationViewModel.title.value!!
-//            var hasPermission by rememberSaveable { mutableStateOf(false) }
-//
-//            LaunchedEffect(Unit) {
-//                if (
-//                    ContextCompat.checkSelfPermission(
-//                        context, Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                    ) == PackageManager.PERMISSION_GRANTED
-//                ) {
-//                    hasPermission = true
-//                }
-//            }
-//
-//            // Add permission launcher
-//            val permissionLauncher = rememberLauncherForActivityResult(
-//                contract = ActivityResultContracts.RequestPermission()
-//            ) { isGranted ->
-//                hasPermission = isGranted
-//
-//                if (isGranted) {
-//                    chatViewModel.generateChatReport(
-//                        context = context,
-//                        groupName = groupName,
-//                    )
-//
-//                    showMenuCard = false
-//                }
-//            }
+            var hasPermission by rememberSaveable { mutableStateOf(false) }
+
+            LaunchedEffect(Unit) {
+                // The following assignment sets the value of hasPermission to true if the app
+                // is running on Android 10 or later, otherwise it checks if the app has the
+                // WRITE_EXTERNAL_STORAGE permission.
+                hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    true // Android 10+ uses scoped storage
+                } else {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                }
+            }
+
+            // Add permission launcher
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
+                if (isGranted) {
+                    chatViewModel.generateChatReport(
+                        groupName = groupName,
+                        context = context,
+                    )
+                    showMenuCard = false
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Se requiere permiso de almacenamiento para generar el informe",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
             MenuItem(
                 onClick = {
-                    chatViewModel.generateChatReport(
-                        context = context,
-                        groupName = groupName,
-                    )
-
-                    showMenuCard = false
-
-//                    if (hasPermission) {
-//                        chatViewModel.generateChatReport(
-//                            context = context,
-//                            groupName = groupName,
-//                        )
-//
-//                        showMenuCard = false
-//                    } else {
-//                        permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || hasPermission) {
+                        chatViewModel.generateChatReport(
+                            groupName = groupName,
+                            context = context,
+                        )
+                        showMenuCard = false
+                    } else {
+                        permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    }
                 },
                 icon = R.drawable.file,
                 textId = R.string.generar_informe,
