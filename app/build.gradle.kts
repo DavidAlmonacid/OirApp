@@ -17,6 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.example.oirapp"
         minSdk = 24
+        maxSdk = 32
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
