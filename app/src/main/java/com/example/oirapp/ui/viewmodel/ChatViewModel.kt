@@ -145,10 +145,15 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun generateChatReport(context: Context, groupName: String) {
+    fun generateChatReport(groupName: String, context: Context) {
         viewModelScope.launch {
             val messages = messages.value
-            generatePdf(context, messages, groupName)
+
+            generatePdf(
+                messages = messages,
+                groupName = groupName,
+                context = context,
+            )
         }
     }
 
