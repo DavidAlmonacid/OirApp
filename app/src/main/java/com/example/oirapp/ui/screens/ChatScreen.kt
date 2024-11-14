@@ -1,5 +1,9 @@
 package com.example.oirapp.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -37,8 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import com.example.oirapp.MainActivity
+import androidx.core.content.ContextCompat
 import com.example.oirapp.R
 import com.example.oirapp.data.network.Message
 import com.example.oirapp.record.AudioRecorderImpl
@@ -186,8 +190,32 @@ private fun ChatMessageComposer(
     val context = LocalContext.current
     val recorder by lazy { AudioRecorderImpl(context.applicationContext) }
     var audioFile: File? = null
-
     var isRecording by rememberSaveable { mutableStateOf(false) }
+    var hasPermission by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            hasPermission = true
+        }
+    }
+
+    // Add permission launcher
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        hasPermission = isGranted
+
+        if (isGranted) {
+            isRecording = true
+            audioFile = File(context.cacheDir, "audio.m4a").also {
+                recorder.startRecording(it)
+            }
+        }
+    }
 
     Row(
         verticalAlignment = Alignment.Bottom,
@@ -223,17 +251,13 @@ private fun ChatMessageComposer(
                             recorder.stopRecording()
                             audioFile?.let { onStopRecording(it) }
                         } else {
-                            ActivityCompat.requestPermissions(
-                                context as MainActivity,
-                                arrayOf(android.Manifest.permission.RECORD_AUDIO),
-                                0,
-                            )
-
-                            isRecording = true
-
-                            File(context.cacheDir, "audio.m4a").also {
-                                recorder.startRecording(it)
-                                audioFile = it
+                            if (hasPermission) {
+                                isRecording = true
+                                audioFile = File(context.cacheDir, "audio.m4a").also {
+                                    recorder.startRecording(it)
+                                }
+                            } else {
+                                permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                             }
                         }
                     } else {
