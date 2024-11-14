@@ -1,5 +1,9 @@
 package com.example.oirapp
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -38,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -71,6 +76,7 @@ import com.example.oirapp.ui.viewmodel.TranscriptUiState
 import com.example.oirapp.ui.viewmodel.UploadState
 import io.github.jan.supabase.auth.auth
 import kotlinx.serialization.json.jsonPrimitive
+import java.io.File
 
 enum class MainApplication(var title: String? = null) {
     Bienvenida,
@@ -620,6 +626,33 @@ fun MainApp(
 
             val context = LocalContext.current
             val groupName = navigationViewModel.title.value!!
+//            var hasPermission by rememberSaveable { mutableStateOf(false) }
+//
+//            LaunchedEffect(Unit) {
+//                if (
+//                    ContextCompat.checkSelfPermission(
+//                        context, Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                    ) == PackageManager.PERMISSION_GRANTED
+//                ) {
+//                    hasPermission = true
+//                }
+//            }
+//
+//            // Add permission launcher
+//            val permissionLauncher = rememberLauncherForActivityResult(
+//                contract = ActivityResultContracts.RequestPermission()
+//            ) { isGranted ->
+//                hasPermission = isGranted
+//
+//                if (isGranted) {
+//                    chatViewModel.generateChatReport(
+//                        context = context,
+//                        groupName = groupName,
+//                    )
+//
+//                    showMenuCard = false
+//                }
+//            }
 
             MenuItem(
                 onClick = {
@@ -627,6 +660,19 @@ fun MainApp(
                         context = context,
                         groupName = groupName,
                     )
+
+                    showMenuCard = false
+
+//                    if (hasPermission) {
+//                        chatViewModel.generateChatReport(
+//                            context = context,
+//                            groupName = groupName,
+//                        )
+//
+//                        showMenuCard = false
+//                    } else {
+//                        permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    }
                 },
                 icon = R.drawable.file,
                 textId = R.string.generar_informe,
