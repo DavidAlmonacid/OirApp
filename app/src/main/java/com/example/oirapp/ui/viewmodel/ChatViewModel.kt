@@ -22,7 +22,6 @@ import io.github.jan.supabase.realtime.presenceDataFlow
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.selectAsFlow
 import io.github.jan.supabase.realtime.track
-import io.github.jan.supabase.storage.FileObject
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
 import io.ktor.client.call.body
@@ -224,10 +223,10 @@ class ChatViewModel : ViewModel() {
 
             try {
                 val bucketApi = supabaseClient.storage.from("audios")
-                val bucketFiles = bucketApi.list()
-                val consecutive = getConsecutive(bucketFiles).toString()
+                val bucketFileNames = bucketApi.list().map { it.name }
+                val consecutive = getConsecutive(bucketFileNames).toString()
 
-                fileName = "${consecutive.padStart(3, '0')}_${channelName.removeAccents()}.m4a"
+                fileName = "${consecutive.padStart(4, '0')}_${channelName.removeAccents()}.m4a"
 
                 bucketApi.upload(path = fileName, file = audioFile) {
                     contentType = ContentType.Audio.MP4
@@ -266,9 +265,9 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    private fun getConsecutive(list: List<FileObject>): Int {
-        val lastObject = list.lastOrNull()
-        return lastObject?.name?.take(3)?.toInt()?.inc() ?: 1
+    private fun getConsecutive(list: List<String>): Int {
+        val lastObjectName = list.lastOrNull()
+        return lastObjectName?.take(4)?.toInt()?.inc() ?: 1
     }
 }
 
