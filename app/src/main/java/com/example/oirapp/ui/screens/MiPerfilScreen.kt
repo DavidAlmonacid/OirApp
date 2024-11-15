@@ -54,14 +54,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil3.compose.AsyncImage
-import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.oirapp.R
 import com.example.oirapp.ui.components.CustomTextField
 import com.example.oirapp.ui.viewmodel.ProfileState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable
@@ -96,13 +93,11 @@ fun MiPerfilScreen(
     // Utiliza LaunchedEffect para subir la imagen cuando imageFile cambia
     LaunchedEffect(imageFile) {
         imageFile?.let { file ->
-            withContext(Dispatchers.IO) {
-                try {
-                    onUserImageChanged(file)
-                    imageFile = null
-                } catch (e: Exception) {
-                    println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
-                }
+            try {
+                onUserImageChanged(file)
+                imageFile = null
+            } catch (e: Exception) {
+                println("MiPerfilScreen: Error al subir la imagen a Supabase: ${e.message}")
             }
         }
     }
@@ -116,7 +111,7 @@ fun MiPerfilScreen(
             bitmapImage = null
 
             // Guarda el archivo en el caché
-            imageFile = File(context.cacheDir, "image.jpg").apply {
+            imageFile = File(context.cacheDir, "image_${System.currentTimeMillis()}.jpg").apply {
                 // Aquí asegúrate de que la imagen de `selectedImageUri` sea copiada a este archivo
                 // usando, por ejemplo, un flujo de entrada y salida.
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -192,9 +187,11 @@ fun MiPerfilScreen(
         ) {
             Box(contentAlignment = Alignment.BottomEnd) {
                 selectedImageUri?.let { uri ->
-                    Image(
-                        painter = rememberAsyncImagePainter(uri),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).data(uri).crossfade(true)
+                            .build(),
                         contentDescription = stringResource(R.string.imagen_de_perfil),
+                        placeholder = painterResource(R.drawable.user_placeholder),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(116.dp)

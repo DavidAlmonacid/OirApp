@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.oirapp.data.network.SupabaseClient.supabaseClient
+import com.example.oirapp.utils.removeAccents
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
@@ -167,7 +168,7 @@ class MiPerfilViewModel : BaseViewModel() {
 
                 // Sube la imagen a Supabase Storage
                 val bucket = supabaseClient.storage.from(bucketId)
-                val fileName = "${userName}_${System.currentTimeMillis()}.jpg"
+                val fileName = "${userName.removeAccents()}_${System.currentTimeMillis()}.jpg"
 
                 bucket.upload(fileName, imageFile) {
                     upsert = false
