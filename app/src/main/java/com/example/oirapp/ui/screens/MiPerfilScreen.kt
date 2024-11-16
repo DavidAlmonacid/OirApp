@@ -120,7 +120,7 @@ fun MiPerfilScreen(
                     }
                 }
             }
-        } ?: Toast.makeText(context, "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
+        }
     }
 
     val storagePermissionLauncher = rememberLauncherForActivityResult(
@@ -157,7 +157,7 @@ fun MiPerfilScreen(
                 "${context.packageName}.fileprovider",
                 imageFile!!,
             )
-        } ?: Toast.makeText(context, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
+        }
     }
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
