@@ -18,29 +18,80 @@ fun generatePdf(
     groupName: String,
     context: Context,
 ) {
+    val pdfDocument = PdfDocument()
+
     try {
         val pageHeight = 792
         val pageWidth = 612
-        val pdfDocument = PdfDocument()
         val paint = Paint()
         val title = Paint()
-        val myPageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
-        val myPage = pdfDocument.startPage(myPageInfo)
-        val canvas = myPage.canvas
 
-        title.textSize = 24f
-        canvas.drawText("Reporte del grupo $groupName", 40f, 40f, title)
+        // Initialize first page
+        var currentPage = pdfDocument.startPage(
+            PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
+        )
+        var canvas = currentPage.canvas
+        val xPosition = 44f
+        val topBottomMargin = 52f
+        val maxWidth = pageWidth - (xPosition * 2)
+
+        title.textSize = 16f
+        title.isFakeBoldText = true
+        canvas.drawText("Reporte del grupo: $groupName", xPosition, topBottomMargin, title)
 
         paint.textSize = 12f
-        var yPosition = 100f
+        var yPosition = 96f
 
         for (message in messages) {
-            val formattedMessage = "${message.senderInfo.name}: ${message.message}"
-            canvas.drawText(formattedMessage, 80f, yPosition, paint)
-            yPosition += paint.descent() - paint.ascent()
+            val prefix = "${message.senderInfo.name} | ${message.senderInfo.role}: "
+            val fullMessage = prefix + message.message
+            val words = fullMessage.split(" ")
+            var currentLine = StringBuilder()
+
+            words.forEach { word ->
+                val testLine = if (currentLine.isEmpty()) word else "$currentLine $word"
+                val measureWidth = paint.measureText(testLine)
+
+                if (measureWidth <= maxWidth) {
+                    if (currentLine.isNotEmpty()) currentLine.append(" ")
+                    currentLine.append(word)
+                } else {
+                    if (currentLine.isNotEmpty()) {
+                        canvas.drawText(currentLine.toString(), xPosition, yPosition, paint)
+                        yPosition += paint.descent() - paint.ascent() + 8
+                    }
+                    currentLine = StringBuilder(word)
+                }
+
+                // Check if we need a new page
+                if (yPosition > pageHeight - topBottomMargin) {
+                    try {
+                        // Finish current page
+                        pdfDocument.finishPage(currentPage)
+
+                        // Create new page
+                        val pageNumber = pdfDocument.pages.size + 1
+                        val newPageInfo =
+                            PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                        currentPage = pdfDocument.startPage(newPageInfo)
+                        canvas = currentPage.canvas
+                        yPosition = topBottomMargin // Reset Y position for new page
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        throw IOException("Error creating new page: ${e.message}")
+                    }
+                }
+            }
+
+            // Draw remaining text
+            if (currentLine.isNotEmpty()) {
+                canvas.drawText(currentLine.toString(), xPosition, yPosition, paint)
+            }
+            yPosition += paint.descent() - paint.ascent() + 16
         }
 
-        pdfDocument.finishPage(myPage)
+        // Finish last page
+        pdfDocument.finishPage(currentPage)
 
         // Use content resolver for Android 10+ (API 29+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -63,7 +114,8 @@ fun generatePdf(
             }
         } else {
             // Legacy approach for Android 9 and below
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val downloadsDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val file = File(downloadsDir, "Reporte Grupo_$groupName.pdf")
             FileOutputStream(file).use { outputStream ->
                 pdfDocument.writeTo(outputStream)
@@ -71,12 +123,15 @@ fun generatePdf(
         }
 
         pdfDocument.close()
-        // Show success message
         Toast.makeText(context, "PDF generado exitosamente", Toast.LENGTH_SHORT).show()
-
     } catch (e: IOException) {
         e.printStackTrace()
-        // Show error message
         Toast.makeText(context, "Error al generar el PDF: ${e.message}", Toast.LENGTH_SHORT).show()
+    } finally {
+        try {
+            pdfDocument.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
