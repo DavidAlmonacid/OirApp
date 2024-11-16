@@ -18,19 +18,20 @@ fun generatePdf(
     groupName: String,
     context: Context,
 ) {
-    val pdfDocument = PdfDocument()
-
     try {
         val pageHeight = 792
         val pageWidth = 612
+
         val paint = Paint()
         val title = Paint()
 
+        val pdfDocument = PdfDocument()
         // Initialize first page
         var currentPage = pdfDocument.startPage(
             PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
         )
         var canvas = currentPage.canvas
+
         val xPosition = 44f
         val topBottomMargin = 52f
         val maxWidth = pageWidth - (xPosition * 2)
@@ -93,10 +94,13 @@ fun generatePdf(
         // Finish last page
         pdfDocument.finishPage(currentPage)
 
+        val fileName =
+            "Reporte Grupo_${groupName}_${System.currentTimeMillis()}.pdf".replace(" ", "_")
+
         // Use content resolver for Android 10+ (API 29+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, "Reporte Grupo_$groupName.pdf")
+                put(MediaStore.Downloads.DISPLAY_NAME, fileName)
                 put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
                 put(MediaStore.Downloads.IS_PENDING, 1)
             }
@@ -116,7 +120,7 @@ fun generatePdf(
             // Legacy approach for Android 9 and below
             val downloadsDir =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val file = File(downloadsDir, "Reporte Grupo_$groupName.pdf")
+            val file = File(downloadsDir, fileName)
             FileOutputStream(file).use { outputStream ->
                 pdfDocument.writeTo(outputStream)
             }
@@ -127,11 +131,5 @@ fun generatePdf(
     } catch (e: IOException) {
         e.printStackTrace()
         Toast.makeText(context, "Error al generar el PDF: ${e.message}", Toast.LENGTH_SHORT).show()
-    } finally {
-        try {
-            pdfDocument.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 }
